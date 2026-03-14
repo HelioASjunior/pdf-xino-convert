@@ -86,25 +86,26 @@ function Header({ navigation }) {
         ) : null}
       </header>
 
-      <aside className="sticky top-5 hidden self-start lg:block">
-        <div className="glass-panel flex w-full flex-col px-3 py-4">
-          <Link to="/" className="flex items-center gap-3 px-2 pb-4">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-900 text-white shadow-soft dark:bg-slate-700">
+      <aside className="hidden lg:block">
+        <div className="fixed left-6 top-4 z-40 w-[208px]">
+          <div className="glass-panel flex max-h-[calc(100vh-2rem)] w-full flex-col bg-white/95 px-2.5 py-3 dark:bg-slate-950/92">
+          <Link to="/" className="flex items-center gap-2.5 px-2 pb-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-soft dark:bg-slate-700">
               <FileOutput className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-display text-base font-extrabold text-slate-900 dark:text-slate-50">PDF XinoConvert</p>
+              <p className="font-display text-[1.02rem] font-extrabold text-slate-900 dark:text-slate-50">PDF XinoConvert</p>
               <p className="text-[10px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Atalhos rápidos</p>
             </div>
           </Link>
 
-          <nav className="flex flex-col gap-1.5">
+          <nav className="flex flex-col gap-1 overflow-y-auto pr-1">
             {navigation.map((item) => (
               <NavLink
                 key={item.href}
                 to={item.href}
                 className={({ isActive }) =>
-                  `rounded-xl px-3 py-2.5 text-sm font-semibold leading-5 transition ${
+                  `rounded-xl px-2.5 py-2 text-[0.96rem] font-semibold leading-5 transition ${
                     isActive
                       ? 'bg-slate-900 text-white shadow-soft dark:bg-slate-100 dark:text-slate-900'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-slate-100'
@@ -116,9 +117,9 @@ function Header({ navigation }) {
             ))}
           </nav>
 
-          <div className="space-y-3 pt-4">
+          <div className="space-y-2.5 pt-3">
             <Link to="/imagem-para-pdf">
-              <Button className="w-full gap-2 rounded-xl py-2.5 text-sm">
+              <Button className="w-full gap-2 rounded-xl py-2.5 text-[0.96rem]">
                 Começar agora
                 <ArrowRight className="h-4 w-4" />
               </Button>
@@ -127,6 +128,7 @@ function Header({ navigation }) {
               <ThemeToggle />
             </div>
           </div>
+        </div>
         </div>
       </aside>
     </>

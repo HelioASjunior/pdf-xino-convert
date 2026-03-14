@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import FloatingSocialButtons from './components/FloatingSocialButtons';
 import HomePage from './pages/HomePage';
 import { ToastProvider } from './hooks/useToast.jsx';
 import { ThemeProvider } from './hooks/useTheme';
@@ -27,10 +28,10 @@ function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <div className="relative min-h-screen overflow-hidden">
+        <div className="relative min-h-screen overflow-x-hidden">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] grid-pattern opacity-40" />
           <div className="relative w-full px-3 sm:px-5 lg:px-6">
-            <div className="lg:grid lg:min-h-screen lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-6 lg:py-5">
+            <div className="lg:grid lg:min-h-screen lg:grid-cols-[220px_minmax(0,1fr)] lg:items-start lg:gap-5 lg:py-5">
               <Header navigation={navigation} />
 
               <div className="flex min-h-screen flex-col lg:min-h-0">
@@ -53,6 +54,7 @@ function App() {
               </div>
             </div>
           </div>
+          <FloatingSocialButtons />
         </div>
       </ToastProvider>
     </ThemeProvider>
