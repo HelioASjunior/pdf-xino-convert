@@ -9,6 +9,8 @@ Aplicação web completa para conversão, manipulação e digitalização de doc
 
 O projeto foi estruturado como monorepo com frontend em React + Vite + Tailwind CSS e backend em Node.js + Express.
 
+O frontend agora fica separado em `frontend/` como código-fonte, e o deploy estático do GitHub Pages é gerado em `docs/`.
+
 ## Visão geral
 
 O sistema entrega:
@@ -63,7 +65,14 @@ O sistema entrega:
 │  ├─ temp/
 │  ├─ app.js
 │  └─ server.js
+├─ docs/
+│  ├─ index.html
+│  ├─ css/
+│  ├─ js/
+│  ├─ assets/
+│  └─ .nojekyll
 ├─ frontend/
+│  ├─ public/
 │  ├─ src/
 │  │  ├─ components/
 │  │  ├─ hooks/
@@ -73,6 +82,7 @@ O sistema entrega:
 │  │  └─ utils/
 │  ├─ index.html
 │  └─ vite.config.js
+├─ .nojekyll
 ├─ package.json
 └─ README.md
 ```
@@ -142,6 +152,22 @@ Serviços padrão:
 ```bash
 npm run build
 ```
+
+### Build para GitHub Pages
+
+```bash
+npm run build:pages
+```
+
+Esse comando gera a versão estática final em `docs/`, com:
+
+- `docs/index.html`
+- `docs/css/`
+- `docs/js/`
+- `docs/assets/`
+- `docs/.nojekyll`
+
+O backend não participa desse deploy.
 
 ### Rodar apenas o backend
 
@@ -267,6 +293,24 @@ Para testar UI completa sem scanner real:
 
 ## Observações técnicas importantes
 
+### GitHub Pages
+
+O frontend foi ajustado para publicação em:
+
+- `https://helioasjunior.github.io/pdf-xino-convert/`
+
+Compatibilidade aplicada:
+
+- build do Vite apontando para `docs/`
+- assets gerados com caminhos relativos (`./css/...`, `./js/...`)
+- roteamento SPA com `HashRouter`, evitando erro 404 no GitHub Pages
+- arquivo `docs/.nojekyll` incluído no artefato de publicação
+
+Observação importante:
+
+- o GitHub Pages publica apenas o frontend estático
+- para que as funções de API continuem operando após publicar, defina `VITE_API_BASE_URL` apontando para um backend hospedado fora do GitHub Pages antes de rodar o build
+
 ### Compressão de PDF
 
 A compactação foi implementada sem dependência de binários externos, para facilitar execução local no Windows. O fluxo funciona assim:
@@ -288,6 +332,8 @@ Na raiz:
 
 - `npm run dev`: sobe frontend e backend juntos
 - `npm run build`: gera o build do frontend
+- `npm run build:pages`: gera o frontend estático em `docs/` para GitHub Pages
+- `npm run preview:pages`: abre o preview local do frontend
 - `npm run start`: sobe o backend em modo produção
 
 No frontend:
