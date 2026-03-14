@@ -11,20 +11,22 @@ import { useSessionHistory } from '../hooks/useSessionHistory';
 import { convertDocumentFileToPdf } from '../services/documentToolsService';
 import { downloadBlob } from '../utils/formatters';
 
+const formatIcon = (name) => `${import.meta.env.BASE_URL}assets/formats/${name}`;
+
 const formatCards = [
   {
     title: 'Word para PDF',
     description: 'Converte DOCX para PDF com extração de texto e preservação básica.',
-    formats: [{ label: 'DOCX', icon: '/assets/formats/docx.svg' }],
+    formats: [{ label: 'DOCX', icon: formatIcon('docx.svg') }],
     tone: 'from-blue-50 to-blue-100/70 dark:from-blue-900/20 dark:to-blue-800/10',
   },
   {
     title: 'Excel para PDF',
     description: 'Converte XLS, XLSX e CSV para PDF em modo tabular simplificado.',
     formats: [
-      { label: 'XLSX', icon: '/assets/formats/xlsx.svg' },
-      { label: 'XLS', icon: '/assets/formats/xlsx.svg' },
-      { label: 'CSV', icon: '/assets/formats/xlsx.svg' },
+      { label: 'XLSX', icon: formatIcon('xlsx.svg') },
+      { label: 'XLS', icon: formatIcon('xls.svg') },
+      { label: 'CSV', icon: formatIcon('csv.svg') },
     ],
     tone: 'from-emerald-50 to-emerald-100/70 dark:from-emerald-900/20 dark:to-emerald-800/10',
   },
@@ -32,9 +34,9 @@ const formatCards = [
     title: 'Texto para PDF',
     description: 'Converte TXT, MD e RTF com quebra automática de páginas.',
     formats: [
-      { label: 'TXT' },
-      { label: 'MD' },
-      { label: 'RTF' },
+      { label: 'TXT', icon: formatIcon('txt.svg') },
+      { label: 'MD', icon: formatIcon('md.svg') },
+      { label: 'RTF', icon: formatIcon('rtf.svg') },
     ],
     tone: 'from-amber-50 to-amber-100/70 dark:from-amber-900/20 dark:to-amber-800/10',
   },
@@ -42,10 +44,10 @@ const formatCards = [
     title: 'PowerPoint e formatos legados',
     description: 'PPT, PPTX, DOC e ODT têm suporte parcial no navegador com orientação de fallback.',
     formats: [
-      { label: 'PPTX', icon: '/assets/formats/pptx.svg' },
-      { label: 'PPT', icon: '/assets/formats/pptx.svg' },
-      { label: 'DOC', icon: '/assets/formats/docx.svg' },
-      { label: 'ODT' },
+      { label: 'PPTX', icon: formatIcon('pptx.svg') },
+      { label: 'PPT', icon: formatIcon('ppt.svg') },
+      { label: 'DOC', icon: formatIcon('doc.svg') },
+      { label: 'ODT', icon: formatIcon('odt.svg') },
     ],
     tone: 'from-slate-100 to-slate-200/70 dark:from-slate-800/40 dark:to-slate-700/20',
   },
@@ -143,13 +145,7 @@ function DocumentToolsPage() {
               <div className="mb-4 flex flex-wrap gap-3">
                 {card.formats.map((format) => (
                   <div key={`${card.title}-${format.label}`} className="flex items-center gap-2 rounded-xl bg-white/90 px-2.5 py-2 shadow-sm ring-1 ring-slate-200 dark:bg-slate-800/80 dark:ring-slate-600">
-                    {format.icon ? (
-                      <img src={format.icon} alt={format.label} className="h-7 w-7" loading="lazy" />
-                    ) : (
-                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-slate-200 text-[10px] font-black text-slate-700 dark:bg-slate-700 dark:text-slate-200">
-                        {format.label.slice(0, 2)}
-                      </span>
-                    )}
+                    <img src={format.icon} alt={format.label} className="h-7 w-7" loading="lazy" />
                     <span className="text-xs font-extrabold tracking-wide text-slate-700 dark:text-slate-200">{format.label}</span>
                   </div>
                 ))}
