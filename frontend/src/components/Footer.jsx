@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 function Footer() {
+  const { t } = useTranslation();
   const linkedinIcon = `${import.meta.env.BASE_URL}assets/social/linkedin.svg`;
 
   return (
@@ -7,23 +10,23 @@ function Footer() {
         <div className="space-y-3 text-center lg:text-left">
           <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">PDF XinoConvert</p>
           <p className="max-w-[34rem] leading-7 text-slate-600 dark:text-slate-300">
-            Uma plataforma prática para converter, organizar e preparar arquivos com mais agilidade, clareza e qualidade no dia a dia.
+            {t('footer.tagline1')}
           </p>
           <p className="max-w-[34rem] leading-7">
-            Reúna documentos, imagens e PDFs em um fluxo simples, com ferramentas objetivas para estudo, trabalho e produtividade.
+            {t('footer.tagline2')}
           </p>
         </div>
 
         <div className="space-y-3 text-center lg:text-left">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Destaques</p>
-          <p className="leading-7">Conversões rápidas para PDF, imagem e documentos.</p>
-          <p className="leading-7">Ferramentas pensadas para arquivos prontos para compartilhar.</p>
-          <p className="leading-7">Interface limpa para executar tarefas sem etapas desnecessárias.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">{t('footer.highlightsLabel')}</p>
+          <p className="leading-7">{t('footer.highlight1')}</p>
+          <p className="leading-7">{t('footer.highlight2')}</p>
+          <p className="leading-7">{t('footer.highlight3')}</p>
         </div>
 
         <div className="space-y-3 text-center lg:text-left">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">Criação</p>
-          <p className="leading-7">Projeto desenvolvido por Hélio Júnior.</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">{t('footer.creationLabel')}</p>
+          <p className="leading-7">{t('footer.createdBy')}</p>
           <a
             href="https://www.linkedin.com/in/heliojunior1218/"
             target="_blank"
@@ -32,7 +35,7 @@ function Footer() {
             aria-label="LinkedIn de Hélio Júnior"
           >
             <img src={linkedinIcon} alt="LinkedIn" className="h-5 w-5" loading="lazy" />
-            Desenvolvido por Hélio Júnior
+            {t('footer.linkedinLabel')}
           </a>
         </div>
       </div>

@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { ArrowRight, FileOutput, Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import ThemeToggle from './ThemeToggle';
 import Button from './Button';
+import LanguageSwitcher from './LanguageSwitcher';
 
 function Header({ navigation }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -50,10 +53,11 @@ function Header({ navigation }) {
             ))}
             <Link to="/imagem-para-pdf">
               <Button className="gap-2 px-4 py-2.5 text-sm">
-                Começar agora
+                {t('header.startNow')}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
+            <LanguageSwitcher dropdownDir="down" />
             <ThemeToggle />
           </nav>
         </div>
@@ -78,10 +82,11 @@ function Header({ navigation }) {
             ))}
             <Link to="/imagem-para-pdf" onClick={() => setOpen(false)}>
               <Button className="mt-2 w-full gap-2">
-                Começar agora
+                {t('header.startNow')}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
+            <LanguageSwitcher dropdownDir="up" />
           </div>
         ) : null}
       </header>
@@ -119,10 +124,11 @@ function Header({ navigation }) {
           <div className="space-y-2.5 pt-3">
             <Link to="/imagem-para-pdf">
               <Button className="w-full gap-2 rounded-xl py-2.5 text-[0.96rem]">
-                Começar agora
+                {t('header.startNow')}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
+            <LanguageSwitcher dropdownDir="up" />
             <div className="flex justify-center">
               <ThemeToggle />
             </div>

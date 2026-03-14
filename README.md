@@ -1,64 +1,109 @@
 # PDF XinoConvert
 
-Aplicação web completa para conversão, manipulação e digitalização de documentos com foco em quatro fluxos principais:
+Plataforma web para conversão, organização e preparação de arquivos com foco em produtividade.
 
-- Imagem para PDF
-- PDF para Imagens
+O projeto é um monorepo com frontend em React + Vite e backend em Node.js + Express.
+
+Versão curta em inglês: [README.en.md](README.en.md)
+
+- Frontend (workspace): `frontend/`
+- Backend (workspace): `backend/`
+- Build estático para GitHub Pages: `docs/`
+
+## Sumário
+
+- [Visão geral](#visão-geral)
+- [Recursos](#recursos)
+- [Idiomas](#idiomas)
+- [Arquitetura](#arquitetura)
+- [Stack](#stack)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Pré-requisitos](#pré-requisitos)
+- [Instalação](#instalação)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Como rodar localmente](#como-rodar-localmente)
+- [Build e deploy](#build-e-deploy)
+- [API backend](#api-backend)
+- [Scanner (bridge local)](#scanner-bridge-local)
+- [Limitações conhecidas](#limitações-conhecidas)
+- [Scripts disponíveis](#scripts-disponíveis)
+- [Roadmap](#roadmap)
+- [Licença](#licença)
+
+## Visão geral
+
+O PDF XinoConvert reúne ferramentas de PDF, imagem, documentos e utilitários em uma interface única.
+
+O frontend oferece fluxos que funcionam no navegador (incluindo deploy estático no GitHub Pages). Para operações que dependem de API, o backend pode ser executado separadamente e conectado via variável de ambiente.
+
+## Recursos
+
+### PDF
+
+- Imagem para PDF (upload múltiplo, ordenação e saída em PDF)
+- PDF para imagens (JPG/PNG com opção de ZIP)
 - Comprimir PDF
-- Escanear Documento
-
-O projeto foi estruturado como monorepo com frontend em React + Vite + Tailwind CSS e backend em Node.js + Express.
-
-O frontend agora fica separado em `frontend/` como código-fonte, e o deploy estático do GitHub Pages é gerado em `docs/`.
-
-## Plataforma frontend-only (GitHub Pages)
-
-O projeto foi ampliado para funcionar como plataforma de conversão no navegador, sem backend obrigatório para uso público no GitHub Pages.
-
-Arquitetura principal da interface:
-
-- PDF Tools
-- Image Tools
-- Document Tools
-- Utilities
-
-Ferramentas implementadas no frontend:
-
-- PDF para imagem (JPG/PNG)
-- Imagem para PDF (upload múltiplo, ordenação e PDF único)
-- Comprimir PDF (compressão leve no navegador)
 - Juntar PDF
 - Dividir PDF
 - Rotacionar PDF
 - Remover páginas
 - Extrair páginas
-- Conversão de formato de imagem
-- Conversão de documentos para PDF (TXT, MD, RTF, DOCX, CSV, XLS, XLSX)
-- Gerador de ZIP para múltiplos downloads
+
+### Imagem
+
+- Conversão de formato (JPG, PNG, WEBP, BMP, GIF)
+- Fluxo de múltiplos arquivos
+
+### Documentos
+
+- Conversão de documentos para PDF (ex.: TXT, MD, RTF, DOCX, CSV, XLS, XLSX)
+- Fluxo de digitalização com preparação de páginas
+
+### Utilitários
+
+- Geração de ZIP para múltiplos downloads
 - Detecção automática de formato com sugestão de ferramenta
 
-Limitações conhecidas no navegador:
+### UX / UI
 
-- DOC, ODT, PPT e PPTX têm suporte limitado para conversão com fidelidade total apenas no frontend.
-- Para esses formatos, a interface recomenda alternativas com WebAssembly ou APIs externas.
+- Layout responsivo (desktop e mobile)
+- Sidebar flutuante no desktop
+- Tema claro/escuro
+- Feedback visual de progresso e estado
+- Navegação por categoria de ferramentas
 
-## Visão geral
+## Idiomas
 
-O sistema entrega:
+A interface possui internacionalização com alternância de idioma no menu.
 
-- interface moderna, responsiva e pronta para uso em desktop e mobile
-- upload com drag and drop
-- reordenação de imagens antes da geração do PDF
-- conversão de PDF em imagens com download individual ou em ZIP
-- compactação de PDF com níveis baixa, média e alta
-- digitalização de documentos via scanner local (bridge) com fallback manual
-- preview das páginas digitalizadas com reordenação, rotação, recorte e remoção
-- exportação das páginas escaneadas em PDF, JPG, PNG e PDF comprimido
-- progresso de upload/processamento e feedback visual
-- histórico temporário da sessão no frontend
-- limpeza automática de arquivos temporários no backend
+Idiomas disponíveis:
 
-## Stack utilizada
+- Português (pt-BR)
+- English (en)
+- Español (es)
+- Français (fr)
+
+Detalhes da implementação:
+
+- i18n com `i18next` + `react-i18next`
+- idioma persistido em `localStorage`
+- seletor com bandeiras em SVG em `frontend/public/assets/flags/`
+
+## Arquitetura
+
+### Frontend-first para GitHub Pages
+
+A aplicação pode ser publicada como site estático no GitHub Pages com conteúdo gerado em `docs/`.
+
+- roteamento SPA com `HashRouter`
+- assets estáticos otimizados pelo Vite
+- sem necessidade de backend para partes totalmente client-side
+
+### Backend opcional para rotas API
+
+O backend permanece disponível para endpoints de upload/processamento e serve arquivos temporários gerados por certos fluxos.
+
+## Stack
 
 ### Frontend
 
@@ -67,8 +112,15 @@ O sistema entrega:
 - Tailwind CSS
 - React Router
 - Axios
-- dnd-kit para reordenação por drag and drop
-- Lucide React para ícones
+- i18next + react-i18next
+- dnd-kit
+- pdf-lib
+- pdfjs-dist
+- jsPDF
+- JSZip
+- Mammoth
+- xlsx
+- Lucide React
 
 ### Backend
 
@@ -80,6 +132,7 @@ O sistema entrega:
 - @napi-rs/canvas
 - Archiver
 - Helmet
+- CORS
 - express-rate-limit
 - sanitize-filename
 
@@ -92,64 +145,66 @@ O sistema entrega:
 │  ├─ routes/
 │  ├─ services/
 │  ├─ utils/
-│  ├─ uploads/
-│  ├─ temp/
 │  ├─ app.js
 │  └─ server.js
 ├─ docs/
 │  ├─ index.html
-│  ├─ css/
-│  ├─ js/
 │  ├─ assets/
-│  └─ .nojekyll
+│  ├─ css/
+│  └─ js/
 ├─ frontend/
 │  ├─ public/
+│  │  ├─ assets/
+│  │  │  ├─ flags/
+│  │  │  ├─ social/
+│  │  │  └─ visuals/
+│  │  └─ favicon_pdf.ico
 │  ├─ src/
 │  │  ├─ components/
 │  │  ├─ hooks/
+│  │  ├─ i18n/
 │  │  ├─ pages/
 │  │  ├─ scanner/
 │  │  ├─ services/
 │  │  └─ utils/
 │  ├─ index.html
 │  └─ vite.config.js
-├─ .nojekyll
+├─ .github/workflows/
+│  ├─ deploy-pages.yml
+│  └─ validate-pr.yml
 ├─ package.json
 └─ README.md
 ```
 
-## Como rodar localmente
+## Pré-requisitos
 
-### Pré-requisitos
+- Node.js 20+
+- npm 10+
 
-- Node.js 20 ou superior
-- npm 10 ou superior
+## Instalação
 
-### Instalação
-
-Na raiz do projeto, execute:
+Na raiz do projeto:
 
 ```bash
 npm install
 ```
 
-Esse comando instalará as dependências do monorepo e dos workspaces `frontend` e `backend`.
+Esse comando instala dependências da raiz e dos workspaces `frontend` e `backend`.
 
-### Variáveis de ambiente
+## Variáveis de ambiente
 
-Crie os arquivos `.env` a partir dos exemplos abaixo, se quiser personalizar portas ou origem do frontend:
+### Backend
 
-- `backend/.env.example`
-- `frontend/.env.example`
-
-Exemplo backend:
+Arquivo de exemplo: `backend/.env.example`
 
 ```env
 PORT=5000
 CLIENT_ORIGIN=http://localhost:5173
 ```
 
-Exemplo frontend:
+### Frontend
+
+Arquivo de exemplo: `frontend/.env.example`
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000
@@ -157,17 +212,16 @@ VITE_SCANNER_PROVIDER=bridge
 VITE_SCANNER_BRIDGE_URL=http://127.0.0.1:24833
 ```
 
-Se não configurar `VITE_API_BASE_URL`, o Vite usa proxy para `/api` e `/temp-files` durante o desenvolvimento.
+Notas:
 
-Para scanner:
+- Sem `VITE_API_BASE_URL`, o frontend usa as configurações locais padrão de desenvolvimento.
+- `VITE_SCANNER_PROVIDER=mock` permite testar a UI de scanner sem dispositivo real.
 
-- `VITE_SCANNER_PROVIDER=bridge`: usa serviço local real (recomendado em desktop)
-- `VITE_SCANNER_PROVIDER=mock`: usa provider mock para testes de UI
-- `VITE_SCANNER_BRIDGE_URL`: URL do bridge local (ex.: `http://127.0.0.1:24833`)
+## Como rodar localmente
 
-### Ambiente de desenvolvimento
+### Frontend + Backend
 
-Na raiz do projeto:
+Na raiz:
 
 ```bash
 npm run dev
@@ -175,10 +229,24 @@ npm run dev
 
 Serviços padrão:
 
-- frontend: `http://localhost:5173`
-- backend: `http://localhost:5000`
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:5000`
 
-### Build do frontend
+### Somente backend
+
+```bash
+npm run start
+```
+
+### Somente frontend
+
+```bash
+npm run dev -w frontend
+```
+
+## Build e deploy
+
+### Build local do frontend
 
 ```bash
 npm run build
@@ -190,124 +258,99 @@ npm run build
 npm run build:pages
 ```
 
-Esse comando gera a versão estática final em `docs/`, com:
+O artefato final é gerado em `docs/`.
 
-- `docs/index.html`
-- `docs/css/`
-- `docs/js/`
-- `docs/assets/`
-- `docs/.nojekyll`
-
-O backend não participa desse deploy.
-
-### Deploy automático com GitHub Actions
-
-O repositório agora inclui um workflow em `.github/workflows/deploy-pages.yml`.
-
-Também inclui um workflow de validação em `.github/workflows/validate-pr.yml`.
-
-Fluxo:
-
-- em pull requests para `main` ou `master`, o workflow de validação instala dependências e executa `npm run build:pages` sem publicar
-- dispara a cada push em `main` ou `master`
-- instala dependências com `npm ci`
-- executa `npm run build:pages`
-- publica automaticamente a pasta `docs/` no GitHub Pages
-
-Para ativar no GitHub:
-
-1. abra `Settings > Pages`
-2. em `Source`, selecione `GitHub Actions`
-3. faça push na branch principal
-
-URL esperada de publicação:
-
-- `https://helioasjunior.github.io/pdf-xino-convert/`
-
-### Rodar apenas o backend
+### Preview do build
 
 ```bash
-npm run start
+npm run preview:pages
 ```
 
-## Rotas da API
+### CI/CD (GitHub Actions)
 
-### `POST /api/image-to-pdf`
+Workflows incluídos:
 
-Recebe múltiplas imagens e gera um único PDF.
+- `.github/workflows/validate-pr.yml`
+- `.github/workflows/deploy-pages.yml`
 
-Campos esperados:
+Fluxo esperado:
 
-- `images`: múltiplos arquivos
-- `orientation`: `portrait` ou `landscape`
-- `pageSize`: `A4`, `Letter` ou `Legal`
-- `margin`: margem em pontos
-- `imageFit`: `contain`, `cover` ou `stretch`
-- `compressImages`: `true` ou `false`
+1. PR para branch principal: valida build
+2. Push em branch principal: gera build e publica Pages
 
-### `POST /api/pdf-to-images`
+URL pública:
 
-Recebe um PDF e retorna JSON com:
+- https://helioasjunior.github.io/pdf-xino-convert/
 
-- quantidade de páginas
-- lista de URLs das imagens geradas
-- URL do ZIP com todas as páginas
+## API backend
 
-Campos esperados:
+Base local padrão:
 
-- `pdf`: arquivo PDF
-- `format`: `png` ou `jpg`
+- `http://localhost:5000`
 
-### `POST /api/compress-pdf`
+### Health check
 
-Recebe um PDF e retorna o arquivo compactado para download.
+- `GET /api/health`
 
-Campos esperados:
+Retorno exemplo:
 
-- `pdf`: arquivo PDF
-- `level`: `low`, `medium` ou `high`
+```json
+{ "status": "ok" }
+```
 
-O backend também responde cabeçalhos com:
+### Imagens para PDF
 
-- tamanho original
-- tamanho final
-- percentual de redução
+- `POST /api/image-to-pdf`
+- multipart field: `images` (até 25 arquivos)
 
-## Digitalização de documentos (scanner)
+Campos opcionais:
 
-### Arquitetura desacoplada
+- `orientation`: `portrait` | `landscape`
+- `pageSize`: `A4` | `Letter` | `Legal`
+- `margin`
+- `imageFit`: `contain` | `cover` | `stretch`
+- `compressImages`: `true` | `false`
 
-A funcionalidade de scanner foi separada em módulos para facilitar manutenção e troca de provedor:
+Resposta: download de arquivo PDF.
 
-- UI de scanner:
-	- `frontend/src/pages/ScanDocumentPage.jsx`
-	- `frontend/src/components/ScannerStatusPanel.jsx`
-	- `frontend/src/components/ScannedPageCard.jsx`
-- Serviço de scanner:
-	- `frontend/src/scanner/scannerService.js`
-- Adaptadores de provedor:
-	- `frontend/src/scanner/providers/ScannerProvider.js` (contrato)
-	- `frontend/src/scanner/providers/LocalBridgeScannerProvider.js`
-	- `frontend/src/scanner/providers/MockScannerProvider.js`
-- Utilitários de imagem/PDF:
-	- `frontend/src/scanner/utils/scannedPageUtils.js`
-	- `frontend/src/scanner/utils/scannerOptions.js`
+### PDF para imagens
 
-### Contrato `ScannerProvider`
+- `POST /api/pdf-to-images`
+- multipart field: `pdf`
 
-O contrato base expõe os métodos:
+Campos opcionais:
 
-- `listDevices()`
-- `connect(deviceId)`
-- `scan(options)`
-- `cancel()`
-- `getStatus()`
+- `format`: `png` | `jpg`
 
-Isso permite trocar o provedor no futuro sem reescrever a UI.
+Resposta: JSON com páginas renderizadas e ZIP.
 
-### Integração com bridge local (SDK real)
+### Compressão de PDF
 
-O provider `LocalBridgeScannerProvider` espera um serviço local HTTP com os endpoints:
+- `POST /api/compress-pdf`
+- multipart field: `pdf`
+
+Campos opcionais:
+
+- `level`: `low` | `medium` | `high`
+
+Resposta: download do PDF compactado.
+
+Headers úteis de resposta:
+
+- `X-Original-Size`
+- `X-Final-Size`
+- `X-Reduction-Percent`
+- `X-Download-Filename`
+
+## Scanner (bridge local)
+
+A camada de scanner é desacoplada por providers:
+
+- `frontend/src/scanner/providers/ScannerProvider.js`
+- `frontend/src/scanner/providers/LocalBridgeScannerProvider.js`
+- `frontend/src/scanner/providers/MockScannerProvider.js`
+
+Endpoints esperados no bridge local:
 
 - `GET /status`
 - `GET /devices`
@@ -315,117 +358,46 @@ O provider `LocalBridgeScannerProvider` espera um serviço local HTTP com os end
 - `POST /scan`
 - `POST /cancel`
 
-Formato esperado de resposta em `/scan`:
+Teste sem scanner físico:
 
-- `pages`: array com `{ base64, mimeType, name }`
-- `status`: objeto de status da digitalização
+1. Defina `VITE_SCANNER_PROVIDER=mock`
+2. Rode `npm run dev`
+3. Acesse a página de escaneamento
 
-Validações recomendadas no bridge:
+## Limitações conhecidas
 
-- validar `deviceId`, `dpi`, `paperSize`, `colorMode`, `source`, `duplex`
-- limitar tamanho máximo por página e total por job
-- rejeitar formatos de saída não permitidos
-- sanitizar erros antes de retornar ao frontend (sem stack trace)
-
-### Fluxo da tela `Escanear Documento`
-
-1. verifica disponibilidade do scanner/local bridge
-2. exibe estado amigável quando indisponível e orienta fallback
-3. lista dispositivos e conecta ao scanner selecionado
-4. digitaliza com progresso e tratamento de cancelamento
-5. salva páginas temporariamente em memória no frontend
-6. permite reordenar, rotacionar, recortar e remover páginas
-7. exporta para PDF, JPG, PNG e PDF comprimido
-
-### Teste local sem SDK
-
-Para testar UI completa sem scanner real:
-
-1. configure `VITE_SCANNER_PROVIDER=mock` em `frontend/.env`
-2. rode `npm run dev`
-3. acesse `/escanear-documento`
-4. execute digitalizações simuladas e valide os fluxos de exportação
-
-## Observações técnicas importantes
-
-### GitHub Pages
-
-O frontend foi ajustado para publicação em:
-
-- `https://helioasjunior.github.io/pdf-xino-convert/`
-
-Compatibilidade aplicada:
-
-- build do Vite apontando para `docs/`
-- assets gerados com caminhos relativos (`./css/...`, `./js/...`)
-- roteamento SPA com `HashRouter`, evitando erro 404 no GitHub Pages
-- arquivo `docs/.nojekyll` incluído no artefato de publicação
-- workflow do GitHub Actions para deploy automático a cada push na branch principal
-
-Observação importante:
-
-- o GitHub Pages publica apenas o frontend estático
-- para que as funções de API continuem operando após publicar, defina `VITE_API_BASE_URL` apontando para um backend hospedado fora do GitHub Pages antes de rodar o build
-
-### Compressão de PDF
-
-A compactação foi implementada sem dependência de binários externos, para facilitar execução local no Windows. O fluxo funciona assim:
-
-- renderiza cada página do PDF como imagem
-- recompõe um novo PDF usando qualidade e escala conforme o nível escolhido
-
-Isso torna a compressão funcional e portátil, mas é um processo com perda visual, especialmente em nível `high`.
-
-### Arquivos temporários
-
-- uploads são salvos temporariamente no backend
-- resultados intermediários ficam em `backend/temp`
-- há limpeza automática periódica para evitar acúmulo
+- Alguns formatos de escritório (como DOC, ODT, PPT e PPTX) podem ter fidelidade parcial em conversão puramente client-side.
+- Compressão de PDF baseada em recomposição de páginas pode gerar perda visual em níveis mais agressivos.
+- GitHub Pages publica apenas frontend estático; para recursos dependentes de API, configure `VITE_API_BASE_URL` apontando para backend hospedado.
 
 ## Scripts disponíveis
 
-Na raiz:
+### Raiz
 
-- `npm run dev`: sobe frontend e backend juntos
-- `npm run build`: gera o build do frontend
-- `npm run build:pages`: gera o frontend estático em `docs/` para GitHub Pages
-- `npm run preview:pages`: abre o preview local do frontend
-- `npm run start`: sobe o backend em modo produção
+- `npm run dev` (frontend + backend)
+- `npm run build` (build frontend)
+- `npm run build:pages` (build frontend para `docs/`)
+- `npm run preview:pages` (preview do build)
+- `npm run start` (backend em produção)
 
-No frontend:
+### Frontend
 
-- `npm run dev`
-- `npm run build`
-- `npm run preview`
+- `npm run dev -w frontend`
+- `npm run build -w frontend`
+- `npm run preview -w frontend`
 
-No backend:
+### Backend
 
-- `npm run dev`
-- `npm run start`
+- `npm run dev -w backend`
+- `npm run start -w backend`
 
-## Requisitos atendidos
+## Roadmap
 
-- estrutura separada por componentes e serviços
-- páginas dedicadas para as quatro ferramentas
-- upload com drag and drop
-- preview de arquivos
-- reordenação de imagens
-- download automático ao concluir em geração e compactação
-- geração de ZIP para imagens extraídas
-- feedback de erro e sucesso
-- barra de progresso de upload
-- código modular com responsabilidades distribuídas
-- arquitetura de scanner desacoplada com provider mock e bridge local
+- Persistência de histórico por usuário
+- Fila assíncrona para arquivos grandes
+- Melhoria de fidelidade para formatos de escritório complexos
+- Pipeline opcional de processamento remoto
 
-## Próximos aprimoramentos possíveis
+## Licença
 
-- autenticação e área privada por usuário
-- persistência de histórico em banco de dados
-- fila assíncrona para arquivos maiores
-- tema escuro
-- deploy com Docker e proxy reverso
-
-
-## Uso Gratuito
-
-O serviço está disponível gratuitamente em: https://helioasjunior.github.io/pdf-xino-convert/
+Este projeto está licenciado sob os termos do arquivo LICENSE.

@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import FloatingSocialButtons from './components/FloatingSocialButtons';
@@ -16,15 +17,17 @@ const PdfToImagesPage = lazy(() => import('./pages/PdfToImagesPage'));
 const CompressPdfPage = lazy(() => import('./pages/CompressPdfPage'));
 const ScanDocumentPage = lazy(() => import('./pages/ScanDocumentPage'));
 
-const navigation = [
-  { label: 'Início', href: '/' },
-  { label: 'Ferramentas de PDF', href: '/pdf-tools' },
-  { label: 'Ferramentas de Imagem', href: '/image-tools' },
-  { label: 'Ferramentas de Documentos', href: '/document-tools' },
-  { label: 'Utilitários', href: '/utilities' },
-];
-
 function App() {
+  const { t } = useTranslation();
+
+  const navigation = [
+    { label: t('nav.home'), href: '/' },
+    { label: t('nav.pdfTools'), href: '/pdf-tools' },
+    { label: t('nav.imageTools'), href: '/image-tools' },
+    { label: t('nav.documentTools'), href: '/document-tools' },
+    { label: t('nav.utilities'), href: '/utilities' },
+  ];
+
   return (
     <ThemeProvider>
       <ToastProvider>
@@ -62,9 +65,10 @@ function App() {
 }
 
 function RouteFallback() {
+  const { t } = useTranslation();
   return (
     <div className="glass-panel flex min-h-[200px] items-center justify-center p-8">
-      <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">Carregando ferramenta...</p>
+      <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{t('header.loading')}</p>
     </div>
   );
 }
