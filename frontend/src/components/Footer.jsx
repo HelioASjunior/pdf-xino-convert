@@ -32,7 +32,7 @@ function Footer() {
             aria-label="LinkedIn de Hélio Júnior"
           >
             <img src={linkedinIcon} alt="LinkedIn" className="h-5 w-5" loading="lazy" />
-            Criado por Hélio Júnior
+            Desenvolvido por Hélio Júnior
           </a>
         </div>
       </div>
