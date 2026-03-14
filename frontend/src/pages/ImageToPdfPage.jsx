@@ -11,8 +11,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ResultCard from '../components/ResultCard';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
-import { postImageToPdf } from '../services/api';
-import { downloadBlob, getFilenameFromHeaders } from '../utils/formatters';
+import { imagesToPdf } from '../services/clientPdfTools';
+import { downloadBlob } from '../utils/formatters';
 import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
 
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -129,23 +129,21 @@ function ImageToPdfPage() {
         URL.revokeObjectURL(result.url);
       }
 
-      const formData = new FormData();
-      items.forEach((item) => formData.append('images', item.file));
-      Object.entries(options).forEach(([key, value]) => formData.append(key, value));
+      const pdfBlob = await imagesToPdf(
+        items.map((item) => item.file),
+        options,
+        (value) => {
+          setProgress(value);
+        },
+      );
 
-      const response = await postImageToPdf(formData, (event) => {
-        if (event.total) {
-          setProgress((event.loaded / event.total) * 100);
-        }
-      });
-
-      const fileName = getFilenameFromHeaders(response.headers, 'arquivo.pdf');
-      const url = downloadBlob(response.data, fileName);
+      const fileName = `imagens-convertidas-${Date.now()}.pdf`;
+      const url = downloadBlob(pdfBlob, fileName);
       setResult({ fileName, url });
-      showToast({ type: 'success', title: 'PDF gerado', message: 'O arquivo foi criado e o download foi iniciado.' });
+      showToast({ type: 'success', title: 'PDF gerado', message: 'Conversão concluída e download iniciado.' });
       addEntry({ tool: 'Imagem para PDF', summary: `${items.length} imagens convertidas em ${fileName}` });
     } catch (requestError) {
-      const message = requestError.response?.data?.message || 'Não foi possível gerar o PDF.';
+      const message = requestError.message || 'Não foi possível gerar o PDF.';
       setError(message);
       showToast({ type: 'error', title: 'Falha na conversão', message });
     } finally {
@@ -255,8 +253,8 @@ function ImageToPdfPage() {
             />
           </div>
 
-          {isLoading ? <LoadingSpinner label="Gerando PDF..." /> : null}
-          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Upload e processamento" /> : null}
+          {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
+          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Convertendo imagens em PDF" /> : null}
 
           <Button className="w-full gap-2" onClick={handleSubmit} disabled={isLoading || !items.length}>
             <FileDown className="h-4 w-4" />

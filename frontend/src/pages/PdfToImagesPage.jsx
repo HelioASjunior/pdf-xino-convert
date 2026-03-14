@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Download, FileImage, Files } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import SelectField from '../components/SelectField';
@@ -9,7 +9,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import FilePreview from '../components/FilePreview';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
-import { postPdfToImages, resolveAssetUrl } from '../services/api';
+import { convertPdfToImages } from '../services/clientPdfTools';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
 
 function PdfToImagesPage() {
@@ -21,6 +21,28 @@ function PdfToImagesPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [format, setFormat] = useState('png');
   const [result, setResult] = useState(null);
+  const resultRef = useRef(null);
+
+  useEffect(() => {
+    resultRef.current = result;
+  }, [result]);
+
+  useEffect(() => () => {
+    const finalResult = resultRef.current;
+    if (!finalResult) {
+      return;
+    }
+
+    if (finalResult.zipUrl) {
+      URL.revokeObjectURL(finalResult.zipUrl);
+    }
+
+    finalResult.images?.forEach((image) => {
+      if (image.url) {
+        URL.revokeObjectURL(image.url);
+      }
+    });
+  }, []);
 
   const handleFileSelected = (files) => {
     const validationError = validateFiles(files, {
@@ -35,6 +57,10 @@ function PdfToImagesPage() {
     }
 
     setError('');
+    if (result?.zipUrl) {
+      URL.revokeObjectURL(result.zipUrl);
+      result.images?.forEach((image) => URL.revokeObjectURL(image.url));
+    }
     setResult(null);
     setFileItem({
       id: crypto.randomUUID(),
@@ -54,21 +80,36 @@ function PdfToImagesPage() {
     setProgress(0);
 
     try {
-      const formData = new FormData();
-      formData.append('pdf', fileItem.file);
-      formData.append('format', format);
+      if (result?.zipUrl) {
+        URL.revokeObjectURL(result.zipUrl);
+        result.images?.forEach((image) => URL.revokeObjectURL(image.url));
+      }
 
-      const response = await postPdfToImages(formData, (event) => {
-        if (event.total) {
-          setProgress((event.loaded / event.total) * 100);
-        }
+      const conversion = await convertPdfToImages(fileItem.file, {
+        format,
+        onProgress: (value) => {
+          setProgress(value);
+        },
       });
 
-      setResult(response.data);
-      addEntry({ tool: 'PDF para Imagens', summary: `${response.data.pageCount} páginas exportadas em ${format.toUpperCase()}` });
+      const images = conversion.images.map((image) => ({
+        name: image.name,
+        url: URL.createObjectURL(image.blob),
+      }));
+
+      const zipUrl = URL.createObjectURL(conversion.zipBlob);
+
+      setResult({
+        pageCount: conversion.pageCount,
+        images,
+        zipUrl,
+        zipFileName: conversion.zipFileName,
+      });
+
+      addEntry({ tool: 'PDF para Imagens', summary: `${conversion.pageCount} páginas exportadas em ${format.toUpperCase()}` });
       showToast({ type: 'success', title: 'Conversão concluída', message: 'As páginas foram extraídas com sucesso.' });
     } catch (requestError) {
-      const message = requestError.response?.data?.message || 'Não foi possível converter o PDF em imagens.';
+      const message = requestError.message || 'Não foi possível converter o PDF em imagens.';
       setError(message);
       showToast({ type: 'error', title: 'Falha na extração', message });
     } finally {
@@ -121,8 +162,8 @@ function PdfToImagesPage() {
             ]}
           />
 
-          {isLoading ? <LoadingSpinner label="Convertendo páginas..." /> : null}
-          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Upload e leitura do PDF" /> : null}
+          {isLoading ? <LoadingSpinner label="Convertendo PDF..." /> : null}
+          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Renderizando páginas e preparando ZIP" /> : null}
 
           <Button className="w-full gap-2" onClick={handleSubmit} disabled={isLoading || !fileItem}>
             <Files className="h-4 w-4" />
@@ -137,8 +178,8 @@ function PdfToImagesPage() {
             tone="success"
           >
             <div className="flex flex-wrap gap-3">
-              <a href={resolveAssetUrl(result.zipUrl)} target="_blank" rel="noreferrer">
-                <Button className="gap-2">
+              <a href={result.zipUrl} download={result.zipFileName}>
+                <Button className="gap-2" type="button">
                   <Download className="h-4 w-4" />
                   Baixar ZIP
                 </Button>
@@ -148,12 +189,12 @@ function PdfToImagesPage() {
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               {result.images.map((image) => (
                 <div key={image.name} className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft dark:border-slate-700 dark:bg-slate-800">
-                  <img src={resolveAssetUrl(image.url)} alt={image.name} className="aspect-[4/5] w-full object-cover" />
+                  <img src={image.url} alt={image.name} className="aspect-[4/5] w-full object-cover" />
                   <div className="flex items-center justify-between gap-3 p-4">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{image.name}</p>
                     </div>
-                    <a href={resolveAssetUrl(image.url)} target="_blank" rel="noreferrer">
+                    <a href={image.url} download={image.name}>
                       <Button variant="ghost">Baixar</Button>
                     </a>
                   </div>

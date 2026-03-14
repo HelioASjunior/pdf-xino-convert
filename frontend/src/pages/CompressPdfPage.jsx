@@ -9,8 +9,8 @@ import ResultCard from '../components/ResultCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
-import { postCompressPdf } from '../services/api';
-import { downloadBlob, formatBytes, formatPercent, getFilenameFromHeaders } from '../utils/formatters';
+import { compressPdfInBrowser } from '../services/clientPdfTools';
+import { downloadBlob, formatBytes, formatPercent } from '../utils/formatters';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
 
 function CompressPdfPage() {
@@ -70,34 +70,35 @@ function CompressPdfPage() {
         URL.revokeObjectURL(result.url);
       }
 
-      const formData = new FormData();
-      formData.append('pdf', fileItem.file);
-      formData.append('level', level);
-
-      const response = await postCompressPdf(formData, (event) => {
-        if (event.total) {
-          setProgress((event.loaded / event.total) * 100);
-        }
+      const compression = await compressPdfInBrowser(fileItem.file, {
+        level,
+        onProgress: (value) => {
+          setProgress(value);
+        },
       });
 
-      const fileName = getFilenameFromHeaders(response.headers, 'compressed.pdf');
-      const url = downloadBlob(response.data, fileName);
-      const originalSize = Number(response.headers['x-original-size'] || fileItem.file.size);
-      const finalSize = Number(response.headers['x-final-size'] || response.data.size);
-      const reductionPercent = Number(response.headers['x-reduction-percent'] || 0);
+      const fileName = `${fileItem.file.name.replace(/\.[^/.]+$/, '')}-comprimido.pdf`;
+      const url = downloadBlob(compression.blob, fileName);
 
       setResult({
         url,
         fileName,
-        originalSize,
-        finalSize,
-        reductionPercent,
+        originalSize: compression.originalSize,
+        finalSize: compression.finalSize,
+        reductionPercent: compression.reductionPercent,
+        wasReduced: compression.wasReduced,
       });
 
-      addEntry({ tool: 'Comprimir PDF', summary: `${fileName} com redução de ${formatPercent(reductionPercent)}` });
-      showToast({ type: 'success', title: 'PDF compactado', message: 'O download do arquivo compactado foi iniciado.' });
+      addEntry({ tool: 'Comprimir PDF', summary: `${fileName} com redução de ${formatPercent(compression.reductionPercent)}` });
+      showToast({
+        type: compression.wasReduced ? 'success' : 'info',
+        title: compression.wasReduced ? 'Compressão concluída' : 'Compressão limitada',
+        message: compression.wasReduced
+          ? 'Download do arquivo compactado iniciado.'
+          : 'O PDF já estava otimizado e não houve redução relevante.',
+      });
     } catch (requestError) {
-      const message = requestError.response?.data?.message || 'Não foi possível compactar o PDF.';
+      const message = requestError.message || 'Não foi possível compactar o PDF.';
       setError(message);
       showToast({ type: 'error', title: 'Falha na compactação', message });
     } finally {
@@ -111,7 +112,7 @@ function CompressPdfPage() {
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Comprimir PDF</p>
           <h1 className="section-title">Reduza o peso do arquivo com níveis claros de compressão.</h1>
-          <p className="section-copy">A compressão é feita no backend com reprocessamento das páginas do PDF, sem depender de binários externos.</p>
+          <p className="section-copy">A compressão é processada no navegador com reamostragem das páginas para publicação estática sem backend.</p>
         </div>
 
         <UploadArea
@@ -156,8 +157,8 @@ function CompressPdfPage() {
             helperText="Níveis mais altos geram arquivos menores, com maior perda visual."
           />
 
-          {isLoading ? <LoadingSpinner label="Compactando PDF..." /> : null}
-          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Upload e compressão" /> : null}
+          {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
+          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Convertendo páginas para versão otimizada" /> : null}
 
           <Button className="w-full gap-2" onClick={handleSubmit} disabled={!fileItem || isLoading}>
             <Shrink className="h-4 w-4" />
@@ -166,7 +167,7 @@ function CompressPdfPage() {
         </div>
 
         {result ? (
-          <ResultCard title="Compactação concluída" description="Resumo comparativo do arquivo antes e depois do processamento." tone="success">
+          <ResultCard title={result.wasReduced ? 'Compressão concluída' : 'Compressão limitada'} description={result.wasReduced ? 'Resumo comparativo do arquivo antes e depois do processamento.' : 'Não houve redução relevante com o método de compressão no navegador.'} tone={result.wasReduced ? 'success' : 'info'}>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Original</p>
