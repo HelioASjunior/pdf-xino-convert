@@ -393,3 +393,8 @@ No backend:
 - fila assíncrona para arquivos maiores
 - tema escuro
 - deploy com Docker e proxy reverso
+
+
+## Uso Gratuito
+
+O serviço está disponível gratuitamente em: https://helioasjunior.github.io/pdf-xino-convert/
