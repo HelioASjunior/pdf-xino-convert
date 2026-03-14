@@ -87,7 +87,7 @@ function Header({ navigation }) {
       </header>
 
       <aside className="hidden lg:block">
-        <div className="fixed left-6 top-4 z-40 w-[208px]">
+        <div className="fixed left-6 top-4 z-40 w-[235px]">
           <div className="glass-panel flex max-h-[calc(100vh-2rem)] w-full flex-col bg-white/95 px-2.5 py-3 dark:bg-slate-950/92">
           <Link to="/" className="flex items-center gap-2.5 px-2 pb-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-soft dark:bg-slate-700">

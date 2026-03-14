@@ -31,7 +31,7 @@ function App() {
         <div className="relative min-h-screen overflow-x-hidden">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] grid-pattern opacity-40" />
           <div className="relative w-full px-3 sm:px-5 lg:px-6">
-            <div className="lg:grid lg:min-h-screen lg:grid-cols-[220px_minmax(0,1fr)] lg:items-start lg:gap-5 lg:py-5">
+            <div className="lg:grid lg:min-h-screen lg:grid-cols-[236px_minmax(0,1fr)] lg:items-start lg:gap-5 lg:py-5">
               <Header navigation={navigation} />
 
               <div className="flex min-h-screen flex-col lg:min-h-0">
