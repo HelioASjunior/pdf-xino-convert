@@ -12,6 +12,7 @@ Versão curta em inglês: [README.en.md](README.en.md)
 
 ## Sumário
 
+- [Language](#language)
 - [Visão geral](#visão-geral)
 - [Recursos](#recursos)
 - [Idiomas](#idiomas)
@@ -29,6 +30,11 @@ Versão curta em inglês: [README.en.md](README.en.md)
 - [Scripts disponíveis](#scripts-disponíveis)
 - [Roadmap](#roadmap)
 - [Licença](#licença)
+
+## Language
+
+- Main documentation (Português): [README.md](README.md)
+- Short English version: [README.en.md](README.en.md)
 
 ## Visão geral
 
