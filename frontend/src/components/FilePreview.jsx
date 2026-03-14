@@ -3,16 +3,35 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { formatBytes } from '../utils/formatters';
 
+function detectLabel(item) {
+  if (item.kind === 'pdf' || item.file.type === 'application/pdf') {
+    return 'PDF';
+  }
+
+  if (item.file.type.startsWith('image/')) {
+    return 'Imagem';
+  }
+
+  return 'Arquivo';
+}
+
+function extensionOf(fileName) {
+  return fileName.includes('.') ? fileName.split('.').pop().toUpperCase() : 'ARQ';
+}
+
 function PreviewContent({ item, onRemove, dragHandleProps }) {
+  const typeLabel = detectLabel(item);
+  const extension = extensionOf(item.file.name);
+
   return (
-    <div className="flex items-center gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-soft dark:border-slate-700 dark:bg-slate-800">
+    <div className="flex items-center gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-soft transition hover:border-slate-300 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600">
       {dragHandleProps ? (
-        <button type="button" className="text-slate-400 dark:text-slate-500" {...dragHandleProps}>
+        <button type="button" className="rounded-2xl bg-slate-100 p-2 text-slate-400 dark:bg-slate-700 dark:text-slate-500" {...dragHandleProps}>
           <GripVertical className="h-5 w-5" />
         </button>
       ) : null}
 
-      <div className="h-16 w-16 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-700">
+      <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-700">
         {item.preview ? (
           <img src={item.preview} alt={item.file.name} className="h-full w-full object-cover" />
         ) : (
@@ -20,11 +39,17 @@ function PreviewContent({ item, onRemove, dragHandleProps }) {
             {item.kind === 'pdf' ? <FileText className="h-7 w-7" /> : <ImageIcon className="h-7 w-7" />}
           </div>
         )}
+        <span className="absolute bottom-1 left-1 rounded-lg bg-slate-950/80 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">
+          {extension}
+        </span>
       </div>
 
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 space-y-1.5">
         <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{item.file.name}</p>
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{formatBytes(item.file.size)}</p>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+          <span className="rounded-full bg-slate-100 px-2.5 py-1 font-semibold text-slate-600 dark:bg-slate-700 dark:text-slate-300">{typeLabel}</span>
+          <span>{formatBytes(item.file.size)}</span>
+        </div>
       </div>
 
       <button

@@ -32,6 +32,22 @@ body {
   @apply min-h-screen bg-transparent font-sans text-slate-800 dark:text-slate-100;
 }
 
+a,
+button,
+input,
+select,
+summary {
+  @apply outline-none;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  @apply ring-4 ring-brand-200 dark:ring-brand-900/40;
+}
+
 #root {
   @apply min-h-screen;
 }
@@ -58,11 +74,15 @@ body {
 }
 
 .section-copy {
-  @apply text-base leading-7 text-slate-600 md:text-lg;
+  @apply text-base leading-8 text-slate-600 md:text-lg;
 }
 
 .dark .section-copy {
   @apply text-slate-400;
+}
+
+.section-kicker {
+  @apply text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400;
 }
 
 .grid-pattern {

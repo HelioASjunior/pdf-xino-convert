@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileArchive, Scissors, Trash2, RotateCw, Files } from 'lucide-react';
+import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
 import SelectField from '../components/SelectField';
@@ -7,6 +7,9 @@ import Button from '../components/Button';
 import ResultCard from '../components/ResultCard';
 import ProgressBar from '../components/ProgressBar';
 import LoadingSpinner from '../components/LoadingSpinner';
+import HubFeatureGrid from '../components/HubFeatureGrid';
+import TrustSection from '../components/TrustSection';
+import FaqSection from '../components/FaqSection';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
 import { downloadBlob } from '../utils/formatters';
@@ -19,6 +22,82 @@ import {
   splitPdf,
   zipDownloadItems,
 } from '../services/pdfToolkitService';
+
+const pdfHubItems = [
+  {
+    title: 'Juntar PDF',
+    description: 'Reúna contratos, relatórios e anexos em um único arquivo final.',
+    icon: Files,
+    badge: 'Mais usado',
+    actionLabel: 'Abrir fluxo',
+    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+    onClick: () => {},
+    className: 'hover:-translate-y-0',
+  },
+  {
+    title: 'Dividir páginas',
+    description: 'Separe capítulos, recibos ou páginas específicas com exportação em ZIP.',
+    icon: Scissors,
+    actionLabel: 'Preparar recorte',
+    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+    onClick: () => {},
+    className: 'hover:-translate-y-0',
+  },
+  {
+    title: 'Rotacionar e corrigir',
+    description: 'Ajuste a orientação de páginas digitalizadas sem retrabalho manual.',
+    icon: RotateCw,
+    actionLabel: 'Corrigir páginas',
+    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+    onClick: () => {},
+    className: 'hover:-translate-y-0',
+  },
+  {
+    title: 'Remover ou extrair',
+    description: 'Monte uma versão enxuta do arquivo retirando ou reaproveitando páginas.',
+    icon: Trash2,
+    actionLabel: 'Ajustar conteúdo',
+    accent: 'bg-amber-50 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
+    onClick: () => {},
+    className: 'hover:-translate-y-0',
+  },
+];
+
+const pdfTrustItems = [
+  {
+    title: 'Fluxo direto',
+    description: 'Você envia os PDFs, escolhe a ação e baixa o resultado sem etapas desnecessárias.',
+    icon: Layers3,
+    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+  },
+  {
+    title: 'Ajuste preciso',
+    description: 'Campos de intervalo permitem trabalhar só nas páginas relevantes de cada documento.',
+    icon: ShieldCheck,
+    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+  },
+  {
+    title: 'Entrega rápida',
+    description: 'O painel lateral concentra configuração, progresso e download para reduzir o tempo de operação.',
+    icon: TimerReset,
+    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+  },
+];
+
+const pdfFaqItems = [
+  {
+    question: 'Posso juntar vários PDFs de uma vez?',
+    answer: 'Sim. A opção de juntar PDF aceita múltiplos arquivos e gera um único documento consolidado ao final.',
+  },
+  {
+    question: 'Como informar páginas específicas?',
+    answer: 'Use formatos como 1,3-5 para trabalhar com páginas isoladas e intervalos no mesmo campo.',
+  },
+  {
+    question: 'A divisão gera vários downloads separados?',
+    answer: 'Não. As partes geradas são agrupadas em um ZIP para manter o processo mais organizado.',
+  },
+];
 
 function PdfToolsPage() {
   const { showToast } = useToast();
@@ -33,6 +112,22 @@ function PdfToolsPage() {
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
   const resultRef = useRef(null);
+  const workbenchRef = useRef(null);
+  const pdfOperations = pdfHubItems.map((item, index) => ({
+    ...item,
+    current:
+      (operation === 'merge' && index === 0)
+      || (operation === 'split' && index === 1)
+      || (operation === 'rotate' && index === 2)
+      || ((operation === 'remove' || operation === 'extract') && index === 3),
+    onClick: () => {
+      if (index === 0) setOperation('merge');
+      if (index === 1) setOperation('split');
+      if (index === 2) setOperation('rotate');
+      if (index === 3) setOperation('remove');
+      workbenchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+  }));
 
   useEffect(() => {
     resultRef.current = result;
@@ -162,103 +257,152 @@ function PdfToolsPage() {
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-      <section className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Ferramentas de PDF</p>
-          <h1 className="section-title">Junte, divida, rotacione, remova e extraia páginas de PDF.</h1>
-          <p className="section-copy">Organize páginas com precisão, mantenha o controle do documento e exporte o resultado em poucos passos.</p>
+    <div className="space-y-10">
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="space-y-5">
+          <div className="space-y-3">
+            <p className="section-kicker">Ferramentas de PDF</p>
+            <h1 className="section-title">Centralize tarefas de PDF em um fluxo mais claro, rápido e confiável.</h1>
+            <p className="section-copy">Junte arquivos, separe páginas, corrija orientação e prepare versões mais enxutas do documento sem sair da mesma área de trabalho.</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Operações reunidas</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">5 fluxos</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Intervalos flexíveis</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">1,3-5</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega final</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">PDF ou ZIP</p>
+            </div>
+          </div>
         </div>
 
-        <UploadArea
-          title="Enviar arquivos PDF"
-          description="Para juntar PDF, envie múltiplos arquivos. Para as demais ações, um único PDF é suficiente."
-          accept="application/pdf"
-          multiple
-          onFilesSelected={handleFilesSelected}
-          error={error}
-          mode="pdf"
-        />
-
-        {files.length ? (
-          <div className="space-y-3">
-            {files.map((item) => (
-              <FilePreview key={item.id} item={item} onRemove={removeFile} />
-            ))}
+        <ResultCard
+          title="Como esta área funciona"
+          description="Escolha a operação, envie seus PDFs e concentre a configuração no painel lateral. O processo foi organizado para reduzir cliques e retrabalho."
+          tone="info"
+        >
+          <div className="space-y-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+            <p>Juntar PDF trabalha com vários arquivos no mesmo fluxo.</p>
+            <p>Dividir, rotacionar, remover e extrair funcionam sobre um único PDF por vez com controle de páginas.</p>
           </div>
-        ) : null}
+        </ResultCard>
       </section>
 
-      <aside className="space-y-6">
-        <div className="glass-panel space-y-5 p-6">
-          <div className="flex items-center gap-3">
-            <div className="rounded-2xl bg-slate-900 p-3 text-white">
-              <FileArchive className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Operações PDF</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Selecione a ação e defina os ajustes do arquivo.</p>
-            </div>
-          </div>
+      <HubFeatureGrid
+        title="Escolha o tipo de operação"
+        description="Cada cartão abaixo ajusta automaticamente a ferramenta principal no painel de execução."
+        items={pdfOperations}
+      />
 
-          <SelectField
-            label="Ferramenta"
-            value={operation}
-            onChange={(event) => setOperation(event.target.value)}
-            options={[
-              { value: 'merge', label: 'Juntar PDF' },
-              { value: 'split', label: 'Dividir PDF' },
-              { value: 'rotate', label: 'Rotacionar PDF' },
-              { value: 'remove', label: 'Remover páginas' },
-              { value: 'extract', label: 'Extrair páginas' },
-            ]}
+      <div ref={workbenchRef} className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <section className="space-y-6">
+          <UploadArea
+            title="Enviar arquivos PDF"
+            description="Para juntar PDF, envie múltiplos arquivos. Para as demais ações, um único PDF é suficiente."
+            accept="application/pdf"
+            multiple
+            onFilesSelected={handleFilesSelected}
+            error={error}
+            mode="pdf"
           />
 
-          {operation === 'rotate' ? (
+          {files.length ? (
+            <div className="space-y-3">
+              {files.map((item) => (
+                <FilePreview key={item.id} item={item} onRemove={removeFile} />
+              ))}
+            </div>
+          ) : null}
+        </section>
+
+        <aside className="space-y-6">
+          <div className="glass-panel space-y-5 p-6">
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl bg-slate-900 p-3 text-white">
+                <FileArchive className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Operações PDF</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Selecione a ação e defina os ajustes do arquivo.</p>
+              </div>
+            </div>
+
             <SelectField
-              label="Ângulo"
-              value={angle}
-              onChange={(event) => setAngle(event.target.value)}
+              label="Ferramenta"
+              value={operation}
+              onChange={(event) => setOperation(event.target.value)}
               options={[
-                { value: '90', label: '90°' },
-                { value: '180', label: '180°' },
-                { value: '270', label: '270°' },
+                { value: 'merge', label: 'Juntar PDF' },
+                { value: 'split', label: 'Dividir PDF' },
+                { value: 'rotate', label: 'Rotacionar PDF' },
+                { value: 'remove', label: 'Remover páginas' },
+                { value: 'extract', label: 'Extrair páginas' },
               ]}
+              helperText="Alterne a operação sem sair da página."
             />
-          ) : null}
 
-          {operation !== 'merge' ? (
-            <label className="flex flex-col gap-2">
-              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Páginas (ex: 1,3-5)</span>
-              <input
-                value={range}
-                onChange={(event) => setRange(event.target.value)}
-                placeholder={operation === 'split' ? 'vazio = uma página por arquivo' : 'vazio = todas as páginas'}
-                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            {operation === 'rotate' ? (
+              <SelectField
+                label="Ângulo"
+                value={angle}
+                onChange={(event) => setAngle(event.target.value)}
+                options={[
+                  { value: '90', label: '90°' },
+                  { value: '180', label: '180°' },
+                  { value: '270', label: '270°' },
+                ]}
               />
-            </label>
+            ) : null}
+
+            {operation !== 'merge' ? (
+              <label className="flex flex-col gap-2">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Páginas (ex: 1,3-5)</span>
+                <input
+                  value={range}
+                  onChange={(event) => setRange(event.target.value)}
+                  placeholder={operation === 'split' ? 'vazio = uma página por arquivo' : 'vazio = todas as páginas'}
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                />
+              </label>
+            ) : null}
+
+            {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
+            {isLoading ? <ProgressBar value={progress} label="Executando operação" /> : null}
+
+            <Button className="w-full gap-2" onClick={runOperation} disabled={isLoading || !files.length}>
+              {operation === 'split' ? <Scissors className="h-4 w-4" /> : null}
+              {operation === 'remove' ? <Trash2 className="h-4 w-4" /> : null}
+              {operation === 'rotate' ? <RotateCw className="h-4 w-4" /> : null}
+              {(operation === 'merge' || operation === 'extract') ? <Files className="h-4 w-4" /> : null}
+              Executar ferramenta
+            </Button>
+          </div>
+
+          {result ? (
+            <ResultCard title="Arquivo pronto" description={result.description} tone="success">
+              <a href={result.url} download={result.fileName}>
+                <Button>Baixar resultado</Button>
+              </a>
+            </ResultCard>
           ) : null}
+        </aside>
+      </div>
 
-          {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
-          {isLoading ? <ProgressBar value={progress} label="Executando operação" /> : null}
+      <TrustSection
+        title="Por que usar esta central de PDF"
+        description="A interface foi estruturada para tarefas recorrentes de escritório, revisão e organização documental."
+        items={pdfTrustItems}
+      />
 
-          <Button className="w-full gap-2" onClick={runOperation} disabled={isLoading || !files.length}>
-            {operation === 'split' ? <Scissors className="h-4 w-4" /> : null}
-            {operation === 'remove' ? <Trash2 className="h-4 w-4" /> : null}
-            {operation === 'rotate' ? <RotateCw className="h-4 w-4" /> : null}
-            {(operation === 'merge' || operation === 'extract') ? <Files className="h-4 w-4" /> : null}
-            Executar ferramenta
-          </Button>
-        </div>
-
-        {result ? (
-          <ResultCard title="Arquivo pronto" description={result.description} tone="success">
-            <a href={result.url} download={result.fileName}>
-              <Button>Baixar resultado</Button>
-            </a>
-          </ResultCard>
-        ) : null}
-      </aside>
+      <FaqSection
+        description="Respostas rápidas para dúvidas comuns antes de iniciar o processamento."
+        items={pdfFaqItems}
+      />
     </div>
   );
 }
