@@ -67,6 +67,7 @@ summary:focus-visible {
 
 .section-title {
   @apply max-w-[22ch] font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-slate-900 md:text-4xl;
+  font-size: clamp(2.05rem, 1.65rem + 1.1vw, 2.8rem);
 }
 
 .dark .section-title {
@@ -87,6 +88,29 @@ summary:focus-visible {
 
 .section-intro {
   @apply max-w-4xl space-y-3;
+}
+
+@media (min-width: 1440px) {
+  .section-title {
+    font-size: clamp(2.75rem, 2.35rem + 0.8vw, 3.3rem);
+    line-height: 1.05;
+    max-width: 23ch;
+  }
+}
+
+@media (min-width: 1920px) {
+  .section-title {
+    font-size: clamp(3.05rem, 2.7rem + 0.7vw, 3.7rem);
+    max-width: 24ch;
+  }
+
+  .section-copy {
+    max-width: 70ch;
+  }
+
+  .section-intro {
+    max-width: 72rem;
+  }
 }
 
 .grid-pattern {
