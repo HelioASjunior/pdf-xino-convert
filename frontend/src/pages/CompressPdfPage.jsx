@@ -112,7 +112,7 @@ function CompressPdfPage() {
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Comprimir PDF</p>
           <h1 className="section-title">Reduza o peso do arquivo com níveis claros de compressão.</h1>
-          <p className="section-copy">A compressão é processada no navegador com reamostragem das páginas para publicação estática sem backend.</p>
+          <p className="section-copy">Otimize o tamanho do PDF para compartilhar, armazenar e enviar arquivos com mais eficiência.</p>
         </div>
 
         <UploadArea
@@ -167,7 +167,7 @@ function CompressPdfPage() {
         </div>
 
         {result ? (
-          <ResultCard title={result.wasReduced ? 'Compressão concluída' : 'Compressão limitada'} description={result.wasReduced ? 'Resumo comparativo do arquivo antes e depois do processamento.' : 'Não houve redução relevante com o método de compressão no navegador.'} tone={result.wasReduced ? 'success' : 'info'}>
+          <ResultCard title={result.wasReduced ? 'Compressão concluída' : 'Compressão limitada'} description={result.wasReduced ? 'Resumo comparativo do arquivo antes e depois do processamento.' : 'Este arquivo já está próximo do melhor equilíbrio possível para este tipo de conteúdo.'} tone={result.wasReduced ? 'success' : 'info'}>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Original</p>

@@ -1,6 +1,19 @@
 export const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
 export const MAX_PDF_SIZE = 40 * 1024 * 1024;
 
+function matchesMimeType(fileType, acceptedType) {
+  if (!fileType || !acceptedType) {
+    return false;
+  }
+
+  if (acceptedType.endsWith('/*')) {
+    const prefix = acceptedType.slice(0, acceptedType.indexOf('/'));
+    return fileType.startsWith(`${prefix}/`);
+  }
+
+  return fileType === acceptedType;
+}
+
 export function validateFiles(files, { mimeTypes, maxSize, multiple = true }) {
   if (!files.length) {
     return 'Selecione pelo menos um arquivo.';
@@ -11,7 +24,7 @@ export function validateFiles(files, { mimeTypes, maxSize, multiple = true }) {
   }
 
   for (const file of files) {
-    if (mimeTypes && !mimeTypes.includes(file.type)) {
+    if (mimeTypes && !mimeTypes.some((acceptedType) => matchesMimeType(file.type, acceptedType))) {
       return `O arquivo ${file.name} não possui um formato aceito.`;
     }
 

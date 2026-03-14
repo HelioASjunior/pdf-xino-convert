@@ -1,0 +1,8 @@
+<svg width="260" height="90" viewBox="0 0 260 90" xmlns="http://www.w3.org/2000/svg">
+  <rect width="260" height="90" rx="14" fill="#EFF6FF"/>
+  <rect x="18" y="16" width="56" height="58" rx="8" fill="#DC2626"/>
+  <text x="46" y="50" fill="#FFF" font-family="Arial, sans-serif" font-size="16" font-weight="700" text-anchor="middle">PDF</text>
+  <rect x="98" y="16" width="42" height="58" rx="8" fill="#2563EB"/>
+  <rect x="148" y="16" width="42" height="58" rx="8" fill="#16A34A"/>
+  <rect x="198" y="16" width="42" height="58" rx="8" fill="#F59E0B"/>
+</svg>

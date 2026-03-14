@@ -11,11 +11,11 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ResultCard from '../components/ResultCard';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
-import { imagesToPdf } from '../services/clientPdfTools';
+import { imagesToPdf, imagesToSeparatePdfs } from '../services/clientPdfTools';
 import { downloadBlob } from '../utils/formatters';
 import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
 
-const imageMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+const imageMimeTypes = ['image/*'];
 
 function ImageToPdfPage() {
   const { showToast } = useToast();
@@ -28,6 +28,7 @@ function ImageToPdfPage() {
   const itemsRef = useRef([]);
   const resultRef = useRef(null);
   const [options, setOptions] = useState({
+    outputMode: 'single',
     orientation: 'portrait',
     pageSize: 'A4',
     margin: '24',
@@ -129,19 +130,46 @@ function ImageToPdfPage() {
         URL.revokeObjectURL(result.url);
       }
 
-      const pdfBlob = await imagesToPdf(
-        items.map((item) => item.file),
-        options,
-        (value) => {
-          setProgress(value);
-        },
-      );
+      if (options.outputMode === 'separate') {
+        const bundle = await imagesToSeparatePdfs(
+          items.map((item) => item.file),
+          options,
+          (value) => {
+            setProgress(value);
+          },
+        );
 
-      const fileName = `imagens-convertidas-${Date.now()}.pdf`;
-      const url = downloadBlob(pdfBlob, fileName);
-      setResult({ fileName, url });
-      showToast({ type: 'success', title: 'PDF gerado', message: 'Conversão concluída e download iniciado.' });
-      addEntry({ tool: 'Imagem para PDF', summary: `${items.length} imagens convertidas em ${fileName}` });
+        const url = downloadBlob(bundle.zipBlob, bundle.zipFileName);
+        setResult({
+          kind: 'separate',
+          fileName: bundle.zipFileName,
+          url,
+          generatedCount: bundle.files.length,
+          failed: bundle.failed,
+        });
+        showToast({ type: 'success', title: 'PDFs gerados', message: 'ZIP com PDFs individuais iniciado.' });
+        addEntry({ tool: 'Imagem para PDF', summary: `${bundle.files.length} PDF(s) individuais gerados` });
+      } else {
+        const pdfBlob = await imagesToPdf(
+          items.map((item) => item.file),
+          options,
+          (value) => {
+            setProgress(value);
+          },
+        );
+
+        const fileName = `imagens-convertidas-${Date.now()}.pdf`;
+        const url = downloadBlob(pdfBlob, fileName);
+        setResult({
+          kind: 'single',
+          fileName,
+          url,
+          generatedCount: items.length,
+          failed: [],
+        });
+        showToast({ type: 'success', title: 'PDF gerado', message: 'Conversão concluída e download iniciado.' });
+        addEntry({ tool: 'Imagem para PDF', summary: `${items.length} imagens convertidas em ${fileName}` });
+      }
     } catch (requestError) {
       const message = requestError.message || 'Não foi possível gerar o PDF.';
       setError(message);
@@ -157,13 +185,13 @@ function ImageToPdfPage() {
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Imagem para PDF</p>
           <h1 className="section-title">Organize as imagens, ajuste o layout e gere um PDF final limpo.</h1>
-          <p className="section-copy">Aceita JPG, JPEG, PNG e WEBP. Reordene via drag and drop, remova itens da fila e defina o formato ideal da página.</p>
+          <p className="section-copy">Reordene os arquivos, ajuste a apresentação e escolha entre um PDF único ou versões individuais do documento.</p>
         </div>
 
         <UploadArea
           title="Envie suas imagens"
-          description="Faça upload de múltiplos arquivos e reorganize a sequência antes de gerar o PDF final."
-          accept="image/jpeg,image/png,image/webp"
+          description="Faça upload de múltiplos arquivos, reorganize a sequência e exporte tudo em um único PDF ou em PDFs individuais."
+          accept="image/*"
           multiple
           onFilesSelected={handleFilesSelected}
           error={error}
@@ -202,6 +230,16 @@ function ImageToPdfPage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
+            <SelectField
+              label="Modo de saída"
+              value={options.outputMode}
+              onChange={(event) => setOptions((current) => ({ ...current, outputMode: event.target.value }))}
+              options={[
+                { label: 'PDF único com todas as imagens', value: 'single' },
+                { label: 'PDF separado para cada imagem', value: 'separate' },
+              ]}
+              helperText="No modo separado, o download sai em ZIP com um PDF por imagem."
+            />
             <SelectField
               label="Orientação"
               value={options.orientation}
@@ -254,21 +292,37 @@ function ImageToPdfPage() {
           </div>
 
           {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
-          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Convertendo imagens em PDF" /> : null}
+          {progress > 0 && isLoading ? (
+            <ProgressBar
+              value={progress}
+              label={options.outputMode === 'separate' ? 'Gerando PDFs individuais' : 'Convertendo imagens em PDF'}
+            />
+          ) : null}
 
           <Button className="w-full gap-2" onClick={handleSubmit} disabled={isLoading || !items.length}>
             <FileDown className="h-4 w-4" />
-            Gerar PDF
+            {options.outputMode === 'separate' ? 'Gerar ZIP com PDFs' : 'Gerar PDF'}
           </Button>
         </div>
 
         {result ? (
-          <ResultCard title="PDF final pronto" description="O download já foi iniciado automaticamente. Você também pode baixar novamente pelo botão abaixo." tone="success">
+          <ResultCard
+            title={result.kind === 'separate' ? 'PDFs individuais prontos' : 'PDF final pronto'}
+            description={result.kind === 'separate'
+              ? `Foram gerados ${result.generatedCount} PDF(s). O download do ZIP já foi iniciado automaticamente.`
+              : 'O download já foi iniciado automaticamente. Você também pode baixar novamente pelo botão abaixo.'}
+            tone="success"
+          >
             <div className="flex flex-col gap-3 sm:flex-row">
               <a href={result.url} download={result.fileName}>
-                <Button>Baixar PDF final</Button>
+                <Button>{result.kind === 'separate' ? 'Baixar ZIP com PDFs' : 'Baixar PDF final'}</Button>
               </a>
             </div>
+            {result.failed?.length ? (
+              <div className="mt-4 text-sm text-amber-700 dark:text-amber-300">
+                {result.failed.length} imagem(ns) exigiram tratamento diferente e não foram concluídas nesta etapa.
+              </div>
+            ) : null}
           </ResultCard>
         ) : null}
       </aside>

@@ -42,7 +42,7 @@ const formatCards = [
   },
   {
     title: 'PowerPoint e formatos legados',
-    description: 'PPT, PPTX, DOC e ODT têm suporte parcial no navegador com orientação de fallback.',
+    description: 'PPT, PPTX, DOC e ODT contam com fluxo assistido e orientação para continuidade do trabalho.',
     formats: [
       { label: 'PPTX', icon: formatIcon('pptx.svg') },
       { label: 'PPT', icon: formatIcon('ppt.svg') },
@@ -106,7 +106,7 @@ function DocumentToolsPage() {
 
       if (!conversion.supported) {
         setResult({ unsupported: true, reason: conversion.reason, suggestions: conversion.suggestions });
-        showToast({ type: 'info', title: 'Conversão parcial', message: 'Formato com suporte limitado no navegador.' });
+        showToast({ type: 'info', title: 'Conversão assistida', message: 'Este arquivo exige um fluxo complementar para manter melhor a qualidade.' });
         return;
       }
 
@@ -135,8 +135,8 @@ function DocumentToolsPage() {
       <section className="space-y-6">
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Ferramentas de Documentos</p>
-          <h1 className="section-title">Converta documentos para PDF com processamento local quando possível.</h1>
-          <p className="section-copy">Suporte direto: TXT, MD, RTF, DOCX, CSV, XLS, XLSX. PPT/PPTX e formatos legados possuem limitação no navegador.</p>
+          <h1 className="section-title">Converta documentos para PDF com um fluxo simples, claro e orientado.</h1>
+          <p className="section-copy">Transforme textos, planilhas e apresentações em PDFs prontos para compartilhar com mais agilidade.</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-2">
@@ -176,7 +176,7 @@ function DocumentToolsPage() {
             </div>
             <div>
               <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Conversor de Documento para PDF</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Execução local com fallback para formatos complexos.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Selecione o arquivo e gere o PDF com praticidade.</p>
             </div>
           </div>
 
@@ -190,7 +190,7 @@ function DocumentToolsPage() {
         </div>
 
         {result?.unsupported ? (
-          <ResultCard title="Conversão limitada no navegador" description={result.reason} tone="info">
+          <ResultCard title="Conversão assistida" description="Este arquivo exige um tratamento específico para preservar melhor a estrutura do conteúdo." tone="info">
             <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
               {result.suggestions?.map((item) => (
                 <p key={item}>- {item}</p>

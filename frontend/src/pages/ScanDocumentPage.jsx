@@ -231,8 +231,8 @@ function ScanDocumentPage() {
       <section className="space-y-6">
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Escanear documento</p>
-          <h1 className="section-title">Digitalize no software do computador e finalize aqui com upload seguro.</h1>
-          <p className="section-copy">Navegadores não têm acesso direto a scanners locais por segurança. Este fluxo permite importar páginas escaneadas e gerar PDF no próprio navegador.</p>
+          <h1 className="section-title">Digitalize no seu equipamento e finalize o documento aqui com praticidade.</h1>
+          <p className="section-copy">Importe páginas já digitalizadas, organize o material e gere um arquivo pronto para compartilhar.</p>
         </div>
 
         <div className="glass-panel space-y-4 p-6">
@@ -242,7 +242,7 @@ function ScanDocumentPage() {
             </div>
             <div>
               <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Scanner local</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Fluxo recomendado para Chrome, Edge e Firefox em site estático.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Fluxo recomendado para importar páginas com praticidade e seguir a finalização aqui.</p>
             </div>
           </div>
 
@@ -325,7 +325,7 @@ function ScanDocumentPage() {
           </div>
 
           <p className="text-xs leading-6 text-slate-500 dark:text-slate-400">
-            Compatibilidade: Chrome, Edge e Firefox. Em ambientes restritos, a compressão pode variar conforme o conteúdo do PDF.
+            Ideal para centralizar páginas digitalizadas, consolidar documentos e preparar versões finais com mais agilidade.
           </p>
         </div>
 
@@ -357,11 +357,11 @@ function ScanDocumentPage() {
             </div>
           </ResultCard>
         ) : (
-          <ResultCard title="Observação importante" description="Acesso direto ao scanner não é permitido pela maioria dos navegadores web." tone="info">
+          <ResultCard title="Como funciona a digitalização" description="A captura começa no aplicativo do seu scanner e a finalização do arquivo acontece aqui em poucos passos." tone="info">
             <div className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
               <Info className="mt-0.5 h-4 w-4" />
               <p>
-                Para um fluxo completo no navegador, escaneie primeiro no software do computador e envie o arquivo gerado. Esse modelo funciona em publicação estática no GitHub Pages.
+                Digitalize no software do equipamento, salve em PDF ou imagem e envie o arquivo para concluir o documento com organização e rapidez.
               </p>
             </div>
           </ResultCard>

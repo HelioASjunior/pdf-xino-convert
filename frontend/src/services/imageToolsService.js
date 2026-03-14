@@ -28,7 +28,7 @@ async function readImage(file) {
     };
     image.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error(`Formato não suportado pelo navegador para ${file.name}.`));
+      reject(new Error(`Não foi possível interpretar o arquivo ${file.name} com segurança nesta conversão.`));
     };
     image.src = url;
   });

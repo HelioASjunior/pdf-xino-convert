@@ -167,7 +167,7 @@ function PdfToolsPage() {
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Ferramentas de PDF</p>
           <h1 className="section-title">Junte, divida, rotacione, remova e extraia páginas de PDF.</h1>
-          <p className="section-copy">Processamento local no navegador com feedback em tempo real.</p>
+          <p className="section-copy">Organize páginas com precisão, mantenha o controle do documento e exporte o resultado em poucos passos.</p>
         </div>
 
         <UploadArea
@@ -197,7 +197,7 @@ function PdfToolsPage() {
             </div>
             <div>
               <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Operações PDF</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Selecione a ação e execute no navegador.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Selecione a ação e defina os ajustes do arquivo.</p>
             </div>
           </div>
 

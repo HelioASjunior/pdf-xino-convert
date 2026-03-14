@@ -130,6 +130,58 @@ function computeDrawRect({
   };
 }
 
+async function buildPdfFromImages(imageFiles, options = {}, onProgress) {
+  const {
+    orientation = 'portrait',
+    pageSize = 'A4',
+    margin = '24',
+    imageFit = 'contain',
+    compressImages = 'true',
+  } = options;
+
+  const marginPoints = clamp(Number(margin) || 24, 0, 72);
+  const pagePreset = PAGE_SIZES[pageSize] || PAGE_SIZES.A4;
+  const shouldCompress = String(compressImages) === 'true';
+
+  const [baseWidth, baseHeight] = pagePreset;
+  const width = orientation === 'landscape' ? baseHeight : baseWidth;
+  const height = orientation === 'landscape' ? baseWidth : baseHeight;
+
+  const pdfDoc = await PDFDocument.create();
+
+  for (let index = 0; index < imageFiles.length; index += 1) {
+    const original = imageFiles[index];
+    const file = await normalizeImageFile(original, shouldCompress);
+    const imageBytes = await file.arrayBuffer();
+
+    let embeddedImage;
+    if (file.type === 'image/png') {
+      embeddedImage = await pdfDoc.embedPng(imageBytes);
+    } else {
+      embeddedImage = await pdfDoc.embedJpg(imageBytes);
+    }
+
+    const page = pdfDoc.addPage([width, height]);
+    const rect = computeDrawRect({
+      imageWidth: embeddedImage.width,
+      imageHeight: embeddedImage.height,
+      pageWidth: width,
+      pageHeight: height,
+      margin: marginPoints,
+      imageFit,
+    });
+
+    page.drawImage(embeddedImage, rect);
+
+    if (typeof onProgress === 'function') {
+      onProgress(Math.round(((index + 1) / imageFiles.length) * 100));
+    }
+  }
+
+  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
+  return new Blob([pdfBytes], { type: 'application/pdf' });
+}
+
 export async function convertPdfToImages(pdfFile, options = {}) {
   const { format = 'png', scale = 1.5, onProgress } = options;
   const outputFormat = format === 'jpg' ? 'jpg' : 'png';
@@ -186,55 +238,56 @@ export async function convertPdfToImages(pdfFile, options = {}) {
 }
 
 export async function imagesToPdf(imageFiles, options = {}, onProgress) {
-  const {
-    orientation = 'portrait',
-    pageSize = 'A4',
-    margin = '24',
-    imageFit = 'contain',
-    compressImages = 'true',
-  } = options;
+  return buildPdfFromImages(imageFiles, options, onProgress);
+}
 
-  const marginPoints = clamp(Number(margin) || 24, 0, 72);
-  const pagePreset = PAGE_SIZES[pageSize] || PAGE_SIZES.A4;
-  const shouldCompress = String(compressImages) === 'true';
-
-  const [baseWidth, baseHeight] = pagePreset;
-  const width = orientation === 'landscape' ? baseHeight : baseWidth;
-  const height = orientation === 'landscape' ? baseWidth : baseHeight;
-
-  const pdfDoc = await PDFDocument.create();
+export async function imagesToSeparatePdfs(imageFiles, options = {}, onProgress) {
+  const createdFiles = [];
+  const failed = [];
+  const zip = new JSZip();
 
   for (let index = 0; index < imageFiles.length; index += 1) {
-    const original = imageFiles[index];
-    const file = await normalizeImageFile(original, shouldCompress);
-    const imageBytes = await file.arrayBuffer();
+    const file = imageFiles[index];
 
-    let embeddedImage;
-    if (file.type === 'image/png') {
-      embeddedImage = await pdfDoc.embedPng(imageBytes);
-    } else {
-      embeddedImage = await pdfDoc.embedJpg(imageBytes);
-    }
+    try {
+      const pdfBlob = await buildPdfFromImages([file], options, (value) => {
+        if (typeof onProgress === 'function') {
+          const progress = ((index + value / 100) / imageFiles.length) * 90;
+          onProgress(Math.round(progress));
+        }
+      });
 
-    const page = pdfDoc.addPage([width, height]);
-    const rect = computeDrawRect({
-      imageWidth: embeddedImage.width,
-      imageHeight: embeddedImage.height,
-      pageWidth: width,
-      pageHeight: height,
-      margin: marginPoints,
-      imageFit,
-    });
-
-    page.drawImage(embeddedImage, rect);
-
-    if (typeof onProgress === 'function') {
-      onProgress(Math.round(((index + 1) / imageFiles.length) * 100));
+      const pdfName = `${file.name.replace(/\.[^/.]+$/, '')}.pdf`;
+      zip.file(pdfName, pdfBlob);
+      createdFiles.push({ name: pdfName, blob: pdfBlob });
+    } catch (error) {
+      failed.push({ fileName: file.name, reason: error.message || 'Falha ao gerar PDF individual.' });
+      if (typeof onProgress === 'function') {
+        const progress = ((index + 1) / imageFiles.length) * 90;
+        onProgress(Math.round(progress));
+      }
     }
   }
 
-  const pdfBytes = await pdfDoc.save({ useObjectStreams: true });
-  return new Blob([pdfBytes], { type: 'application/pdf' });
+  if (!createdFiles.length) {
+    throw new Error('Nenhuma imagem pôde ser convertida em PDF neste navegador.');
+  }
+
+  const zipBlob = await zip.generateAsync(
+    { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } },
+    (meta) => {
+      if (typeof onProgress === 'function') {
+        onProgress(Math.round(90 + meta.percent * 0.1));
+      }
+    },
+  );
+
+  return {
+    files: createdFiles,
+    failed,
+    zipBlob,
+    zipFileName: `pdfs-individuais-${Date.now()}.zip`,
+  };
 }
 
 export async function compressPdfInBrowser(pdfFile, options = {}) {
@@ -261,7 +314,7 @@ export async function compressPdfInBrowser(pdfFile, options = {}) {
 
     const context = canvas.getContext('2d', { alpha: false });
     if (!context) {
-      throw new Error('Falha ao comprimir o PDF no navegador.');
+      throw new Error('Não foi possível concluir a compactação deste PDF neste momento.');
     }
 
     context.fillStyle = '#ffffff';
