@@ -11,6 +11,37 @@ O projeto foi estruturado como monorepo com frontend em React + Vite + Tailwind 
 
 O frontend agora fica separado em `frontend/` como código-fonte, e o deploy estático do GitHub Pages é gerado em `docs/`.
 
+## Plataforma frontend-only (GitHub Pages)
+
+O projeto foi ampliado para funcionar como plataforma de conversão no navegador, sem backend obrigatório para uso público no GitHub Pages.
+
+Arquitetura principal da interface:
+
+- PDF Tools
+- Image Tools
+- Document Tools
+- Utilities
+
+Ferramentas implementadas no frontend:
+
+- PDF para imagem (JPG/PNG)
+- Imagem para PDF (upload múltiplo, ordenação e PDF único)
+- Comprimir PDF (compressão leve no navegador)
+- Juntar PDF
+- Dividir PDF
+- Rotacionar PDF
+- Remover páginas
+- Extrair páginas
+- Conversão de formato de imagem
+- Conversão de documentos para PDF (TXT, MD, RTF, DOCX, CSV, XLS, XLSX)
+- Gerador de ZIP para múltiplos downloads
+- Detecção automática de formato com sugestão de ferramenta
+
+Limitações conhecidas no navegador:
+
+- DOC, ODT, PPT e PPTX têm suporte limitado para conversão com fidelidade total apenas no frontend.
+- Para esses formatos, a interface recomenda alternativas com WebAssembly ou APIs externas.
+
 ## Visão geral
 
 O sistema entrega:

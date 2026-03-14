@@ -54,7 +54,7 @@ function HeroSection() {
         <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-r from-brand-500/15 via-transparent to-accent-500/15" />
         <div className="relative space-y-4">
           <div className="rounded-3xl bg-slate-950 p-5 text-white">
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Toolkit</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Kit</p>
             <p className="mt-3 font-display text-2xl font-bold">Imagem para PDF</p>
             <p className="mt-2 text-sm text-slate-300">Múltiplas imagens, reordenação e ajuste fino do layout final.</p>
           </div>
