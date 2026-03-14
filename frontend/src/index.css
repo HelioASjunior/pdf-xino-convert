@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Light mode base ──────────────────────────────────────────── */
+:root {
+  color: #11203f;
+  background:
+    radial-gradient(circle at top left, rgba(49, 95, 255, 0.15), transparent 35%),
+    linear-gradient(180deg, #f6f8ff 0%, #eef4ff 35%, #f8fbff 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Dark mode base ───────────────────────────────────────────── */
+:root.dark {
+  color: #e2e8f0;
+  background:
+    radial-gradient(circle at top left, rgba(49, 95, 255, 0.08), transparent 35%),
+    linear-gradient(180deg, #0b1120 0%, #0f172a 35%, #0d1525 100%);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply min-h-screen bg-transparent font-sans text-slate-800 dark:text-slate-100;
+}
+
+#root {
+  @apply min-h-screen;
+}
+
+::selection {
+  background: rgba(49, 95, 255, 0.22);
+}
+
+/* ─── Shared utility classes ───────────────────────────────────── */
+.glass-panel {
+  @apply rounded-[28px] border border-white/70 bg-white/85 shadow-panel backdrop-blur;
+}
+
+.dark .glass-panel {
+  @apply border-white/[0.07] bg-slate-900/80 shadow-panel-dark;
+}
+
+.section-title {
+  @apply font-display text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl;
+}
+
+.dark .section-title {
+  @apply text-slate-50;
+}
+
+.section-copy {
+  @apply text-base leading-7 text-slate-600 md:text-lg;
+}
+
+.dark .section-copy {
+  @apply text-slate-400;
+}
+
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(49, 95, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(49, 95, 255, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.dark .grid-pattern {
+  background-image:
+    linear-gradient(rgba(49, 95, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(49, 95, 255, 0.04) 1px, transparent 1px);
+}
+
