@@ -260,7 +260,7 @@ function PdfToolsPage() {
     <div className="space-y-10">
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
         <div className="space-y-5">
-          <div className="space-y-3">
+          <div className="section-intro">
             <p className="section-kicker">Ferramentas de PDF</p>
             <h1 className="section-title">Centralize tarefas de PDF em um fluxo mais claro, rápido e confiável.</h1>
             <p className="section-copy">Junte arquivos, separe páginas, corrija orientação e prepare versões mais enxutas do documento sem sair da mesma área de trabalho.</p>

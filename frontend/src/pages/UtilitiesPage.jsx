@@ -176,7 +176,7 @@ function UtilitiesPage() {
     <div className="space-y-10">
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
         <div className="space-y-5">
-          <div className="space-y-3">
+          <div className="section-intro">
             <p className="section-kicker">Utilitários</p>
             <h1 className="section-title">Use esta central para preparar arquivos, gerar pacotes ZIP e descobrir a melhor ferramenta para cada caso.</h1>
             <p className="section-copy">A área de utilitários foi desenhada como suporte operacional: um ponto de entrada simples para organização, agrupamento e encaminhamento de arquivos.</p>

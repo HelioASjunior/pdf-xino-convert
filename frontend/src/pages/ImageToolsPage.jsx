@@ -200,7 +200,7 @@ function ImageToolsPage() {
     <div className="space-y-10">
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
         <div className="space-y-5">
-          <div className="space-y-3">
+          <div className="section-intro">
             <p className="section-kicker">Ferramentas de Imagem</p>
             <h1 className="section-title">Padronize imagens com mais consistência antes de publicar, compartilhar ou arquivar.</h1>
             <p className="section-copy">Esta área reúne os principais fluxos para transformar imagens em PDF ou converter formatos em lote com uma experiência mais direta.</p>

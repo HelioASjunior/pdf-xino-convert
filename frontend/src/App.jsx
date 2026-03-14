@@ -29,24 +29,29 @@ function App() {
       <ToastProvider>
         <div className="relative min-h-screen overflow-hidden">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] grid-pattern opacity-40" />
-          <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 sm:px-6 lg:px-8">
-            <Header navigation={navigation} />
-            <main className="flex-1 py-10 md:py-14">
-              <Suspense fallback={<RouteFallback />}>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/pdf-tools" element={<PdfToolsPage />} />
-                  <Route path="/image-tools" element={<ImageToolsPage />} />
-                  <Route path="/document-tools" element={<DocumentToolsPage />} />
-                  <Route path="/utilities" element={<UtilitiesPage />} />
-                  <Route path="/imagem-para-pdf" element={<ImageToPdfPage />} />
-                  <Route path="/pdf-para-imagens" element={<PdfToImagesPage />} />
-                  <Route path="/comprimir-pdf" element={<CompressPdfPage />} />
-                  <Route path="/escanear-documento" element={<ScanDocumentPage />} />
-                </Routes>
-              </Suspense>
-            </main>
-            <Footer />
+          <div className="relative w-full px-3 sm:px-5 lg:px-6">
+            <div className="lg:grid lg:min-h-screen lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-6 lg:py-5">
+              <Header navigation={navigation} />
+
+              <div className="flex min-h-screen flex-col lg:min-h-0">
+                <main className="flex-1 py-8 md:py-10 lg:py-5">
+                  <Suspense fallback={<RouteFallback />}>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/pdf-tools" element={<PdfToolsPage />} />
+                      <Route path="/image-tools" element={<ImageToolsPage />} />
+                      <Route path="/document-tools" element={<DocumentToolsPage />} />
+                      <Route path="/utilities" element={<UtilitiesPage />} />
+                      <Route path="/imagem-para-pdf" element={<ImageToPdfPage />} />
+                      <Route path="/pdf-para-imagens" element={<PdfToImagesPage />} />
+                      <Route path="/comprimir-pdf" element={<CompressPdfPage />} />
+                      <Route path="/escanear-documento" element={<ScanDocumentPage />} />
+                    </Routes>
+                  </Suspense>
+                </main>
+                <Footer />
+              </div>
+            </div>
           </div>
         </div>
       </ToastProvider>

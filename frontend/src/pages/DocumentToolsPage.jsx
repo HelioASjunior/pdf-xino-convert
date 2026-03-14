@@ -201,7 +201,7 @@ function DocumentToolsPage() {
     <div className="space-y-10">
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
         <div className="space-y-5">
-          <div className="space-y-3">
+          <div className="section-intro">
             <p className="section-kicker">Ferramentas de Documentos</p>
             <h1 className="section-title">Converta documentos de trabalho em PDF com uma entrada mais organizada por tipo de conteúdo.</h1>
             <p className="section-copy">Use esta área para transformar textos, planilhas e materiais de apresentação em arquivos PDF prontos para compartilhar com mais agilidade.</p>
