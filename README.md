@@ -169,6 +169,30 @@ Esse comando gera a versão estática final em `docs/`, com:
 
 O backend não participa desse deploy.
 
+### Deploy automático com GitHub Actions
+
+O repositório agora inclui um workflow em `.github/workflows/deploy-pages.yml`.
+
+Também inclui um workflow de validação em `.github/workflows/validate-pr.yml`.
+
+Fluxo:
+
+- em pull requests para `main` ou `master`, o workflow de validação instala dependências e executa `npm run build:pages` sem publicar
+- dispara a cada push em `main` ou `master`
+- instala dependências com `npm ci`
+- executa `npm run build:pages`
+- publica automaticamente a pasta `docs/` no GitHub Pages
+
+Para ativar no GitHub:
+
+1. abra `Settings > Pages`
+2. em `Source`, selecione `GitHub Actions`
+3. faça push na branch principal
+
+URL esperada de publicação:
+
+- `https://helioasjunior.github.io/pdf-xino-convert/`
+
 ### Rodar apenas o backend
 
 ```bash
@@ -305,6 +329,7 @@ Compatibilidade aplicada:
 - assets gerados com caminhos relativos (`./css/...`, `./js/...`)
 - roteamento SPA com `HashRouter`, evitando erro 404 no GitHub Pages
 - arquivo `docs/.nojekyll` incluído no artefato de publicação
+- workflow do GitHub Actions para deploy automático a cada push na branch principal
 
 Observação importante:
 
