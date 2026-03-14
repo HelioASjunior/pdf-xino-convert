@@ -89,14 +89,13 @@ function Header({ navigation }) {
       <aside className="hidden lg:block">
         <div className="fixed left-6 top-4 z-40 w-[235px]">
           <div className="glass-panel flex max-h-[calc(100vh-2rem)] w-full flex-col bg-white/95 px-2.5 py-3 dark:bg-slate-950/92">
-          <Link to="/" className="flex items-center gap-2.5 px-2 pb-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white shadow-soft dark:bg-slate-700">
-              <FileOutput className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="font-display text-[1.02rem] font-extrabold text-slate-900 dark:text-slate-50">PDF XinoConvert</p>
-              <p className="text-[10px] uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Atalhos rápidos</p>
-            </div>
+          <Link to="/" className="flex items-center justify-center px-2 pb-3">
+            <img
+              src={`${import.meta.env.BASE_URL}assets/logo_xinoconvert.png`}
+              alt="PDF XinoConvert"
+              className="h-19 w-full object-contain dark:brightness-110"
+              loading="lazy"
+            />
           </Link>
 
           <nav className="flex flex-col gap-1 overflow-y-auto pr-1">
