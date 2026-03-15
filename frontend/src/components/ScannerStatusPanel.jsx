@@ -3,7 +3,7 @@ import { AlertTriangle, CheckCircle2, LoaderCircle, ScanLine, WifiOff } from 'lu
 const statusMap = {
   checking: {
     icon: LoaderCircle,
-    tone: 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-300',
+    tone: 'bg-brand-50 text-brand-700 dark:bg-brand-900/35 dark:text-brand-200',
     label: 'Verificando scanner...',
   },
   no_devices: {
@@ -18,7 +18,7 @@ const statusMap = {
   },
   scanning: {
     icon: ScanLine,
-    tone: 'bg-brand-50 text-brand-700 dark:bg-brand-950/40 dark:text-brand-300',
+    tone: 'bg-brand-50 text-brand-700 dark:bg-brand-900/35 dark:text-brand-200',
     label: 'Digitalizacao em andamento',
   },
   done: {

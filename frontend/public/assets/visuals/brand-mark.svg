@@ -1,0 +1,12 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PDF Xino Convert mark">
+  <defs>
+    <linearGradient id="xinoGradient" x1="16" y1="14" x2="80" y2="84" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#315FFF"/>
+      <stop offset="1" stop-color="#00A6A6"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="76" height="76" rx="24" fill="url(#xinoGradient)"/>
+  <path d="M31 29H53C59.6274 29 65 34.3726 65 41C65 47.6274 59.6274 53 53 53H42V67H31V29Z" fill="white"/>
+  <path d="M42 43H52C53.1046 43 54 42.1046 54 41C54 39.8954 53.1046 39 52 39H42V43Z" fill="#DCE7FF"/>
+  <path d="M58 57L66.5 67H76L67.5 57L76 47H66.5L58 57Z" fill="white"/>
+</svg>

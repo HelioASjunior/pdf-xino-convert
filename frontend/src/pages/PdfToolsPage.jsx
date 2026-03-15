@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset } from 'lucide-react';
+import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
 import SelectField from '../components/SelectField';
@@ -10,11 +10,13 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import HubFeatureGrid from '../components/HubFeatureGrid';
 import TrustSection from '../components/TrustSection';
 import FaqSection from '../components/FaqSection';
+import PdfCropEditorModal from '../components/PdfCropEditorModal';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
 import { downloadBlob } from '../utils/formatters';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
 import {
+  cropPdfPages,
   extractPdfPages,
   mergePdfFiles,
   removePdfPages,
@@ -58,6 +60,15 @@ const pdfHubItems = [
     icon: Trash2,
     actionLabel: 'Ajustar conteúdo',
     accent: 'bg-amber-50 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
+    onClick: () => {},
+    className: 'hover:-translate-y-0',
+  },
+  {
+    title: 'Recortar PDF',
+    description: 'Selecione somente as páginas que deseja manter e gere um novo PDF limpo.',
+    icon: Crop,
+    actionLabel: 'Definir recorte',
+    accent: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300',
     onClick: () => {},
     className: 'hover:-translate-y-0',
   },
@@ -107,6 +118,8 @@ function PdfToolsPage() {
   const [operation, setOperation] = useState('merge');
   const [range, setRange] = useState('');
   const [angle, setAngle] = useState('90');
+  const [cropEditorOpen, setCropEditorOpen] = useState(false);
+  const [cropConfig, setCropConfig] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
@@ -119,12 +132,14 @@ function PdfToolsPage() {
       (operation === 'merge' && index === 0)
       || (operation === 'split' && index === 1)
       || (operation === 'rotate' && index === 2)
-      || ((operation === 'remove' || operation === 'extract') && index === 3),
+      || ((operation === 'remove' || operation === 'extract') && index === 3)
+      || (operation === 'crop' && index === 4),
     onClick: () => {
       if (index === 0) setOperation('merge');
       if (index === 1) setOperation('split');
       if (index === 2) setOperation('rotate');
       if (index === 3) setOperation('remove');
+      if (index === 4) setOperation('crop');
       workbenchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
   }));
@@ -185,6 +200,11 @@ function PdfToolsPage() {
 
     if (operation === 'merge' && files.length < 2) {
       setError('Para juntar PDF, envie pelo menos dois arquivos.');
+      return;
+    }
+
+    if (operation === 'crop') {
+      setCropEditorOpen(true);
       return;
     }
 
@@ -256,6 +276,40 @@ function PdfToolsPage() {
     }
   };
 
+  const runCropOperation = async (config) => {
+    if (!files.length) return;
+
+    setCropConfig(config);
+    setCropEditorOpen(false);
+    setIsLoading(true);
+    setProgress(0);
+    setError('');
+
+    try {
+      clearResult();
+      const blob = await cropPdfPages(files[0].file, config, (value) => setProgress(value));
+      const output = {
+        blob,
+        fileName: `${files[0].file.name.replace(/\.[^/.]+$/, '')}-recortado.pdf`,
+        description: config.applyMode === 'all'
+          ? 'Área de recorte aplicada em todas as páginas.'
+          : `Área de recorte aplicada na página ${config.currentPage}.`,
+      };
+
+      const url = downloadBlob(output.blob, output.fileName);
+      setResult({ url, ...output });
+
+      addEntry({ tool: 'Ferramentas de PDF', summary: `crop executado em ${files[0].file.name}` });
+      showToast({ type: 'success', title: 'Recorte concluído', message: output.description });
+    } catch (processingError) {
+      const message = processingError.message || 'Erro ao recortar PDF.';
+      setError(message);
+      showToast({ type: 'error', title: 'Erro ao recortar arquivo', message });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-10">
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
@@ -268,7 +322,7 @@ function PdfToolsPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Operações reunidas</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">5 fluxos</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">6 fluxos</p>
             </div>
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Intervalos flexíveis</p>
@@ -341,6 +395,7 @@ function PdfToolsPage() {
                 { value: 'split', label: 'Dividir PDF' },
                 { value: 'rotate', label: 'Rotacionar PDF' },
                 { value: 'remove', label: 'Remover páginas' },
+                { value: 'crop', label: 'Recortar PDF' },
                 { value: 'extract', label: 'Extrair páginas' },
               ]}
               helperText="Alterne a operação sem sair da página."
@@ -359,7 +414,7 @@ function PdfToolsPage() {
               />
             ) : null}
 
-            {operation !== 'merge' ? (
+            {(operation !== 'merge' && operation !== 'crop') ? (
               <label className="flex flex-col gap-2">
                 <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Páginas (ex: 1,3-5)</span>
                 <input
@@ -371,6 +426,12 @@ function PdfToolsPage() {
               </label>
             ) : null}
 
+            {operation === 'crop' ? (
+              <p className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                O recorte visual abre uma nova janela para selecionar a área, escolher entre todas as páginas ou página atual e redefinir tudo quando necessário.
+              </p>
+            ) : null}
+
             {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
             {isLoading ? <ProgressBar value={progress} label="Executando operação" /> : null}
 
@@ -378,6 +439,7 @@ function PdfToolsPage() {
               {operation === 'split' ? <Scissors className="h-4 w-4" /> : null}
               {operation === 'remove' ? <Trash2 className="h-4 w-4" /> : null}
               {operation === 'rotate' ? <RotateCw className="h-4 w-4" /> : null}
+              {operation === 'crop' ? <Crop className="h-4 w-4" /> : null}
               {(operation === 'merge' || operation === 'extract') ? <Files className="h-4 w-4" /> : null}
               Executar ferramenta
             </Button>
@@ -402,6 +464,14 @@ function PdfToolsPage() {
       <FaqSection
         description="Respostas rápidas para dúvidas comuns antes de iniciar o processamento."
         items={pdfFaqItems}
+      />
+
+      <PdfCropEditorModal
+        open={cropEditorOpen}
+        file={files[0]?.file || null}
+        initialConfig={cropConfig}
+        onClose={() => setCropEditorOpen(false)}
+        onApply={runCropOperation}
       />
     </div>
   );

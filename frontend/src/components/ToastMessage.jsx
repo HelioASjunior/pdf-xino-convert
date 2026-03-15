@@ -11,7 +11,7 @@ const toneMap = {
   },
   info: {
     icon: Info,
-    classes: 'border-brand-100 bg-brand-50 text-brand-800 dark:border-brand-800 dark:bg-brand-950 dark:text-brand-200',
+    classes: 'border-brand-100 bg-brand-50 text-brand-800 dark:border-brand-700 dark:bg-brand-900 dark:text-brand-200',
   },
 };
 

@@ -194,6 +194,46 @@ export async function extractPdfPages(file, selection, onProgress) {
   return new Blob([outBytes], { type: 'application/pdf' });
 }
 
+export async function cropPdfPages(file, cropConfig, onProgress) {
+  const bytes = await file.arrayBuffer();
+  const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+  const totalPages = doc.getPageCount();
+
+  const area = cropConfig?.area || { x: 0, y: 0, width: 1, height: 1 };
+  const applyMode = cropConfig?.applyMode === 'current' ? 'current' : 'all';
+  const currentPage = clamp(Number(cropConfig?.currentPage) || 1, 1, totalPages);
+
+  const xRatio = clamp(Number(area.x) || 0, 0, 0.98);
+  const yRatio = clamp(Number(area.y) || 0, 0, 0.98);
+  const widthRatio = clamp(Number(area.width) || 1, 0.02, 1 - xRatio);
+  const heightRatio = clamp(Number(area.height) || 1, 0.02, 1 - yRatio);
+
+  doc.getPages().forEach((page, index) => {
+    if (applyMode === 'current' && index !== currentPage - 1) return;
+
+    const width = page.getWidth();
+    const height = page.getHeight();
+
+    const cropX = clamp(width * xRatio, 0, Math.max(0, width - 10));
+    const cropWidth = clamp(width * widthRatio, 10, width - cropX);
+
+    // UI uses top-left origin; PDF boxes use bottom-left.
+    const cropHeight = clamp(height * heightRatio, 10, height);
+    const topY = clamp(height * yRatio, 0, Math.max(0, height - 10));
+    const cropY = clamp(height - topY - cropHeight, 0, Math.max(0, height - 10));
+
+    page.setCropBox(cropX, cropY, cropWidth, cropHeight);
+    page.setMediaBox(cropX, cropY, cropWidth, cropHeight);
+  });
+
+  if (typeof onProgress === 'function') {
+    onProgress(100);
+  }
+
+  const outBytes = await doc.save({ useObjectStreams: true });
+  return new Blob([outBytes], { type: 'application/pdf' });
+}
+
 export async function zipDownloadItems(items, zipName = 'downloads.zip', onProgress) {
   const zip = new JSZip();
 

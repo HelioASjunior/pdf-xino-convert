@@ -17,7 +17,7 @@ function ScannedPageCardContent({ page, index, onRotate, onCrop, onRemove, onDow
             <p className="text-xs text-slate-500 dark:text-slate-400">{page.file.name} • {formatBytes(page.file.size)}</p>
           </div>
         </div>
-        {page.cropApplied ? <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-950/40 dark:text-brand-300">Recorte aplicado</span> : null}
+        {page.cropApplied ? <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-900/35 dark:text-brand-200">Recorte aplicado</span> : null}
       </div>
 
       <div className="mt-3 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-700">
