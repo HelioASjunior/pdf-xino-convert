@@ -5,7 +5,9 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import FloatingSocialButtons from './components/FloatingSocialButtons';
 import FirstVisitNotice from './components/FirstVisitNotice';
+import SeoManager from './components/SeoManager';
 import HomePage from './pages/HomePage';
+import ToolLandingPage from './pages/ToolLandingPage';
 import { ToastProvider } from './hooks/useToast.jsx';
 import { ThemeProvider } from './hooks/useTheme';
 
@@ -33,6 +35,7 @@ function App() {
     <ThemeProvider>
       <ToastProvider>
         <div className="relative min-h-screen overflow-x-hidden">
+          <SeoManager />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] grid-pattern opacity-40" />
           <div className="relative w-full px-3 sm:px-5 lg:px-6">
             <div className="lg:grid lg:min-h-screen lg:grid-cols-[236px_minmax(0,1fr)] lg:items-start lg:gap-5 lg:py-5">
@@ -51,6 +54,37 @@ function App() {
                       <Route path="/pdf-para-imagens" element={<PdfToImagesPage />} />
                       <Route path="/comprimir-pdf" element={<CompressPdfPage />} />
                       <Route path="/escanear-documento" element={<ScanDocumentPage />} />
+                      <Route
+                        path="/pdf-para-word"
+                        element={(
+                          <ToolLandingPage
+                            title="PDF para Word"
+                            description="Página preparada para o fluxo de conversão de PDF para Word."
+                            suggestedPath="/document-tools"
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/word-para-pdf"
+                        element={(
+                          <ToolLandingPage
+                            title="Word para PDF"
+                            description="Página preparada para o fluxo de conversão de Word para PDF."
+                            suggestedPath="/document-tools"
+                          />
+                        )}
+                      />
+                      <Route
+                        path="/unir-pdf"
+                        element={(
+                          <ToolLandingPage
+                            title="Unir PDF"
+                            description="Página preparada para o fluxo de união de arquivos PDF."
+                            suggestedPath="/pdf-tools"
+                          />
+                        )}
+                      />
+                      <Route path="*" element={<HomePage />} />
                     </Routes>
                   </Suspense>
                 </main>

@@ -53,6 +53,7 @@ function HomePage() {
       <HeroSection />
 
       <section className="space-y-7">
+        <h2 className="sr-only">Ferramentas principais de PDFXino</h2>
         <div className="mx-auto grid max-w-6xl auto-rows-fr gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {allTools.map((tool) => (
             <ToolCard key={tool.href} {...tool} />
@@ -62,6 +63,7 @@ function HomePage() {
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div className="glass-panel h-full min-h-[300px] p-6">
+          <h2 className="sr-only">Área de upload inteligente</h2>
           <UploadArea
             title={t('home.uploadTitle')}
             description={t('home.uploadDesc')}
@@ -72,7 +74,7 @@ function HomePage() {
         </div>
 
         <aside className="rounded-3xl border border-slate-200 bg-white/80 p-4 shadow-soft dark:border-slate-700 dark:bg-slate-900/60 lg:p-5">
-          <p className="font-display text-lg font-bold text-slate-900 dark:text-slate-100">{t('home.suggestionTitle')}</p>
+          <h2 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100">{t('home.suggestionTitle')}</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
             {suggestion ? suggestion.message : t('home.suggestionDefault')}
           </p>
@@ -96,6 +98,18 @@ function HomePage() {
             </>
           ) : null}
         </aside>
+      </section>
+
+      <section className="glass-panel p-5 sm:p-6">
+        <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">Ferramentas em destaque para as proximas paginas</h2>
+        <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">
+          Essas rotas ja estao ativas para indexacao e serao expandidas com fluxos completos.
+        </p>
+        <nav aria-label="Ferramentas em preparação" className="mt-4 flex flex-wrap gap-2.5">
+          <Link to="/pdf-para-word" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">PDF para Word</Link>
+          <Link to="/word-para-pdf" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">Word para PDF</Link>
+          <Link to="/unir-pdf" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">Unir PDF</Link>
+        </nav>
       </section>
 
       <PrivacyPolicySection />
