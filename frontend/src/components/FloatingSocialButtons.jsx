@@ -27,7 +27,7 @@ function FloatingSocialButtons() {
             rel="noreferrer"
             aria-label={item.label}
             title={item.label}
-            className="group inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl ring-1 ring-white/70 transition hover:-translate-y-0.5 hover:bg-brand-600 dark:ring-slate-800"
+            className="group inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-500 text-white shadow-xl ring-1 ring-slate-200/90 transition hover:-translate-y-0.5 hover:bg-brand-600 dark:ring-slate-700"
           >
             <Icon className="h-5 w-5 transition group-hover:scale-105" />
           </a>

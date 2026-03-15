@@ -77,8 +77,8 @@ const resources = {
         highlight3: 'Interface limpa para executar tarefas sem etapas desnecessárias.',
         creationLabel: 'Criação',
         createdBy: 'Projeto desenvolvido por Hélio Júnior.',
-        linkedinLabel: 'Desenvolvido por Hélio Júnior',
-        privacyNotice: 'Seus arquivos são processados localmente no navegador. Nenhum arquivo é enviado ou armazenado em servidor.',
+        linkedinLabel: 'LinkedIn',
+        privacyNotice: '© PDFXino 2026 ® - Todos os direitos reservados.',
       },
       privacyPolicy: {
         kicker: 'Política de Privacidade',

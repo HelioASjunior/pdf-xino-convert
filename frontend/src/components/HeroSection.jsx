@@ -36,17 +36,17 @@ function HeroSection() {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-3xl bg-white/75 p-4 shadow-soft ring-1 ring-white dark:bg-slate-800/60 dark:ring-slate-700">
+          <div className="rounded-3xl bg-white/75 p-4 shadow-soft ring-1 ring-slate-200/85 dark:bg-slate-800/60 dark:ring-slate-700">
             <img src={heroVisual('hero-flow.svg')} alt={t('hero.card1Title')} className="h-20 w-full rounded-xl object-cover" loading="lazy" />
             <p className="mt-3 text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100">{t('hero.card1Title')}</p>
             <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{t('hero.card1Desc')}</p>
           </div>
-          <div className="rounded-3xl bg-white/75 p-4 shadow-soft ring-1 ring-white dark:bg-slate-800/60 dark:ring-slate-700">
+          <div className="rounded-3xl bg-white/75 p-4 shadow-soft ring-1 ring-slate-200/85 dark:bg-slate-800/60 dark:ring-slate-700">
             <img src={heroVisual('hero-secure.svg')} alt={t('hero.card2Title')} className="h-20 w-full rounded-xl object-cover" loading="lazy" />
             <p className="mt-3 text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100">{t('hero.card2Title')}</p>
             <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{t('hero.card2Desc')}</p>
           </div>
-          <div className="rounded-3xl bg-white/75 p-4 shadow-soft ring-1 ring-white dark:bg-slate-800/60 dark:ring-slate-700">
+          <div className="rounded-3xl bg-white/75 p-4 shadow-soft ring-1 ring-slate-200/85 dark:bg-slate-800/60 dark:ring-slate-700">
             <img src={heroVisual('hero-ready.svg')} alt={t('hero.card3Title')} className="h-20 w-full rounded-xl object-cover" loading="lazy" />
             <p className="mt-3 text-sm font-semibold leading-6 text-slate-900 dark:text-slate-100">{t('hero.card3Title')}</p>
             <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{t('hero.card3Desc')}</p>

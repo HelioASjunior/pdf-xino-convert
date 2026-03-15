@@ -20,16 +20,16 @@ function PrivacyPolicySection() {
       </div>
 
       <ul className="mt-6 grid gap-3 md:grid-cols-2" aria-label={t('privacyPolicy.listLabel')}>
-        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-white dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
+        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-slate-200/85 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
           {t('privacyPolicy.pointLocal')}
         </li>
-        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-white dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
+        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-slate-200/85 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
           {t('privacyPolicy.pointNoStorage')}
         </li>
-        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-white dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
+        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-slate-200/85 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
           {t('privacyPolicy.pointNoPersonalData')}
         </li>
-        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-white dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
+        <li className="rounded-2xl bg-white/75 p-4 text-sm leading-7 text-slate-700 ring-1 ring-slate-200/85 dark:bg-slate-800/60 dark:text-slate-300 dark:ring-slate-700">
           <span className="inline-flex items-start gap-2">
             <Lock className="mt-1 h-4 w-4 shrink-0 text-brand-600 dark:text-brand-400" />
             <span>{t('privacyPolicy.pointEssentialTech')}</span>
