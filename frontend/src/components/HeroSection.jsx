@@ -15,10 +15,10 @@ function HeroSection() {
           {t('hero.badge')}
         </div>
         <div className="space-y-5">
-          <h1 className="font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-slate-950 dark:text-slate-50 sm:text-5xl lg:text-6xl">
+          <h1 className="font-display text-2xl font-extrabold leading-[1.1] tracking-tight text-slate-950 dark:text-slate-50 sm:text-3xl lg:text-4xl">
             {t('hero.title')}
           </h1>
-          <p className="max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300 md:text-lg md:leading-9">
+          <p className="max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300 md:text-base md:leading-8">
             {t('hero.desc')}
           </p>
         </div>
@@ -60,7 +60,7 @@ function HeroSection() {
           <div className="rounded-3xl bg-slate-950 p-5 text-white">
             <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{t('hero.kitLabel')}</p>
             <img src={heroVisual('hero-image-to-pdf.svg')} alt={t('hero.feature1Title')} className="mt-3 h-24 w-full rounded-2xl object-cover" loading="lazy" />
-            <p className="mt-3 font-display text-2xl font-bold leading-tight">{t('hero.feature1Title')}</p>
+            <p className="mt-3 font-display text-xl font-bold leading-tight">{t('hero.feature1Title')}</p>
             <p className="mt-2 text-sm leading-7 text-slate-300">{t('hero.feature1Desc')}</p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">

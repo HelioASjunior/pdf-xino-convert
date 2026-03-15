@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import FloatingSocialButtons from './components/FloatingSocialButtons';
+import FirstVisitNotice from './components/FirstVisitNotice';
 import HomePage from './pages/HomePage';
 import { ToastProvider } from './hooks/useToast.jsx';
 import { ThemeProvider } from './hooks/useTheme';
@@ -58,6 +59,7 @@ function App() {
             </div>
           </div>
           <FloatingSocialButtons />
+          <FirstVisitNotice />
         </div>
       </ToastProvider>
     </ThemeProvider>

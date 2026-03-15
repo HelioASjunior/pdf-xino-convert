@@ -26,6 +26,13 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 14px;
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 15px;
+  }
 }
 
 body {
@@ -67,7 +74,7 @@ summary:focus-visible {
 
 .section-title {
   @apply max-w-[22ch] font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-slate-900 md:text-4xl;
-  font-size: clamp(2.05rem, 1.65rem + 1.1vw, 2.8rem);
+  font-size: clamp(1.7rem, 1.45rem + 0.7vw, 2.1rem);
 }
 
 .dark .section-title {
@@ -75,7 +82,7 @@ summary:focus-visible {
 }
 
 .section-copy {
-  @apply max-w-[68ch] text-base leading-7 text-slate-600 md:text-lg md:leading-8;
+  @apply max-w-[68ch] text-[0.94rem] leading-7 text-slate-600 md:text-[1rem] md:leading-8;
 }
 
 .dark .section-copy {
@@ -92,7 +99,7 @@ summary:focus-visible {
 
 @media (min-width: 1440px) {
   .section-title {
-    font-size: clamp(2.75rem, 2.35rem + 0.8vw, 3.3rem);
+    font-size: clamp(2rem, 1.85rem + 0.45vw, 2.35rem);
     line-height: 1.05;
     max-width: 23ch;
   }
@@ -100,7 +107,7 @@ summary:focus-visible {
 
 @media (min-width: 1920px) {
   .section-title {
-    font-size: clamp(3.05rem, 2.7rem + 0.7vw, 3.7rem);
+    font-size: clamp(2.2rem, 2.05rem + 0.35vw, 2.55rem);
     max-width: 24ch;
   }
 

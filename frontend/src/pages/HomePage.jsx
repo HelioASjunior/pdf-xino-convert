@@ -12,6 +12,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import HeroSection from '../components/HeroSection';
+import PrivacyPolicySection from '../components/PrivacyPolicySection';
 import ToolCard from '../components/ToolCard';
 import UploadArea from '../components/UploadArea';
 import ResultCard from '../components/ResultCard';
@@ -127,6 +128,8 @@ function HomePage() {
           ) : null}
         </ResultCard>
       </section>
+
+      <PrivacyPolicySection />
     </div>
   );
 }
