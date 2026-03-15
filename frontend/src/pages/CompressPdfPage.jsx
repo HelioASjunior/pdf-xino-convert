@@ -109,12 +109,6 @@ function CompressPdfPage() {
   return (
     <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
       <section className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Comprimir PDF</p>
-          <h1 className="section-title">Reduza o peso do arquivo com níveis claros de compressão.</h1>
-          <p className="section-copy">Otimize o tamanho do PDF para compartilhar, armazenar e enviar arquivos com mais eficiência.</p>
-        </div>
-
         <UploadArea
           title="Envie o PDF"
           description="Veja o tamanho original, escolha o nível de compressão e baixe o novo arquivo com resumo do ganho obtido."
@@ -125,6 +119,12 @@ function CompressPdfPage() {
         />
 
         {fileItem ? <FilePreview item={fileItem} onRemove={() => setFileItem(null)} /> : null}
+
+        <div className="space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Comprimir PDF</p>
+          <h1 className="section-title">Reduza o peso do arquivo com níveis claros de compressão.</h1>
+          <p className="section-copy">Otimize o tamanho do PDF para compartilhar, armazenar e enviar arquivos com mais eficiência.</p>
+        </div>
       </section>
 
       <aside className="space-y-6">

@@ -198,36 +198,6 @@ function ImageToolsPage() {
 
   return (
     <div className="space-y-10">
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="space-y-5">
-          <div className="section-intro">
-            <p className="section-kicker">Ferramentas de Imagem</p>
-            <h1 className="section-title">Padronize imagens com mais consistência antes de publicar, compartilhar ou arquivar.</h1>
-            <p className="section-copy">Esta área reúne os principais fluxos para transformar imagens em PDF ou converter formatos em lote com uma experiência mais direta.</p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Saídas disponíveis</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">5 formatos</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Envio em lote</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Múltiplas imagens</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega final</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">ZIP organizado</p>
-            </div>
-          </div>
-        </div>
-
-        <ResultCard
-          title="Fluxo recomendado"
-          description="Escolha abaixo se você quer montar PDFs a partir de imagens ou apenas padronizar formatos. A ferramenta atual permanece disponível logo após os destaques."
-          tone="info"
-        />
-      </section>
-
       <HubFeatureGrid
         title="Trilhas rápidas da categoria"
         description="Acesse os dois principais fluxos de imagem a partir de uma única página de entrada."
@@ -321,6 +291,36 @@ function ImageToolsPage() {
           ) : null}
         </aside>
       </div>
+
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="space-y-5">
+          <div className="section-intro">
+            <p className="section-kicker">Ferramentas de Imagem</p>
+            <h1 className="section-title">Padronize imagens com mais consistência antes de publicar, compartilhar ou arquivar.</h1>
+            <p className="section-copy">Esta área reúne os principais fluxos para transformar imagens em PDF ou converter formatos em lote com uma experiência mais direta.</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Saídas disponíveis</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">5 formatos</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Envio em lote</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Múltiplas imagens</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega final</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">ZIP organizado</p>
+            </div>
+          </div>
+        </div>
+
+        <ResultCard
+          title="Fluxo recomendado"
+          description="Escolha abaixo se você quer montar PDFs a partir de imagens ou apenas padronizar formatos. A ferramenta atual permanece disponível logo após os destaques."
+          tone="info"
+        />
+      </section>
 
       <TrustSection
         title="Por que usar esta área de imagem"

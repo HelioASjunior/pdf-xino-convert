@@ -312,41 +312,6 @@ function PdfToolsPage() {
 
   return (
     <div className="space-y-10">
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="space-y-5">
-          <div className="section-intro">
-            <p className="section-kicker">Ferramentas de PDF</p>
-            <h1 className="section-title">Centralize tarefas de PDF em um fluxo mais claro, rápido e confiável.</h1>
-            <p className="section-copy">Junte arquivos, separe páginas, corrija orientação e prepare versões mais enxutas do documento sem sair da mesma área de trabalho.</p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Operações reunidas</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">6 fluxos</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Intervalos flexíveis</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">1,3-5</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega final</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">PDF ou ZIP</p>
-            </div>
-          </div>
-        </div>
-
-        <ResultCard
-          title="Como esta área funciona"
-          description="Escolha a operação, envie seus PDFs e concentre a configuração no painel lateral. O processo foi organizado para reduzir cliques e retrabalho."
-          tone="info"
-        >
-          <div className="space-y-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
-            <p>Juntar PDF trabalha com vários arquivos no mesmo fluxo.</p>
-            <p>Dividir, rotacionar, remover e extrair funcionam sobre um único PDF por vez com controle de páginas.</p>
-          </div>
-        </ResultCard>
-      </section>
-
       <HubFeatureGrid
         title="Escolha o tipo de operação"
         description="Cada cartão abaixo ajusta automaticamente a ferramenta principal no painel de execução."
@@ -454,6 +419,41 @@ function PdfToolsPage() {
           ) : null}
         </aside>
       </div>
+
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="space-y-5">
+          <div className="section-intro">
+            <p className="section-kicker">Ferramentas de PDF</p>
+            <h1 className="section-title">Centralize tarefas de PDF em um fluxo mais claro, rápido e confiável.</h1>
+            <p className="section-copy">Junte arquivos, separe páginas, corrija orientação e prepare versões mais enxutas do documento sem sair da mesma área de trabalho.</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Operações reunidas</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">6 fluxos</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Intervalos flexíveis</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">1,3-5</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega final</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">PDF ou ZIP</p>
+            </div>
+          </div>
+        </div>
+
+        <ResultCard
+          title="Como esta área funciona"
+          description="Escolha a operação, envie seus PDFs e concentre a configuração no painel lateral. O processo foi organizado para reduzir cliques e retrabalho."
+          tone="info"
+        >
+          <div className="space-y-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
+            <p>Juntar PDF trabalha com vários arquivos no mesmo fluxo.</p>
+            <p>Dividir, rotacionar, remover e extrair funcionam sobre um único PDF por vez com controle de páginas.</p>
+          </div>
+        </ResultCard>
+      </section>
 
       <TrustSection
         title="Por que usar esta central de PDF"

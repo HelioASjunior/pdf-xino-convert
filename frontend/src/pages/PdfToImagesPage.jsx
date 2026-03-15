@@ -120,12 +120,6 @@ function PdfToImagesPage() {
   return (
     <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
       <section className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">PDF para Imagens</p>
-          <h1 className="section-title">Extraia páginas do PDF como imagens e baixe tudo em um clique.</h1>
-          <p className="section-copy">Envie um PDF, escolha PNG ou JPG e visualize o resultado de cada página antes de baixar.</p>
-        </div>
-
         <UploadArea
           title="Envie um PDF"
           description="A ferramenta detecta a quantidade de páginas e converte cada página em imagem, com arquivo ZIP pronto para download."
@@ -138,6 +132,12 @@ function PdfToImagesPage() {
         {fileItem ? (
           <FilePreview item={fileItem} onRemove={() => setFileItem(null)} />
         ) : null}
+
+        <div className="space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">PDF para Imagens</p>
+          <h1 className="section-title">Extraia páginas do PDF como imagens e baixe tudo em um clique.</h1>
+          <p className="section-copy">Envie um PDF, escolha PNG ou JPG e visualize o resultado de cada página antes de baixar.</p>
+        </div>
       </section>
 
       <aside className="space-y-6">

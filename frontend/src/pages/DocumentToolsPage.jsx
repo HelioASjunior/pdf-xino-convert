@@ -199,36 +199,6 @@ function DocumentToolsPage() {
 
   return (
     <div className="space-y-10">
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="space-y-5">
-          <div className="section-intro">
-            <p className="section-kicker">Ferramentas de Documentos</p>
-            <h1 className="section-title">Converta documentos de trabalho em PDF com uma entrada mais organizada por tipo de conteúdo.</h1>
-            <p className="section-copy">Use esta área para transformar textos, planilhas e materiais de apresentação em arquivos PDF prontos para compartilhar com mais agilidade.</p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Formatos cobertos</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">11 tipos</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Envio orientado</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">1 documento</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">PDF final</p>
-            </div>
-          </div>
-        </div>
-
-        <ResultCard
-          title="Antes de converter"
-          description="Esta área foi desenhada para arquivos individuais, com foco em clareza do resultado e orientação quando um formato pede tratamento complementar."
-          tone="info"
-        />
-      </section>
-
       <HubFeatureGrid
         title="Entradas principais da categoria"
         description="Os blocos abaixo ajudam a localizar rapidamente o tipo de documento mais próximo do seu fluxo."
@@ -314,6 +284,36 @@ function DocumentToolsPage() {
           ) : null}
         </aside>
       </div>
+
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="space-y-5">
+          <div className="section-intro">
+            <p className="section-kicker">Ferramentas de Documentos</p>
+            <h1 className="section-title">Converta documentos de trabalho em PDF com uma entrada mais organizada por tipo de conteúdo.</h1>
+            <p className="section-copy">Use esta área para transformar textos, planilhas e materiais de apresentação em arquivos PDF prontos para compartilhar com mais agilidade.</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Formatos cobertos</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">11 tipos</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Envio orientado</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">1 documento</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">PDF final</p>
+            </div>
+          </div>
+        </div>
+
+        <ResultCard
+          title="Antes de converter"
+          description="Esta área foi desenhada para arquivos individuais, com foco em clareza do resultado e orientação quando um formato pede tratamento complementar."
+          tone="info"
+        />
+      </section>
 
       <TrustSection
         title="Por que usar esta central de documentos"

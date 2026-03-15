@@ -229,12 +229,6 @@ function ScanDocumentPage() {
   return (
     <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
       <section className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Escanear documento</p>
-          <h1 className="section-title">Digitalize no seu equipamento e finalize o documento aqui com praticidade.</h1>
-          <p className="section-copy">Importe páginas já digitalizadas, organize o material e gere um arquivo pronto para compartilhar.</p>
-        </div>
-
         <div className="glass-panel space-y-4 p-6">
           <div className="flex items-start gap-3">
             <div className="rounded-2xl bg-slate-900 p-3 text-white">
@@ -296,6 +290,12 @@ function ScanDocumentPage() {
             </div>
           </div>
         ) : null}
+
+        <div className="space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Escanear documento</p>
+          <h1 className="section-title">Digitalize no seu equipamento e finalize o documento aqui com praticidade.</h1>
+          <p className="section-copy">Importe páginas já digitalizadas, organize o material e gere um arquivo pronto para compartilhar.</p>
+        </div>
       </section>
 
       <aside className="space-y-6">

@@ -182,12 +182,6 @@ function ImageToPdfPage() {
   return (
     <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
       <section className="space-y-6">
-        <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Imagem para PDF</p>
-          <h1 className="section-title">Organize as imagens, ajuste o layout e gere um PDF final limpo.</h1>
-          <p className="section-copy">Reordene os arquivos, ajuste a apresentação e escolha entre um PDF único ou versões individuais do documento.</p>
-        </div>
-
         <UploadArea
           title="Envie suas imagens"
           description="Faça upload de múltiplos arquivos, reorganize a sequência e exporte tudo em um único PDF ou em PDFs individuais."
@@ -215,6 +209,12 @@ function ImageToPdfPage() {
             </DndContext>
           </div>
         ) : null}
+
+        <div className="space-y-3">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Imagem para PDF</p>
+          <h1 className="section-title">Organize as imagens, ajuste o layout e gere um PDF final limpo.</h1>
+          <p className="section-copy">Reordene os arquivos, ajuste a apresentação e escolha entre um PDF único ou versões individuais do documento.</p>
+        </div>
       </section>
 
       <aside className="space-y-6">

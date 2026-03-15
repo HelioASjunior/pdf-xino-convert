@@ -174,36 +174,6 @@ function UtilitiesPage() {
 
   return (
     <div className="space-y-10">
-      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-        <div className="space-y-5">
-          <div className="section-intro">
-            <p className="section-kicker">Utilitários</p>
-            <h1 className="section-title">Use esta central para preparar arquivos, gerar pacotes ZIP e descobrir a melhor ferramenta para cada caso.</h1>
-            <p className="section-copy">A área de utilitários foi desenhada como suporte operacional: um ponto de entrada simples para organização, agrupamento e encaminhamento de arquivos.</p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Limite por arquivo</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">50 MB</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrada flexível</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Qualquer tipo</p>
-            </div>
-            <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Uso principal</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Apoio rápido</p>
-            </div>
-          </div>
-        </div>
-
-        <ResultCard
-          title="Quando usar utilitários"
-          description="Esta página faz mais sentido quando você precisa apenas agrupar downloads ou descobrir rapidamente qual área da plataforma atende melhor o arquivo enviado."
-          tone="info"
-        />
-      </section>
-
       <HubFeatureGrid
         title="Recursos principais da área"
         description="A central combina organização simples com encaminhamento para outras categorias quando necessário."
@@ -276,6 +246,36 @@ function UtilitiesPage() {
           ) : null}
         </aside>
       </div>
+
+      <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <div className="space-y-5">
+          <div className="section-intro">
+            <p className="section-kicker">Utilitários</p>
+            <h1 className="section-title">Use esta central para preparar arquivos, gerar pacotes ZIP e descobrir a melhor ferramenta para cada caso.</h1>
+            <p className="section-copy">A área de utilitários foi desenhada como suporte operacional: um ponto de entrada simples para organização, agrupamento e encaminhamento de arquivos.</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Limite por arquivo</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">50 MB</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrada flexível</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Qualquer tipo</p>
+            </div>
+            <div className="glass-panel p-4">
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Uso principal</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Apoio rápido</p>
+            </div>
+          </div>
+        </div>
+
+        <ResultCard
+          title="Quando usar utilitários"
+          description="Esta página faz mais sentido quando você precisa apenas agrupar downloads ou descobrir rapidamente qual área da plataforma atende melhor o arquivo enviado."
+          tone="info"
+        />
+      </section>
 
       <TrustSection
         title="Por que manter esta central"
