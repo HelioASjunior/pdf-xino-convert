@@ -7,7 +7,6 @@ import FloatingSocialButtons from './components/FloatingSocialButtons';
 import FirstVisitNotice from './components/FirstVisitNotice';
 import SeoManager from './components/SeoManager';
 import HomePage from './pages/HomePage';
-import ToolLandingPage from './pages/ToolLandingPage';
 import { ToastProvider } from './hooks/useToast.jsx';
 import { ThemeProvider } from './hooks/useTheme';
 
@@ -19,6 +18,9 @@ const ImageToPdfPage = lazy(() => import('./pages/ImageToPdfPage'));
 const PdfToImagesPage = lazy(() => import('./pages/PdfToImagesPage'));
 const CompressPdfPage = lazy(() => import('./pages/CompressPdfPage'));
 const ScanDocumentPage = lazy(() => import('./pages/ScanDocumentPage'));
+const PdfToWordPage = lazy(() => import('./pages/PdfToWordPage'));
+const WordToPdfPage = lazy(() => import('./pages/WordToPdfPage'));
+const MergePdfPage = lazy(() => import('./pages/MergePdfPage'));
 
 function App() {
   const { t } = useTranslation();
@@ -54,36 +56,9 @@ function App() {
                       <Route path="/pdf-para-imagens" element={<PdfToImagesPage />} />
                       <Route path="/comprimir-pdf" element={<CompressPdfPage />} />
                       <Route path="/escanear-documento" element={<ScanDocumentPage />} />
-                      <Route
-                        path="/pdf-para-word"
-                        element={(
-                          <ToolLandingPage
-                            title="PDF para Word"
-                            description="Página preparada para o fluxo de conversão de PDF para Word."
-                            suggestedPath="/document-tools"
-                          />
-                        )}
-                      />
-                      <Route
-                        path="/word-para-pdf"
-                        element={(
-                          <ToolLandingPage
-                            title="Word para PDF"
-                            description="Página preparada para o fluxo de conversão de Word para PDF."
-                            suggestedPath="/document-tools"
-                          />
-                        )}
-                      />
-                      <Route
-                        path="/unir-pdf"
-                        element={(
-                          <ToolLandingPage
-                            title="Unir PDF"
-                            description="Página preparada para o fluxo de união de arquivos PDF."
-                            suggestedPath="/pdf-tools"
-                          />
-                        )}
-                      />
+                      <Route path="/pdf-para-word" element={<PdfToWordPage />} />
+                      <Route path="/word-para-pdf" element={<WordToPdfPage />} />
+                      <Route path="/unir-pdf" element={<MergePdfPage />} />
                       <Route path="*" element={<HomePage />} />
                     </Routes>
                   </Suspense>

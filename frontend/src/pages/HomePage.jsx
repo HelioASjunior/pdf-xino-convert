@@ -59,6 +59,9 @@ function HomePage() {
             <ToolCard key={tool.href} {...tool} />
           ))}
         </div>
+        <p className="mx-auto max-w-5xl text-sm leading-7 text-slate-600 dark:text-slate-300 sm:text-base">
+          Converta arquivos PDF online gratuitamente com rapidez e segurança. Ferramentas para PDF para Word, JPG, compressão, união e edição de PDFs.
+        </p>
       </section>
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">

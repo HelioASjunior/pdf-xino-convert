@@ -23,7 +23,7 @@ function HeroSection() {
             loading="lazy"
           />
           <h1 className="font-display text-3xl font-extrabold leading-[1.02] tracking-tight text-slate-950 dark:text-slate-50 sm:text-5xl lg:text-6xl">
-            PDF Xino Convert
+            Converter PDF Online Grátis
           </h1>
         </div>
 

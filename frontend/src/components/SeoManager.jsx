@@ -114,12 +114,13 @@ function SeoManager() {
     const routeSeo = ROUTE_SEO[normalized] || DEFAULT_SEO;
     const title = routeSeo.title || DEFAULT_SEO.title;
     const description = routeSeo.description || DEFAULT_SEO.description;
-    const canonicalUrl = normalized === '/' ? SITE_ORIGIN : `${SITE_ORIGIN}${normalized}`;
+    const canonicalUrl = normalized === '/' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}${normalized}`;
 
     document.title = title;
 
     upsertMetaByName('description', description);
     upsertMetaByName('keywords', DEFAULT_SEO.keywords);
+    upsertMetaByName('robots', 'index, follow');
     upsertMetaByProperty('og:title', title);
     upsertMetaByProperty('og:description', description);
     upsertMetaByProperty('og:url', canonicalUrl);
