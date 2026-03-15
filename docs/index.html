@@ -7,6 +7,13 @@
     <link rel="icon" type="image/x-icon" href="/favicon_pdf.ico" />
     <link rel="canonical" href="https://pdfxino.com.br/" />
     <meta name="robots" content="index, follow" />
+    <!-- Cache busting: force browsers to always revalidate index.html.
+         The JS/CSS assets already have content-hashes in their filenames
+         (handled by Vite), so they can be cached forever. index.html itself
+         must never be stale so that users always get the latest asset refs. -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <meta name="keywords" content="pdf online, converter pdf, pdf para word, word para pdf, unir pdf, comprimir pdf" />
     <meta
       name="description"
@@ -47,12 +54,26 @@
       name="twitter:image"
       content="https://pdfxino.com.br/assets/social/preview-whatsapp.png"
     />
+
     <title>PDFXino - Converter PDF Online Grátis | PDF para Word, JPG e Mais</title>
-    <script type="module" crossorigin src="./js/index-DWPkmVWP.js"></script>
-    <link rel="stylesheet" crossorigin href="./css/index-C9B84PQX.css">
+    <!-- GitHub Pages SPA: decode the path that 404.html encoded as a query string.
+         This runs before React mounts, so react-router sees the correct pathname. -->
+    <script>
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) { return s.replace(/~and~/g, '&'); })
+            .join('?');
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      }(window.location));
+    </script>
+    <script type="module" crossorigin src="/js/index-B2YmlyBW.js"></script>
+    <link rel="stylesheet" crossorigin href="/css/index-DbBW42Mz.css">
   </head>
   <body>
-    <div id="root"></div>
-
+    <div id="root"></div>
   </body>
   </html>

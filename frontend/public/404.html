@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>PDFXino</title>
+    <!--
+      GitHub Pages SPA redirect trick.
+      When GitHub Pages cannot find a file (e.g. /pdf-tools), it serves this
+      404.html instead of the real 404 page.
+
+      This script encodes the current path as a query string and redirects
+      to the root, where index.html has a matching decode script that restores
+      the original pathname before React Router mounts.
+
+      Based on the MIT-licensed technique by Rafael Pedicini:
+      https://github.com/rafgraph/spa-github-pages
+    -->
+    <script>
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        '/?/' +
+        l.pathname.slice(1).replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
