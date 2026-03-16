@@ -15,7 +15,7 @@ import { zipDownloadItems } from '../services/pdfToolkitService';
 import { downloadBlob } from '../utils/formatters';
 import { detectToolSuggestion } from '../utils/fileTypeDetector';
 
-const MAX_GENERIC_FILE_SIZE = 50 * 1024 * 1024;
+const MAX_GENERIC_FILE_SIZE = 100 * 1024 * 1024;
 
 const utilitiesHubItems = [
   {
@@ -63,7 +63,7 @@ const utilitiesTrustItems = [
 const utilitiesFaqItems = [
   {
     question: 'Quais arquivos posso enviar nesta área?',
-    answer: 'Qualquer arquivo com até 50 MB por item pode ser usado para organização e geração de ZIP.',
+    answer: 'Qualquer arquivo com até 100 MB por item pode ser usado para organização e geração de ZIP.',
   },
   {
     question: 'A detecção automática converte meus arquivos?',
@@ -113,7 +113,7 @@ function UtilitiesPage() {
   const onFilesSelected = (files) => {
     for (const file of files) {
       if (file.size > MAX_GENERIC_FILE_SIZE) {
-        setError(`O arquivo ${file.name} ultrapassa o limite de 50 MB por arquivo.`);
+        setError(`O arquivo ${file.name} ultrapassa o limite de 100 MB por arquivo.`);
         return;
       }
     }
@@ -184,7 +184,7 @@ function UtilitiesPage() {
         <section ref={uploadRef} className="space-y-6">
           <UploadArea
             title="Adicionar arquivos"
-            description="Aceita qualquer arquivo até 50 MB para organização e pacote ZIP."
+            description="Aceita qualquer arquivo até 100 MB para organização e pacote ZIP."
             accept="*/*"
             multiple
             onFilesSelected={onFilesSelected}
@@ -257,7 +257,7 @@ function UtilitiesPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Limite por arquivo</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">50 MB</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">100 MB</p>
             </div>
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrada flexível</p>
