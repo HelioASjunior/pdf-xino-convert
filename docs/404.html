@@ -17,10 +17,13 @@
     -->
     <script>
       var l = window.location;
+      var segments = l.pathname.split('/').filter(Boolean);
+      var repoBase = l.hostname.endsWith('github.io') && segments.length > 0 ? '/' + segments[0] : '';
+      var routePath = l.pathname.slice(repoBase.length + 1);
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        '/?/' +
-        l.pathname.slice(1).replace(/&/g, '~and~') +
+        repoBase + '/?/' +
+        routePath.replace(/&/g, '~and~') +
         (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
         l.hash
       );
