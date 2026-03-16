@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop } from 'lucide-react';
+import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
 import SelectField from '../components/SelectField';
@@ -13,8 +13,9 @@ import FaqSection from '../components/FaqSection';
 import PdfCropEditorModal from '../components/PdfCropEditorModal';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
-import { downloadBlob } from '../utils/formatters';
+import { downloadBlob, formatPercent } from '../utils/formatters';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
+import { compressPdfInBrowser } from '../services/clientPdfTools';
 import {
   cropPdfPages,
   extractPdfPages,
@@ -72,6 +73,15 @@ const pdfHubItems = [
     onClick: () => {},
     className: 'hover:-translate-y-0',
   },
+  {
+    title: 'Comprimir PDF',
+    description: 'Reduza o tamanho do arquivo com níveis claros para compartilhar e armazenar melhor.',
+    icon: Shrink,
+    actionLabel: 'Compactar arquivo',
+    accent: 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100',
+    onClick: () => {},
+    className: 'hover:-translate-y-0',
+  },
 ];
 
 const pdfTrustItems = [
@@ -118,6 +128,7 @@ function PdfToolsPage() {
   const [operation, setOperation] = useState('merge');
   const [range, setRange] = useState('');
   const [angle, setAngle] = useState('90');
+  const [compressionLevel, setCompressionLevel] = useState('medium');
   const [cropEditorOpen, setCropEditorOpen] = useState(false);
   const [cropConfig, setCropConfig] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -126,20 +137,22 @@ function PdfToolsPage() {
   const [result, setResult] = useState(null);
   const resultRef = useRef(null);
   const workbenchRef = useRef(null);
-  const pdfOperations = pdfHubItems.map((item, index) => ({
+  const pdfOperations = pdfHubItems.map((item) => ({
     ...item,
     current:
-      (operation === 'merge' && index === 0)
-      || (operation === 'split' && index === 1)
-      || (operation === 'rotate' && index === 2)
-      || ((operation === 'remove' || operation === 'extract') && index === 3)
-      || (operation === 'crop' && index === 4),
+      (item.title === 'Juntar PDF' && operation === 'merge')
+      || (item.title === 'Dividir páginas' && operation === 'split')
+      || (item.title === 'Rotacionar e corrigir' && operation === 'rotate')
+      || (item.title === 'Remover ou extrair' && (operation === 'remove' || operation === 'extract'))
+      || (item.title === 'Recortar PDF' && operation === 'crop')
+      || (item.title === 'Comprimir PDF' && operation === 'compress'),
     onClick: () => {
-      if (index === 0) setOperation('merge');
-      if (index === 1) setOperation('split');
-      if (index === 2) setOperation('rotate');
-      if (index === 3) setOperation('remove');
-      if (index === 4) setOperation('crop');
+      if (item.title === 'Juntar PDF') setOperation('merge');
+      if (item.title === 'Dividir páginas') setOperation('split');
+      if (item.title === 'Rotacionar e corrigir') setOperation('rotate');
+      if (item.title === 'Remover ou extrair') setOperation('remove');
+      if (item.title === 'Recortar PDF') setOperation('crop');
+      if (item.title === 'Comprimir PDF') setOperation('compress');
       workbenchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
   }));
@@ -262,6 +275,21 @@ function PdfToolsPage() {
         };
       }
 
+      if (operation === 'compress') {
+        const compression = await compressPdfInBrowser(files[0].file, {
+          level: compressionLevel,
+          onProgress: (value) => setProgress(value),
+        });
+
+        output = {
+          blob: compression.blob,
+          fileName: `${files[0].file.name.replace(/\.[^/.]+$/, '')}-comprimido.pdf`,
+          description: compression.wasReduced
+            ? `Compressão concluída com redução de ${formatPercent(compression.reductionPercent)}.`
+            : 'Compressão concluída. O PDF já estava otimizado e não houve redução relevante.',
+        };
+      }
+
       const url = downloadBlob(output.blob, output.fileName);
       setResult({ url, ...output });
 
@@ -362,9 +390,24 @@ function PdfToolsPage() {
                 { value: 'remove', label: 'Remover páginas' },
                 { value: 'crop', label: 'Recortar PDF' },
                 { value: 'extract', label: 'Extrair páginas' },
+                { value: 'compress', label: 'Comprimir PDF' },
               ]}
               helperText="Alterne a operação sem sair da página."
             />
+
+            {operation === 'compress' ? (
+              <SelectField
+                label="Nível de compressão"
+                value={compressionLevel}
+                onChange={(event) => setCompressionLevel(event.target.value)}
+                options={[
+                  { value: 'low', label: 'Baixa' },
+                  { value: 'medium', label: 'Média' },
+                  { value: 'high', label: 'Alta' },
+                ]}
+                helperText="Níveis mais altos reduzem mais o arquivo, com maior perda visual."
+              />
+            ) : null}
 
             {operation === 'rotate' ? (
               <SelectField
@@ -405,6 +448,7 @@ function PdfToolsPage() {
               {operation === 'remove' ? <Trash2 className="h-4 w-4" /> : null}
               {operation === 'rotate' ? <RotateCw className="h-4 w-4" /> : null}
               {operation === 'crop' ? <Crop className="h-4 w-4" /> : null}
+              {operation === 'compress' ? <Shrink className="h-4 w-4" /> : null}
               {(operation === 'merge' || operation === 'extract') ? <Files className="h-4 w-4" /> : null}
               Executar ferramenta
             </Button>
@@ -430,7 +474,7 @@ function PdfToolsPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Operações reunidas</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">6 fluxos</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">7 fluxos</p>
             </div>
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Intervalos flexíveis</p>

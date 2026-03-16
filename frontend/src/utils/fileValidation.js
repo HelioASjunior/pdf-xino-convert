@@ -1,5 +1,5 @@
 export const MAX_IMAGE_SIZE = 10 * 1024 * 1024;
-export const MAX_PDF_SIZE = 40 * 1024 * 1024;
+export const MAX_PDF_SIZE = 100 * 1024 * 1024;
 
 function matchesMimeType(fileType, acceptedType) {
   if (!fileType || !acceptedType) {
