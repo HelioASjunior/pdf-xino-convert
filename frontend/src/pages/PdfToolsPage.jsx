@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink } from 'lucide-react';
+import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink, MoveVertical } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
+import FileOrderModal from '../components/FileOrderModal';
 import SelectField from '../components/SelectField';
 import Button from '../components/Button';
 import ResultCard from '../components/ResultCard';
@@ -15,6 +16,7 @@ import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
 import { downloadBlob, formatPercent } from '../utils/formatters';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
+import { createPdfPreviewUrl } from '../utils/pdfPreview';
 import { compressPdfInBrowser } from '../services/clientPdfTools';
 import {
   cropPdfPages,
@@ -131,10 +133,13 @@ function PdfToolsPage() {
   const [compressionLevel, setCompressionLevel] = useState('medium');
   const [cropEditorOpen, setCropEditorOpen] = useState(false);
   const [cropConfig, setCropConfig] = useState(null);
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
+  const filesRef = useRef([]);
   const resultRef = useRef(null);
   const workbenchRef = useRef(null);
   const pdfOperations = pdfHubItems.map((item) => ({
@@ -158,15 +163,23 @@ function PdfToolsPage() {
   }));
 
   useEffect(() => {
+    filesRef.current = files;
+  }, [files]);
+
+  useEffect(() => {
     resultRef.current = result;
   }, [result]);
 
   useEffect(() => () => {
-    files.forEach((item) => item.preview && URL.revokeObjectURL(item.preview));
+    filesRef.current.forEach((item) => {
+      if (item.preview) {
+        URL.revokeObjectURL(item.preview);
+      }
+    });
     if (resultRef.current?.url) {
       URL.revokeObjectURL(resultRef.current.url);
     }
-  }, [files]);
+  }, []);
 
   const clearResult = () => {
     if (result?.url) {
@@ -175,7 +188,7 @@ function PdfToolsPage() {
     setResult(null);
   };
 
-  const handleFilesSelected = (selectedFiles) => {
+  const handleFilesSelected = async (selectedFiles) => {
     const validationError = validateFiles(selectedFiles, {
       mimeTypes: ['application/pdf'],
       maxSize: MAX_PDF_SIZE,
@@ -189,20 +202,49 @@ function PdfToolsPage() {
 
     setError('');
     clearResult();
+    setOrderConfirmed(false);
+
+    const preparedFiles = await Promise.all(
+      selectedFiles.map(async (file) => {
+        let preview = null;
+
+        try {
+          preview = await createPdfPreviewUrl(file);
+        } catch {
+          preview = null;
+        }
+
+        return {
+          id: crypto.randomUUID(),
+          file,
+          kind: 'pdf',
+          preview,
+        };
+      }),
+    );
 
     setFiles((current) => [
       ...current,
-      ...selectedFiles.map((file) => ({
-        id: crypto.randomUUID(),
-        file,
-        kind: 'pdf',
-        preview: null,
-      })),
+      ...preparedFiles,
     ]);
   };
 
   const removeFile = (id) => {
-    setFiles((current) => current.filter((item) => item.id !== id));
+    setFiles((current) => {
+      const target = current.find((item) => item.id === id);
+      if (target?.preview) {
+        URL.revokeObjectURL(target.preview);
+      }
+
+      return current.filter((item) => item.id !== id);
+    });
+    setOrderConfirmed(false);
+  };
+
+  const applyOrderedFiles = (orderedFiles) => {
+    setFiles(orderedFiles);
+    setOrderConfirmed(true);
+    setOrderModalOpen(false);
   };
 
   const runOperation = async () => {
@@ -213,6 +255,11 @@ function PdfToolsPage() {
 
     if (operation === 'merge' && files.length < 2) {
       setError('Para juntar PDF, envie pelo menos dois arquivos.');
+      return;
+    }
+
+    if (operation === 'merge' && files.length > 1 && !orderConfirmed) {
+      setOrderModalOpen(true);
       return;
     }
 
@@ -360,6 +407,22 @@ function PdfToolsPage() {
 
           {files.length ? (
             <div className="space-y-3">
+              {(operation === 'merge' && files.length > 1) ? (
+                <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-3 py-2 dark:bg-slate-800/70">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">Ordem de uniao</p>
+                  <Button variant="ghost" onClick={() => setOrderModalOpen(true)}>
+                    <MoveVertical className="mr-1 h-4 w-4" />
+                    Organizar ordem
+                  </Button>
+                </div>
+              ) : null}
+
+              {(operation === 'merge' && files.length > 1 && !orderConfirmed) ? (
+                <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:bg-amber-900/20 dark:text-amber-200">
+                  Confirme a ordem dos PDFs no organizador antes de executar a uniao.
+                </p>
+              ) : null}
+
               {files.map((item) => (
                 <FilePreview key={item.id} item={item} onRemove={removeFile} />
               ))}
@@ -440,17 +503,27 @@ function PdfToolsPage() {
               </p>
             ) : null}
 
+            {(operation === 'merge' && files.length > 1 && !orderConfirmed) ? (
+              <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-700 dark:bg-amber-900/20 dark:text-amber-200">
+                Para unir PDFs, a organizacao da ordem e obrigatoria. Clique em "Organizar ordem" e confirme para habilitar a execucao.
+              </p>
+            ) : null}
+
             {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
             {isLoading ? <ProgressBar value={progress} label="Executando operação" /> : null}
 
-            <Button className="w-full gap-2" onClick={runOperation} disabled={isLoading || !files.length}>
+            <Button
+              className="w-full gap-2"
+              onClick={runOperation}
+              disabled={isLoading || !files.length || (operation === 'merge' && files.length > 1 && !orderConfirmed)}
+            >
               {operation === 'split' ? <Scissors className="h-4 w-4" /> : null}
               {operation === 'remove' ? <Trash2 className="h-4 w-4" /> : null}
               {operation === 'rotate' ? <RotateCw className="h-4 w-4" /> : null}
               {operation === 'crop' ? <Crop className="h-4 w-4" /> : null}
               {operation === 'compress' ? <Shrink className="h-4 w-4" /> : null}
               {(operation === 'merge' || operation === 'extract') ? <Files className="h-4 w-4" /> : null}
-              Executar ferramenta
+              {(operation === 'merge' && files.length > 1 && !orderConfirmed) ? 'Organize a ordem para continuar' : 'Executar ferramenta'}
             </Button>
           </div>
 
@@ -516,6 +589,15 @@ function PdfToolsPage() {
         initialConfig={cropConfig}
         onClose={() => setCropEditorOpen(false)}
         onApply={runCropOperation}
+      />
+
+      <FileOrderModal
+        open={orderModalOpen}
+        items={files}
+        title="Organizar PDFs antes de unir"
+        description="A ordem mostrada aqui define a sequencia de paginas no PDF final."
+        onClose={() => setOrderModalOpen(false)}
+        onConfirm={applyOrderedFiles}
       />
     </div>
   );

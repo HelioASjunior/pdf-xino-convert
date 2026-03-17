@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
-import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { FileDown, Images } from 'lucide-react';
+import { FileDown, Images, MoveVertical } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
+import FileOrderModal from '../components/FileOrderModal';
 import SelectField from '../components/SelectField';
 import Button from '../components/Button';
 import ProgressBar from '../components/ProgressBar';
@@ -25,6 +24,8 @@ function ImageToPdfPage() {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
   const itemsRef = useRef([]);
   const resultRef = useRef(null);
   const [options, setOptions] = useState({
@@ -35,8 +36,6 @@ function ImageToPdfPage() {
     imageFit: 'contain',
     compressImages: 'true',
   });
-  const dndSensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
-
   useEffect(() => {
     itemsRef.current = items;
   }, [items]);
@@ -78,6 +77,7 @@ function ImageToPdfPage() {
         preview: URL.createObjectURL(file),
       })),
     ]);
+    setOrderConfirmed(false);
   };
 
   const removeItem = (id) => {
@@ -86,6 +86,7 @@ function ImageToPdfPage() {
       if (target?.preview) {
         URL.revokeObjectURL(target.preview);
       }
+      setOrderConfirmed(false);
       return current.filter((item) => item.id !== id);
     });
   };
@@ -99,25 +100,23 @@ function ImageToPdfPage() {
     setProgress(0);
     setResult(null);
     setError('');
+    setOrderConfirmed(false);
   };
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-
-    if (!over || active.id === over.id) {
-      return;
-    }
-
-    setItems((current) => {
-      const oldIndex = current.findIndex((item) => item.id === active.id);
-      const newIndex = current.findIndex((item) => item.id === over.id);
-      return arrayMove(current, oldIndex, newIndex);
-    });
+  const applyOrderedItems = (orderedItems) => {
+    setItems(orderedItems);
+    setOrderConfirmed(true);
+    setOrderModalOpen(false);
   };
 
   const handleSubmit = async () => {
     if (!items.length) {
       setError('Adicione ao menos uma imagem antes de gerar o PDF.');
+      return;
+    }
+
+    if (items.length > 1 && !orderConfirmed) {
+      setOrderModalOpen(true);
       return;
     }
 
@@ -195,18 +194,26 @@ function ImageToPdfPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Fila de imagens</p>
-              <Button variant="ghost" onClick={clearAll}>Limpar arquivos</Button>
+              <div className="flex gap-2">
+                <Button variant="ghost" onClick={() => setOrderModalOpen(true)}>
+                  <MoveVertical className="mr-1 h-4 w-4" />
+                  Organizar ordem
+                </Button>
+                <Button variant="ghost" onClick={clearAll}>Limpar arquivos</Button>
+              </div>
             </div>
 
-            <DndContext sensors={dndSensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-              <SortableContext items={items.map((item) => item.id)} strategy={verticalListSortingStrategy}>
-                <div className="space-y-3">
-                  {items.map((item) => (
-                    <FilePreview key={item.id} item={item} onRemove={removeItem} sortable />
-                  ))}
-                </div>
-              </SortableContext>
-            </DndContext>
+            <div className="space-y-3">
+              {items.map((item) => (
+                <FilePreview key={item.id} item={item} onRemove={removeItem} />
+              ))}
+            </div>
+
+            {items.length > 1 && !orderConfirmed ? (
+              <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:bg-amber-900/20 dark:text-amber-200">
+                Revise a ordem dos arquivos na janela flutuante antes de gerar o documento final.
+              </p>
+            ) : null}
           </div>
         ) : null}
 
@@ -326,6 +333,15 @@ function ImageToPdfPage() {
           </ResultCard>
         ) : null}
       </aside>
+
+      <FileOrderModal
+        open={orderModalOpen}
+        items={items}
+        title="Organizar imagens antes de gerar PDF"
+        description="A primeira imagem da lista vira a primeira pagina do PDF final."
+        onClose={() => setOrderModalOpen(false)}
+        onConfirm={applyOrderedItems}
+      />
     </div>
   );
 }

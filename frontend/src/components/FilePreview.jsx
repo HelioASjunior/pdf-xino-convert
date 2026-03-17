@@ -19,7 +19,16 @@ function extensionOf(fileName) {
   return fileName.includes('.') ? fileName.split('.').pop().toUpperCase() : 'ARQ';
 }
 
-function PreviewContent({ item, onRemove, dragHandleProps }) {
+function PreviewContent({
+  item,
+  onRemove,
+  dragHandleProps,
+  showRemove,
+  orderBadge,
+  previewClassName,
+  iconClassName,
+  onPreview,
+}) {
   const typeLabel = detectLabel(item);
   const extension = extensionOf(item.file.name);
 
@@ -31,18 +40,27 @@ function PreviewContent({ item, onRemove, dragHandleProps }) {
         </button>
       ) : null}
 
-      <div className="relative h-16 w-16 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-700">
+      <button
+        type="button"
+        onClick={onPreview ? () => onPreview(item) : undefined}
+        className={`relative overflow-hidden rounded-2xl bg-slate-100 text-left dark:bg-slate-700 ${previewClassName} ${onPreview ? 'cursor-zoom-in ring-0 transition hover:ring-2 hover:ring-brand-300 dark:hover:ring-brand-500' : ''}`}
+      >
         {item.preview ? (
           <img src={item.preview} alt={item.file.name} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
-            {item.kind === 'pdf' ? <FileText className="h-7 w-7" /> : <ImageIcon className="h-7 w-7" />}
+            {item.kind === 'pdf' ? <FileText className={iconClassName} /> : <ImageIcon className={iconClassName} />}
           </div>
         )}
+        {orderBadge ? (
+          <span className="absolute right-1 top-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-600 px-1.5 text-[10px] font-bold text-white">
+            {orderBadge}
+          </span>
+        ) : null}
         <span className="absolute bottom-1 left-1 rounded-lg bg-slate-950/80 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-white">
           {extension}
         </span>
-      </div>
+      </button>
 
       <div className="min-w-0 flex-1 space-y-1.5">
         <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{item.file.name}</p>
@@ -52,18 +70,20 @@ function PreviewContent({ item, onRemove, dragHandleProps }) {
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => onRemove(item.id)}
-        className="rounded-2xl bg-rose-50 p-3 text-rose-600 transition hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-400 dark:hover:bg-rose-900"
-      >
-        <Trash2 className="h-4 w-4" />
-      </button>
+      {showRemove ? (
+        <button
+          type="button"
+          onClick={() => onRemove(item.id)}
+          className="rounded-2xl bg-rose-50 p-3 text-rose-600 transition hover:bg-rose-100 dark:bg-rose-950 dark:text-rose-400 dark:hover:bg-rose-900"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      ) : null}
     </div>
   );
 }
 
-function SortableFilePreview({ item, onRemove }) {
+function SortableFilePreview({ item, onRemove, showRemove, orderBadge, previewClassName, iconClassName, onPreview }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.id,
   });
@@ -77,17 +97,55 @@ function SortableFilePreview({ item, onRemove }) {
       }}
       className="rounded-3xl"
     >
-      <PreviewContent item={item} onRemove={onRemove} dragHandleProps={{ ...attributes, ...listeners }} />
+      <PreviewContent
+        item={item}
+        onRemove={onRemove}
+        dragHandleProps={{ ...attributes, ...listeners }}
+        showRemove={showRemove}
+        orderBadge={orderBadge}
+        previewClassName={previewClassName}
+        iconClassName={iconClassName}
+        onPreview={onPreview}
+      />
     </div>
   );
 }
 
-function FilePreview({ item, onRemove, sortable = false }) {
+function FilePreview({
+  item,
+  onRemove,
+  sortable = false,
+  showRemove = true,
+  orderBadge = null,
+  previewClassName = 'h-16 w-16',
+  iconClassName = 'h-7 w-7',
+  onPreview = null,
+}) {
   if (sortable) {
-    return <SortableFilePreview item={item} onRemove={onRemove} />;
+    return (
+      <SortableFilePreview
+        item={item}
+        onRemove={onRemove}
+        showRemove={showRemove}
+        orderBadge={orderBadge}
+        previewClassName={previewClassName}
+        iconClassName={iconClassName}
+        onPreview={onPreview}
+      />
+    );
   }
 
-  return <PreviewContent item={item} onRemove={onRemove} />;
+  return (
+    <PreviewContent
+      item={item}
+      onRemove={onRemove}
+      showRemove={showRemove}
+      orderBadge={orderBadge}
+      previewClassName={previewClassName}
+      iconClassName={iconClassName}
+      onPreview={onPreview}
+    />
+  );
 }
 
 export default FilePreview;
