@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Github, Instagram } from 'lucide-react';
 
 function Footer() {
   const { t } = useTranslation();
@@ -28,16 +29,41 @@ function Footer() {
           <div className="space-y-3 text-center lg:text-left">
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">{t('footer.creationLabel')}</p>
             <p className="leading-7">{t('footer.createdBy')}</p>
-            <a
-              href="https://www.linkedin.com/in/heliojunior1218/"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
-              aria-label="LinkedIn de Hélio Júnior"
-            >
-              <img src={linkedinIcon} alt="LinkedIn" className="h-5 w-5" loading="lazy" />
-              {t('footer.linkedinLabel')}
-            </a>
+            <p className="leading-7 text-slate-600 dark:text-slate-300">{t('footer.freeNoAds')}</p>
+            <div className="flex flex-wrap justify-center gap-2.5 lg:justify-start">
+              <a
+                href="https://www.linkedin.com/in/heliojunior1218/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
+                aria-label="LinkedIn de Hélio Júnior"
+              >
+                <img src={linkedinIcon} alt="LinkedIn" className="h-5 w-5" loading="lazy" />
+                {t('footer.linkedinLabel')}
+              </a>
+
+              <a
+                href="https://github.com/HelioASjunior/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
+                aria-label="GitHub de Hélio Júnior"
+              >
+                <Github className="h-5 w-5" />
+                GitHub
+              </a>
+
+              <a
+                href="https://instagram.com/xinoqs"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-5 w-5" />
+                Instagram
+              </a>
+            </div>
           </div>
         </div>
 
