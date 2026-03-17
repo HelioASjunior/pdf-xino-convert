@@ -7,7 +7,7 @@ const socialLinks = [
     icon: Github,
   },
   {
-    label: 'LinkedIn de Hélio Júnior',
+    label: 'LinkedIn de Hélio Jr.',
     href: 'https://www.linkedin.com/in/heliojunior1218/',
     icon: Linkedin,
   },

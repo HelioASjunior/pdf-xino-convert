@@ -76,7 +76,7 @@ const resources = {
         highlight2: 'Ferramentas pensadas para arquivos prontos para compartilhar.',
         highlight3: 'Interface limpa para executar tarefas sem etapas desnecessárias.',
         creationLabel: 'Criação',
-        createdBy: 'Projeto desenvolvido por Hélio Júnior.',
+        createdBy: 'Projeto desenvolvido por Hélio Jr.',
         freeNoAds: 'Gratuito e sem anúncios.',
         linkedinLabel: 'LinkedIn',
         privacyNotice: '© PDFXino 2026 ® - Todos os direitos reservados.',
