@@ -56,6 +56,10 @@ const ROUTE_SEO = {
     title: 'Unir PDF Online Grátis | PDFXino',
     description: 'Una arquivos PDF online grátis em poucos passos com o PDFXino.',
   },
+  '/conversor-audio': {
+    title: 'Conversor de Áudio Online Grátis | PDFXino',
+    description: 'Converta MP3, WAV, OGG, FLAC, AAC e M4A online grátis no navegador com download imediato.',
+  },
 };
 
 function normalizePath(pathname) {

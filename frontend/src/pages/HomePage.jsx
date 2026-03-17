@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import {
   Archive,
+  AudioLines,
   Crop,
   FileImage,
   FileOutput,
@@ -38,6 +39,7 @@ function HomePage() {
     ],
     utility: [
       { title: t('home.cat.utilitiesTitle'), description: t('home.cat.utilitiesDesc'), href: '/utilities', icon: FolderArchive, accent: 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100', thumbnail: visual('utilities.svg') },
+      { title: 'Conversor de Áudio', description: 'Converta MP3, WAV, OGG, FLAC, AAC, M4A e outros formatos de áudio.', href: '/conversor-audio', icon: AudioLines, accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300', thumbnail: visual('utilities.svg') },
     ],
   }), [t]);
 

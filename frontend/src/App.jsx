@@ -21,6 +21,7 @@ const ScanDocumentPage = lazy(() => import('./pages/ScanDocumentPage'));
 const PdfToWordPage = lazy(() => import('./pages/PdfToWordPage'));
 const WordToPdfPage = lazy(() => import('./pages/WordToPdfPage'));
 const MergePdfPage = lazy(() => import('./pages/MergePdfPage'));
+const AudioConverterPage = lazy(() => import('./pages/AudioConverterPage'));
 
 function App() {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ function App() {
     { label: t('nav.imageTools'), href: '/image-tools' },
     { label: t('nav.documentTools'), href: '/document-tools' },
     { label: t('nav.utilities'), href: '/utilities' },
+    { label: 'Conversor de Áudio', href: '/conversor-audio' },
   ];
 
   return (
@@ -59,6 +61,7 @@ function App() {
                       <Route path="/pdf-para-word" element={<PdfToWordPage />} />
                       <Route path="/word-para-pdf" element={<WordToPdfPage />} />
                       <Route path="/unir-pdf" element={<MergePdfPage />} />
+                      <Route path="/conversor-audio" element={<AudioConverterPage />} />
                       <Route path="*" element={<HomePage />} />
                     </Routes>
                   </Suspense>

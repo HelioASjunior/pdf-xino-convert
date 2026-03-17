@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Archive, Download, Sparkles, Compass, Package, ShieldCheck } from 'lucide-react';
+import { Archive, AudioLines, Download, Sparkles, Compass, Package, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
@@ -19,23 +19,33 @@ const MAX_GENERIC_FILE_SIZE = 100 * 1024 * 1024;
 
 const utilitiesHubItems = [
   {
+    key: 'zip',
     title: 'Gerar ZIP',
     description: 'Agrupe vários arquivos em um único pacote para download, envio ou organização interna.',
     icon: Package,
     badge: 'Fluxo principal',
     actionLabel: 'Preparar pacote',
     accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-    onClick: () => {},
     className: 'hover:-translate-y-0',
   },
   {
+    key: 'detector',
     title: 'Detecção automática',
     description: 'Envie um arquivo e receba um encaminhamento para a área mais adequada da plataforma.',
     icon: Compass,
     actionLabel: 'Ver recomendação',
     accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-    onClick: () => {},
     className: 'hover:-translate-y-0',
+  },
+  {
+    key: 'audio-converter',
+    title: 'Conversor de Áudio',
+    description: 'Converta MP3, WAV, OGG, FLAC, AAC, M4A e outros formatos compatíveis direto no navegador.',
+    icon: AudioLines,
+    href: '/conversor-audio',
+    actionLabel: 'Abrir conversor',
+    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+    badge: 'Novo',
   },
 ];
 
@@ -86,15 +96,15 @@ function UtilitiesPage() {
   const uploadRef = useRef(null);
   const suggestionsRef = useRef(null);
   const suggestions = items.length ? detectToolSuggestion(items[items.length - 1].file) : null;
-  const utilityActions = utilitiesHubItems.map((item, index) => ({
+  const utilityActions = utilitiesHubItems.map((item) => ({
     ...item,
-    current: index === 1 ? Boolean(suggestions) : false,
+    current: item.key === 'detector' ? Boolean(suggestions) : false,
     onClick: () => {
-      if (index === 0) {
+      if (item.key === 'zip') {
         uploadRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      if (index === 1) {
+      if (item.key === 'detector') {
         suggestionsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     },
@@ -178,6 +188,7 @@ function UtilitiesPage() {
         title="Recursos principais da área"
         description="A central combina organização simples com encaminhamento para outras categorias quando necessário."
         items={utilityActions}
+        columnsClassName="md:grid-cols-3"
       />
 
       <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">

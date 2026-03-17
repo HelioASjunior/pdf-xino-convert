@@ -39,6 +39,16 @@ export function detectToolSuggestion(file) {
     };
   }
 
+  if (mime.startsWith('audio/') || ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'opus', 'wma', 'aiff', 'amr'].includes(extension)) {
+    return {
+      category: 'Utilitários',
+      message: 'Arquivo de áudio detectado.',
+      suggestions: [
+        { label: 'Conversor de Áudio', href: '/conversor-audio' },
+      ],
+    };
+  }
+
   return {
     category: 'Utilitários',
     message: 'Tipo não mapeado automaticamente. Use utilitários para organizar e baixar arquivos.',

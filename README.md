@@ -69,6 +69,8 @@ O frontend oferece fluxos que funcionam no navegador (incluindo deploy estático
 
 - Geração de ZIP para múltiplos downloads
 - Detecção automática de formato com sugestão de ferramenta
+- Conversor de áudio (MP3, WAV, OGG, FLAC, AAC, M4A, MP4, OPUS)
+- Conversão em lote de até 10 arquivos com download direto (arquivo único) ou ZIP (múltiplos)
 
 ### UX / UI
 
@@ -124,6 +126,7 @@ O backend permanece disponível para endpoints de upload/processamento e serve a
 - pdfjs-dist
 - jsPDF
 - JSZip
+- ffmpeg.wasm (core carregado em runtime no navegador)
 - Mammoth
 - xlsx
 - Lucide React
@@ -374,6 +377,8 @@ Teste sem scanner físico:
 
 - Alguns formatos de escritório (como DOC, ODT, PPT e PPTX) podem ter fidelidade parcial em conversão puramente client-side.
 - Compressão de PDF baseada em recomposição de páginas pode gerar perda visual em níveis mais agressivos.
+- O conversor de áudio depende do carregamento do FFmpeg via CDN no navegador; redes com bloqueio de CDN/proxy podem impedir a conversão.
+- A primeira carga do conversor de áudio pode ser mais lenta devido ao download inicial dos arquivos do FFmpeg.
 - GitHub Pages publica apenas frontend estático; para recursos dependentes de API, configure `VITE_API_BASE_URL` apontando para backend hospedado.
 
 ## Scripts disponíveis
