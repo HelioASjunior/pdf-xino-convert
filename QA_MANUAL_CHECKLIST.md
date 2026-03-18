@@ -226,3 +226,4 @@ Use este modelo para cada item:
 
 - Existe 1 vulnerabilidade alta em `xlsx` sem correção disponível no `npm audit` até o momento.
 - Recomenda-se monitorar novas versões da dependência e aplicar atualização quando houver correção oficial.
+- Mitigação aplicada: o parse de `XLS/XLSX` roda em `Web Worker` isolado com timeout, reduzindo impacto potencial no fluxo principal da interface.

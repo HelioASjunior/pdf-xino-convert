@@ -96,33 +96,38 @@ async function textFromCsv(file) {
 }
 
 async function textFromSpreadsheet(file) {
-  const XLSX = await import('xlsx');
   const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: 'array' });
 
-  if (!workbook.SheetNames?.length) {
-    return '';
-  }
-
-  const sheetTexts = workbook.SheetNames.map((sheetName) => {
-    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
-      header: 1,
-      blankrows: false,
+  return new Promise((resolve, reject) => {
+    const worker = new Worker(new URL('../workers/spreadsheetParser.worker.js', import.meta.url), {
+      type: 'module',
     });
 
-    const normalizedRows = rows
-      .map((row) => row.map((cell) => String(cell ?? '').trim()))
-      .filter((row) => row.some((cell) => cell.length > 0))
-      .map((row) => row.join(' | '));
+    const timeoutId = setTimeout(() => {
+      worker.terminate();
+      reject(new Error('Tempo limite excedido ao processar a planilha.'));
+    }, 8000);
 
-    if (!normalizedRows.length) {
-      return `Planilha: ${sheetName}\n(Sem dados detectados)`;
-    }
+    worker.onmessage = (event) => {
+      clearTimeout(timeoutId);
+      worker.terminate();
 
-    return [`Planilha: ${sheetName}`, ...normalizedRows].join('\n');
+      if (event.data?.ok) {
+        resolve(event.data.text ?? '');
+        return;
+      }
+
+      reject(new Error(event.data?.error || 'Falha ao processar planilha.'));
+    };
+
+    worker.onerror = () => {
+      clearTimeout(timeoutId);
+      worker.terminate();
+      reject(new Error('Erro interno ao processar planilha.'));
+    };
+
+    worker.postMessage({ arrayBuffer: buffer }, [buffer]);
   });
-
-  return sheetTexts.join('\n\n');
 }
 
 export function getUnsupportedSuggestions() {
@@ -181,7 +186,7 @@ export async function convertDocumentFileToPdf(file) {
       supported: true,
       blob: await toPdfBlobFromText(text, `Planilha para PDF - ${file.name}`),
       fileName: `${file.name.replace(/\.[^/.]+$/, '')}.pdf`,
-      warning: 'Conversão simplificada: fórmulas, estilos avançados e elementos complexos podem não ser preservados integralmente.',
+      warning: 'Conversão simplificada: fórmulas, estilos avançados e elementos complexos podem não ser preservados integralmente. Para maior estabilidade, o processamento é isolado em sandbox no navegador.',
     };
   }
 
