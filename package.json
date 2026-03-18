@@ -17,6 +17,7 @@
     "kill:4173": "node scripts/kill-port.mjs 4173",
     "preview:pages:kill": "npm run kill:4173 && npm run preview:pages --",
     "qa:assets": "node scripts/generate-qa-assets.mjs",
-    "port:4173": "node scripts/inspect-port.mjs 4173"
+    "port:4173": "node scripts/inspect-port.mjs 4173",
+    "test:xlsx-pdf": "npm run qa:assets && node scripts/test-xlsx-to-pdf.mjs"
   }
 }
