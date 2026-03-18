@@ -45,17 +45,54 @@ async function toPdfBlobFromText(content, title) {
   return pdf.output('blob');
 }
 
-async function textFromSpreadsheet(file) {
-  const XLSX = await import('xlsx');
-  const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: 'array' });
-  const firstSheetName = workbook.SheetNames[0];
-  if (!firstSheetName) {
+function parseDelimitedLine(line, delimiter) {
+  const cells = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const nextChar = line[index + 1];
+
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        current += '"';
+        index += 1;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
+    }
+
+    if (char === delimiter && !inQuotes) {
+      cells.push(current.trim());
+      current = '';
+      continue;
+    }
+
+    current += char;
+  }
+
+  cells.push(current.trim());
+  return cells;
+}
+
+async function textFromCsv(file) {
+  const rawText = await file.text();
+  const lines = rawText
+    .replace(/^\uFEFF/, '')
+    .split(/\r\n|\n|\r/g)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (!lines.length) {
     return '';
   }
 
-  const rows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName], { header: 1, blankrows: false });
-  return rows.map((row) => row.map((cell) => String(cell ?? '')).join(' | ')).join('\n');
+  const delimiter = lines.some((line) => line.includes(';')) ? ';' : ',';
+  return lines
+    .map((line) => parseDelimitedLine(line, delimiter).join(' | '))
+    .join('\n');
 }
 
 export function getUnsupportedSuggestions() {
@@ -98,13 +135,25 @@ export async function convertDocumentFileToPdf(file) {
     };
   }
 
-  if (['csv', 'xls', 'xlsx'].includes(ext)) {
-    const text = await textFromSpreadsheet(file);
+  if (ext === 'csv') {
+    const text = await textFromCsv(file);
     return {
       supported: true,
       blob: await toPdfBlobFromText(text, `Planilha para PDF - ${file.name}`),
       fileName: `${file.name.replace(/\.[^/.]+$/, '')}.pdf`,
       warning: 'Conversão simplificada: tabelas complexas e fórmulas avançadas podem perder formatação.',
+    };
+  }
+
+  if (['xls', 'xlsx'].includes(ext)) {
+    return {
+      supported: false,
+      reason: unsupportedMessage,
+      suggestions: [
+        'Exporte a planilha para CSV ou PDF na ferramenta de origem para manter o fluxo seguro.',
+        'Se precisar de PDF simples, prefira CSV para conversão direta nesta página.',
+        'Para arquivos complexos com múltiplas abas e fórmulas, revise o resultado após exportar pelo Excel ou similar.',
+      ],
     };
   }
 

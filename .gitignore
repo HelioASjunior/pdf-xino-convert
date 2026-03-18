@@ -4,10 +4,7 @@ coverage/
 .DS_Store
 Thumbs.db
 *.log
-backend/uploads/*
-backend/temp/*
-!backend/uploads/.gitkeep
-!backend/temp/.gitkeep
 .env
 frontend/.env.local
 prompt_projeto.txt
+qa-assets/

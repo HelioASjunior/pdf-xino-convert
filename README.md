@@ -2,12 +2,11 @@
 
 Plataforma web para conversão, organização e preparação de arquivos com foco em produtividade.
 
-O projeto é um monorepo com frontend em React + Vite e backend em Node.js + Express.
+O projeto é frontend-only, com interface em React + Vite e processamento executado no navegador.
 
-Versão curta em inglês: [README.en.md](README.en.md)
+Versão em inglês: [README.en.md](README.en.md)
 
-- Frontend (workspace): `frontend/`
-- Backend (workspace): `backend/`
+- Frontend: `frontend/`
 - Build estático para GitHub Pages: `docs/`
 
 ## Sumário
@@ -24,7 +23,6 @@ Versão curta em inglês: [README.en.md](README.en.md)
 - [Variáveis de ambiente](#variáveis-de-ambiente)
 - [Como rodar localmente](#como-rodar-localmente)
 - [Build e deploy](#build-e-deploy)
-- [API backend](#api-backend)
 - [Scanner (bridge local)](#scanner-bridge-local)
 - [Limitações conhecidas](#limitações-conhecidas)
 - [Scripts disponíveis](#scripts-disponíveis)
@@ -33,22 +31,22 @@ Versão curta em inglês: [README.en.md](README.en.md)
 
 ## Language
 
-- Main documentation (Português): [README.md](README.md)
-- Short English version: [README.en.md](README.en.md)
+- Documentação principal (Português): [README.md](README.md)
+- English version: [README.en.md](README.en.md)
 
 ## Visão geral
 
 O PDF XinoConvert reúne ferramentas de PDF, imagem, documentos e utilitários em uma interface única.
 
-O frontend oferece fluxos que funcionam no navegador (incluindo deploy estático no GitHub Pages). Para operações que dependem de API, o backend pode ser executado separadamente e conectado via variável de ambiente.
+Os fluxos principais rodam diretamente no navegador e podem ser publicados como site estático.
 
 ## Recursos
 
 ### PDF
 
-- Imagem para PDF (upload múltiplo, ordenação e saída em PDF)
-- PDF para imagens (JPG/PNG com opção de ZIP)
-- Comprimir PDF
+- Imagem para PDF com múltiplos arquivos e ordenação
+- PDF para imagens em JPG ou PNG com exportação ZIP
+- Compressão de PDF no navegador
 - Juntar PDF
 - Dividir PDF
 - Rotacionar PDF
@@ -57,24 +55,24 @@ O frontend oferece fluxos que funcionam no navegador (incluindo deploy estático
 
 ### Imagem
 
-- Conversão de formato (JPG, PNG, WEBP, BMP, GIF)
+- Conversão de formato entre JPG, PNG, WEBP, BMP e GIF
 - Fluxo de múltiplos arquivos
 
 ### Documentos
 
-- Conversão de documentos para PDF (ex.: TXT, MD, RTF, DOCX, CSV, XLS, XLSX)
+- Conversão de documentos para PDF, incluindo TXT, MD, RTF, DOCX e CSV, com orientação assistida para formatos de escritório mais complexos
 - Fluxo de digitalização com preparação de páginas
 
 ### Utilitários
 
 - Geração de ZIP para múltiplos downloads
 - Detecção automática de formato com sugestão de ferramenta
-- Conversor de áudio (MP3, WAV, OGG, FLAC, AAC, M4A, MP4, OPUS)
-- Conversão em lote de até 10 arquivos com download direto (arquivo único) ou ZIP (múltiplos)
+- Conversor de áudio com suporte a MP3, WAV, OGG, FLAC, AAC, M4A, MP4 e OPUS
+- Conversão em lote de até 10 arquivos
 
 ### UX / UI
 
-- Layout responsivo (desktop e mobile)
+- Layout responsivo para desktop e mobile
 - Sidebar flutuante no desktop
 - Tema claro/escuro
 - Feedback visual de progresso e estado
@@ -82,9 +80,7 @@ O frontend oferece fluxos que funcionam no navegador (incluindo deploy estático
 
 ## Idiomas
 
-A interface possui internacionalização com alternância de idioma no menu.
-
-Idiomas disponíveis:
+A interface possui alternância de idioma no menu.
 
 - Português (pt-BR)
 - English (en)
@@ -93,23 +89,19 @@ Idiomas disponíveis:
 
 Detalhes da implementação:
 
-- i18n com `i18next` + `react-i18next`
+- i18n com `i18next` e `react-i18next`
 - idioma persistido em `localStorage`
-- seletor com bandeiras em SVG em `frontend/public/assets/flags/`
+- seletor com bandeiras SVG em `frontend/public/assets/flags/`
 
 ## Arquitetura
 
 ### Frontend-first para GitHub Pages
 
-A aplicação pode ser publicada como site estático no GitHub Pages com conteúdo gerado em `docs/`.
+A aplicação pode ser publicada como site estático no GitHub Pages com saída em `docs/`.
 
 - roteamento SPA com `HashRouter`
 - assets estáticos otimizados pelo Vite
-- sem necessidade de backend para partes totalmente client-side
-
-### Backend opcional para rotas API
-
-O backend permanece disponível para endpoints de upload/processamento e serve arquivos temporários gerados por certos fluxos.
+- processamento local no navegador para os fluxos principais
 
 ## Stack
 
@@ -119,43 +111,20 @@ O backend permanece disponível para endpoints de upload/processamento e serve a
 - Vite
 - Tailwind CSS
 - React Router
-- Axios
 - i18next + react-i18next
 - dnd-kit
 - pdf-lib
 - pdfjs-dist
 - jsPDF
 - JSZip
-- ffmpeg.wasm (core carregado em runtime no navegador)
+- ffmpeg.wasm carregado em runtime no navegador
 - Mammoth
-- xlsx
 - Lucide React
-
-### Backend
-
-- Node.js
-- Express
-- Multer
-- pdf-lib
-- pdfjs-dist
-- @napi-rs/canvas
-- Archiver
-- Helmet
-- CORS
-- express-rate-limit
-- sanitize-filename
 
 ## Estrutura do projeto
 
 ```text
 .
-├─ backend/
-│  ├─ controllers/
-│  ├─ routes/
-│  ├─ services/
-│  ├─ utils/
-│  ├─ app.js
-│  └─ server.js
 ├─ docs/
 │  ├─ index.html
 │  ├─ assets/
@@ -178,9 +147,6 @@ O backend permanece disponível para endpoints de upload/processamento e serve a
 │  │  └─ utils/
 │  ├─ index.html
 │  └─ vite.config.js
-├─ .github/workflows/
-│  ├─ deploy-pages.yml
-│  └─ validate-pr.yml
 ├─ package.json
 └─ README.md
 ```
@@ -198,37 +164,24 @@ Na raiz do projeto:
 npm install
 ```
 
-Esse comando instala dependências da raiz e dos workspaces `frontend` e `backend`.
+Esse comando instala as dependências da raiz e do workspace `frontend`.
 
 ## Variáveis de ambiente
-
-### Backend
-
-Arquivo de exemplo: `backend/.env.example`
-
-```env
-PORT=5000
-CLIENT_ORIGIN=http://localhost:5173
-```
 
 ### Frontend
 
 Arquivo de exemplo: `frontend/.env.example`
 
 ```env
-VITE_API_BASE_URL=http://localhost:5000
 VITE_SCANNER_PROVIDER=bridge
 VITE_SCANNER_BRIDGE_URL=http://127.0.0.1:24833
 ```
 
 Notas:
 
-- Sem `VITE_API_BASE_URL`, o frontend usa as configurações locais padrão de desenvolvimento.
 - `VITE_SCANNER_PROVIDER=mock` permite testar a UI de scanner sem dispositivo real.
 
 ## Como rodar localmente
-
-### Frontend + Backend
 
 Na raiz:
 
@@ -236,18 +189,9 @@ Na raiz:
 npm run dev
 ```
 
-Serviços padrão:
+URL padrão: `http://localhost:5173`
 
-- Frontend: `http://localhost:5173`
-- Backend: `http://localhost:5000`
-
-### Somente backend
-
-```bash
-npm run start
-```
-
-### Somente frontend
+Comando equivalente do workspace:
 
 ```bash
 npm run dev -w frontend
@@ -284,72 +228,12 @@ Workflows incluídos:
 
 Fluxo esperado:
 
-1. PR para branch principal: valida build
-2. Push em branch principal: gera build e publica Pages
+1. PR para a branch principal valida o build.
+2. Push na branch principal gera o build e publica no GitHub Pages.
 
 URL pública:
 
 - https://helioasjunior.github.io/pdf-xino-convert/
-
-## API backend
-
-Base local padrão:
-
-- `http://localhost:5000`
-
-### Health check
-
-- `GET /api/health`
-
-Retorno exemplo:
-
-```json
-{ "status": "ok" }
-```
-
-### Imagens para PDF
-
-- `POST /api/image-to-pdf`
-- multipart field: `images` (até 25 arquivos)
-
-Campos opcionais:
-
-- `orientation`: `portrait` | `landscape`
-- `pageSize`: `A4` | `Letter` | `Legal`
-- `margin`
-- `imageFit`: `contain` | `cover` | `stretch`
-- `compressImages`: `true` | `false`
-
-Resposta: download de arquivo PDF.
-
-### PDF para imagens
-
-- `POST /api/pdf-to-images`
-- multipart field: `pdf`
-
-Campos opcionais:
-
-- `format`: `png` | `jpg`
-
-Resposta: JSON com páginas renderizadas e ZIP.
-
-### Compressão de PDF
-
-- `POST /api/compress-pdf`
-- multipart field: `pdf`
-
-Campos opcionais:
-
-- `level`: `low` | `medium` | `high`
-
-Resposta: download do PDF compactado.
-
-Headers úteis de resposta:
-
-- `X-Original-Size`
-- `X-Final-Size`
-- `X-Reduction-Percent`
-- `X-Download-Filename`
 
 ## Scanner (bridge local)
 
@@ -369,38 +253,31 @@ Endpoints esperados no bridge local:
 
 Teste sem scanner físico:
 
-1. Defina `VITE_SCANNER_PROVIDER=mock`
-2. Rode `npm run dev`
-3. Acesse a página de escaneamento
+1. Defina `VITE_SCANNER_PROVIDER=mock`.
+2. Rode `npm run dev`.
+3. Acesse a página de escaneamento.
 
 ## Limitações conhecidas
 
-- Alguns formatos de escritório (como DOC, ODT, PPT e PPTX) podem ter fidelidade parcial em conversão puramente client-side.
+- Alguns formatos de escritório, como DOC, ODT, PPT e PPTX, podem ter fidelidade parcial em conversão puramente client-side.
 - Compressão de PDF baseada em recomposição de páginas pode gerar perda visual em níveis mais agressivos.
-- O conversor de áudio depende do carregamento do FFmpeg via CDN no navegador; redes com bloqueio de CDN/proxy podem impedir a conversão.
+- O conversor de áudio depende do carregamento do FFmpeg via CDN no navegador; redes com bloqueio de CDN ou proxy podem impedir a conversão.
 - A primeira carga do conversor de áudio pode ser mais lenta devido ao download inicial dos arquivos do FFmpeg.
-- GitHub Pages publica apenas frontend estático; para recursos dependentes de API, configure `VITE_API_BASE_URL` apontando para backend hospedado.
 
 ## Scripts disponíveis
 
 ### Raiz
 
-- `npm run dev` (frontend + backend)
-- `npm run build` (build frontend)
-- `npm run build:pages` (build frontend para `docs/`)
-- `npm run preview:pages` (preview do build)
-- `npm run start` (backend em produção)
+- `npm run dev` para o frontend
+- `npm run build` para o build do frontend
+- `npm run build:pages` para gerar `docs/`
+- `npm run preview:pages` para visualizar o build
 
 ### Frontend
 
 - `npm run dev -w frontend`
 - `npm run build -w frontend`
 - `npm run preview -w frontend`
-
-### Backend
-
-- `npm run dev -w backend`
-- `npm run start -w backend`
 
 ## Roadmap
 

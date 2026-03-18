@@ -1,0 +1,13 @@
+ferramenta,rota,prioridade,caso_teste,status,evidencia,observacao,arquivo_entrada,arquivo_saida
+Home e navegacao,/,Alta,Abrir home e acessar links principais,Pendente,,,N/A,N/A
+Imagem para PDF,/imagem-para-pdf,Alta,Enviar 2 imagens e gerar PDF,Pendente,,,qa-assets/images/sample-card-1.svg | qa-assets/images/sample-card-2.svg,
+PDF para Imagens,/pdf-para-imagens,Alta,Enviar PDF com 2+ paginas e extrair imagens,Pendente,,,qa-assets/pdf/sample-two-pages.pdf,
+Comprimir PDF,/comprimir-pdf,Alta,Enviar PDF e gerar versao comprimida,Pendente,,,qa-assets/pdf/sample-two-pages.pdf,
+Ferramentas de PDF,/pdf-tools,Alta,Alternar operacoes e validar controles,Pendente,,,N/A,N/A
+Unir PDF,/unir-pdf,Media,Validar pagina e executar uniao via central de PDF,Pendente,,,qa-assets/pdf/sample-single-page.pdf | qa-assets/pdf/sample-two-pages.pdf,
+Documentos para PDF,/document-tools,Alta,Enviar DOCX simples e gerar PDF,Pendente,,,qa-assets/documents/sample.docx,
+PDF para Word,/pdf-para-word,Media,Enviar PDF simples e gerar DOCX,Pendente,,,qa-assets/pdf/sample-single-page.pdf,
+Word para PDF,/word-para-pdf,Alta,Enviar DOCX simples e gerar PDF,Pendente,,,qa-assets/documents/sample.docx,
+Utilitarios ZIP,/utilities,Media,Enviar multiplos arquivos e gerar ZIP,Pendente,,,qa-assets/images/sample-card-1.svg | qa-assets/pdf/sample-single-page.pdf | qa-assets/documents/sample.txt,
+Conversor de Audio,/conversor-audio,Media,Enviar audio e converter formato,Pendente,,,qa-assets/audio/sample-tone.wav,
+Escanear Documento,/escanear-documento,Media,Enviar PDF ou imagens escaneadas e finalizar fluxo,Pendente,,,qa-assets/pdf/sample-two-pages.pdf | qa-assets/images/sample-card-1.svg | qa-assets/images/sample-card-2.svg,
