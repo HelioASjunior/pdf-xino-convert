@@ -95,6 +95,36 @@ async function textFromCsv(file) {
     .join('\n');
 }
 
+async function textFromSpreadsheet(file) {
+  const XLSX = await import('xlsx');
+  const buffer = await file.arrayBuffer();
+  const workbook = XLSX.read(buffer, { type: 'array' });
+
+  if (!workbook.SheetNames?.length) {
+    return '';
+  }
+
+  const sheetTexts = workbook.SheetNames.map((sheetName) => {
+    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+      header: 1,
+      blankrows: false,
+    });
+
+    const normalizedRows = rows
+      .map((row) => row.map((cell) => String(cell ?? '').trim()))
+      .filter((row) => row.some((cell) => cell.length > 0))
+      .map((row) => row.join(' | '));
+
+    if (!normalizedRows.length) {
+      return `Planilha: ${sheetName}\n(Sem dados detectados)`;
+    }
+
+    return [`Planilha: ${sheetName}`, ...normalizedRows].join('\n');
+  });
+
+  return sheetTexts.join('\n\n');
+}
+
 export function getUnsupportedSuggestions() {
   return [
     'Priorize uma versão em PDF já exportada pela ferramenta de origem quando disponível.',
@@ -146,14 +176,12 @@ export async function convertDocumentFileToPdf(file) {
   }
 
   if (['xls', 'xlsx'].includes(ext)) {
+    const text = await textFromSpreadsheet(file);
     return {
-      supported: false,
-      reason: unsupportedMessage,
-      suggestions: [
-        'Exporte a planilha para CSV ou PDF na ferramenta de origem para manter o fluxo seguro.',
-        'Se precisar de PDF simples, prefira CSV para conversão direta nesta página.',
-        'Para arquivos complexos com múltiplas abas e fórmulas, revise o resultado após exportar pelo Excel ou similar.',
-      ],
+      supported: true,
+      blob: await toPdfBlobFromText(text, `Planilha para PDF - ${file.name}`),
+      fileName: `${file.name.replace(/\.[^/.]+$/, '')}.pdf`,
+      warning: 'Conversão simplificada: fórmulas, estilos avançados e elementos complexos podem não ser preservados integralmente.',
     };
   }
 

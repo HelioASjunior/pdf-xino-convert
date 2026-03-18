@@ -60,7 +60,7 @@ Os fluxos principais rodam diretamente no navegador e podem ser publicados como 
 
 ### Documentos
 
-- Conversão de documentos para PDF, incluindo TXT, MD, RTF, DOCX e CSV, com orientação assistida para formatos de escritório mais complexos
+- Conversão de documentos para PDF, incluindo TXT, MD, RTF, DOCX, CSV, XLS e XLSX
 - Fluxo de digitalização com preparação de páginas
 
 ### Utilitários
@@ -119,6 +119,7 @@ A aplicação pode ser publicada como site estático no GitHub Pages com saída 
 - JSZip
 - ffmpeg.wasm carregado em runtime no navegador
 - Mammoth
+- xlsx
 - Lucide React
 
 ## Estrutura do projeto

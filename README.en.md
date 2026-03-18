@@ -60,7 +60,7 @@ The frontend includes browser-based flows and supports static deployment on GitH
 
 ### Documents
 
-- Convert documents to PDF (for example TXT, MD, RTF, DOCX and CSV), with assisted guidance for more complex office formats
+- Convert documents to PDF (for example TXT, MD, RTF, DOCX, CSV, XLS, XLSX)
 - Scan workflow with page preparation
 
 ### Utilities
@@ -121,6 +121,7 @@ The app can be published as a static site on GitHub Pages with output generated 
 - JSZip
 - ffmpeg.wasm (core loaded at runtime in the browser)
 - Mammoth
+- xlsx
 - Lucide React
 
 ## Project Structure

@@ -25,7 +25,7 @@ const formatCards = [
   },
   {
     title: 'Excel para PDF',
-    description: 'Converte CSV para PDF em modo tabular simplificado e orienta exportação segura para XLS e XLSX.',
+    description: 'Converte XLS, XLSX e CSV para PDF em modo tabular simplificado.',
     formats: [
       { label: 'XLSX', icon: formatIcon('xlsx.svg') },
       { label: 'XLS', icon: formatIcon('xls.svg') },
@@ -69,9 +69,9 @@ const documentHubItems = [
   },
   {
     title: 'Planilhas e dados',
-    description: 'Converta CSV diretamente e use orientação assistida para arquivos de planilha nativos.',
+    description: 'Leve tabelas e planilhas para PDF com uma estrutura simples de leitura.',
     icon: FileSpreadsheet,
-    badge: 'CSV direto, XLS/XLSX assistido',
+    badge: 'XLS, XLSX, CSV',
     actionLabel: 'Preparar planilha',
     accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
     onClick: () => {},
@@ -88,7 +88,7 @@ const documentTrustItems = [
   },
   {
     title: 'Cobertura ampla',
-    description: 'Word, CSV, apresentações e textos simples entram no mesmo fluxo, com orientação extra quando necessário.',
+    description: 'Word, planilhas, apresentações e textos simples já entram no mesmo fluxo operacional.',
     icon: FileSpreadsheet,
     accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
   },
@@ -103,11 +103,11 @@ const documentTrustItems = [
 const documentFaqItems = [
   {
     question: 'Quais formatos posso enviar nesta área?',
-    answer: 'Você pode enviar DOC, DOCX, ODT, XLS, XLSX, CSV, PPT, PPTX, TXT, RTF e MD. CSV tem conversão direta; XLS e XLSX seguem por orientação assistida.',
+    answer: 'Você pode enviar DOC, DOCX, ODT, XLS, XLSX, CSV, PPT, PPTX, TXT, RTF e MD.',
   },
   {
     question: 'Todos os formatos têm o mesmo tratamento?',
-    answer: 'Não. Alguns tipos contam com conversão direta e outros usam um fluxo assistido para preservar melhor a leitura final e reduzir risco de inconsistência.',
+    answer: 'Não. Alguns tipos contam com conversão direta e outros usam um fluxo assistido para preservar melhor a leitura final.',
   },
   {
     question: 'Posso converter mais de um documento por vez?',
@@ -228,7 +228,7 @@ function DocumentToolsPage() {
         <section className="space-y-6">
           <UploadArea
             title="Enviar documento"
-            description="Formatos aceitos: DOC, DOCX, ODT, XLS, XLSX, CSV, PPT, PPTX, TXT, RTF, MD. CSV converte direto; XLS/XLSX mostram a orientação recomendada."
+            description="Formatos aceitos: DOC, DOCX, ODT, XLS, XLSX, CSV, PPT, PPTX, TXT, RTF, MD."
             accept=".doc,.docx,.odt,.xls,.xlsx,.csv,.ppt,.pptx,.txt,.rtf,.md"
             onFilesSelected={onFilesSelected}
             error={error}
