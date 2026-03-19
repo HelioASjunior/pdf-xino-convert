@@ -295,5 +295,6 @@ Teste sem scanner físico:
 
 Este projeto está licenciado sob os termos do arquivo LICENSE.
 
-![alt text](<Captura de tela 2026-03-14 130525.png>)
 ![alt text](<Captura de tela 2026-03-14 130450.png>)
+![alt text](<Captura de tela 2026-03-14 130525.png>)
+![alt text](<Captura de tela 2026-03-14 123.png>)
