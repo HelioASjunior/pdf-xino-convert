@@ -214,6 +214,10 @@ npm run build:pages
 
 O artefato final é gerado em `docs/`.
 
+Durante o build, o script `scripts/generate-route-entrypoints.mjs` cria arquivos `index.html`
+em cada rota publica (por exemplo `docs/pdf-tools/index.html`). Isso evita resposta 404
+em acesso direto por URL e melhora a cobertura de indexacao no Search Console.
+
 ### Preview do build
 
 ```bash

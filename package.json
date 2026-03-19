@@ -7,8 +7,8 @@
   ],
   "scripts": {
     "dev": "npm run dev -w frontend",
-    "build": "npm run build -w frontend",
-    "build:pages": "npm run build -w frontend",
+    "build": "npm run build -w frontend && node scripts/generate-route-entrypoints.mjs",
+    "build:pages": "npm run build",
     "preview:frontend": "npm --workspace frontend run preview -- --strictPort",
     "preview:frontend:auto": "npm --workspace frontend run preview --",
     "preview:pages": "npm run preview:frontend --",

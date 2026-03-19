@@ -219,6 +219,10 @@ npm run build:pages
 
 Final artifacts are generated in docs.
 
+During build, `scripts/generate-route-entrypoints.mjs` also creates `index.html`
+files for each public route (for example `docs/pdf-tools/index.html`). This avoids
+404 on direct URL access and improves indexing coverage in Search Console.
+
 ### Build preview
 
 ```bash
