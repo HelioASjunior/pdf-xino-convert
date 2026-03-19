@@ -31,8 +31,8 @@ function App() {
     { label: t('nav.pdfTools'), href: '/pdf-tools' },
     { label: t('nav.imageTools'), href: '/image-tools' },
     { label: t('nav.documentTools'), href: '/document-tools' },
+    { label: t('nav.audioTools'), href: '/conversor-audio' },
     { label: t('nav.utilities'), href: '/utilities' },
-    { label: 'Conversor de Áudio', href: '/conversor-audio' },
   ];
 
   return (
@@ -40,34 +40,32 @@ function App() {
       <ToastProvider>
         <div className="relative min-h-screen overflow-x-hidden">
           <SeoManager />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[480px] grid-pattern opacity-40" />
-          <div className="relative w-full px-3 sm:px-5 lg:px-6">
-            <div className="lg:grid lg:min-h-screen lg:grid-cols-[236px_minmax(0,1fr)] lg:items-start lg:gap-5 lg:py-5">
-              <Header navigation={navigation} />
+          <div className="pointer-events-none absolute right-0 top-0 h-[86vh] w-[54%] grid-pattern opacity-55" />
+          <div className="relative mx-auto flex min-h-screen w-full max-w-[1360px] flex-col px-4 sm:px-6 lg:px-8">
+            <Header navigation={navigation} />
 
-              <div className="flex min-h-screen flex-col lg:min-h-0">
-                <main className="flex-1 py-8 md:py-10 lg:py-5">
-                  <Suspense fallback={<RouteFallback />}>
-                    <Routes>
-                      <Route path="/" element={<HomePage />} />
-                      <Route path="/pdf-tools" element={<PdfToolsPage />} />
-                      <Route path="/image-tools" element={<ImageToolsPage />} />
-                      <Route path="/document-tools" element={<DocumentToolsPage />} />
-                      <Route path="/utilities" element={<UtilitiesPage />} />
-                      <Route path="/imagem-para-pdf" element={<ImageToPdfPage />} />
-                      <Route path="/pdf-para-imagens" element={<PdfToImagesPage />} />
-                      <Route path="/comprimir-pdf" element={<CompressPdfPage />} />
-                      <Route path="/escanear-documento" element={<ScanDocumentPage />} />
-                      <Route path="/pdf-para-word" element={<PdfToWordPage />} />
-                      <Route path="/word-para-pdf" element={<WordToPdfPage />} />
-                      <Route path="/unir-pdf" element={<MergePdfPage />} />
-                      <Route path="/conversor-audio" element={<AudioConverterPage />} />
-                      <Route path="*" element={<HomePage />} />
-                    </Routes>
-                  </Suspense>
-                </main>
-                <Footer />
-              </div>
+            <div className="flex min-h-screen flex-col">
+              <main className="flex-1 py-6 md:py-10">
+                <Suspense fallback={<RouteFallback />}>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/pdf-tools" element={<PdfToolsPage />} />
+                    <Route path="/image-tools" element={<ImageToolsPage />} />
+                    <Route path="/document-tools" element={<DocumentToolsPage />} />
+                    <Route path="/utilities" element={<UtilitiesPage />} />
+                    <Route path="/imagem-para-pdf" element={<ImageToPdfPage />} />
+                    <Route path="/pdf-para-imagens" element={<PdfToImagesPage />} />
+                    <Route path="/comprimir-pdf" element={<CompressPdfPage />} />
+                    <Route path="/escanear-documento" element={<ScanDocumentPage />} />
+                    <Route path="/pdf-para-word" element={<PdfToWordPage />} />
+                    <Route path="/word-para-pdf" element={<WordToPdfPage />} />
+                    <Route path="/unir-pdf" element={<MergePdfPage />} />
+                    <Route path="/conversor-audio" element={<AudioConverterPage />} />
+                    <Route path="*" element={<HomePage />} />
+                  </Routes>
+                </Suspense>
+              </main>
+              <Footer />
             </div>
           </div>
           <FloatingSocialButtons />
