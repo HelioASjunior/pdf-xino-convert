@@ -2,21 +2,11 @@ import { useEffect, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const STORAGE_KEY = 'xino-first-visit-notice-session-v2';
-
 function FirstVisitNotice() {
   const { t } = useTranslation();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const alreadyConfirmed = sessionStorage.getItem(STORAGE_KEY) === 'true';
-    if (!alreadyConfirmed) {
-      setVisible(true);
-    }
-  }, []);
+  const [visible, setVisible] = useState(true);
 
   const handleConfirm = () => {
-    sessionStorage.setItem(STORAGE_KEY, 'true');
     setVisible(false);
   };
 
