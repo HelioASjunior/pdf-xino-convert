@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const STORAGE_KEY = 'xino-first-visit-notice-session-v1';
+const STORAGE_KEY = 'xino-first-visit-notice-session-v2';
 
 function FirstVisitNotice() {
   const { t } = useTranslation();
@@ -26,7 +26,7 @@ function FirstVisitNotice() {
 
   return (
     <aside
-      className="fixed inset-x-3 bottom-3 z-50 mx-auto w-[min(760px,calc(100%-1.5rem))] rounded-3xl border border-slate-200/90 bg-white/95 p-4 shadow-panel backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/95 sm:inset-x-6 sm:bottom-6 sm:p-5"
+      className="fixed inset-x-3 bottom-3 z-[70] mx-auto w-[min(760px,calc(100%-1.5rem))] rounded-3xl border border-slate-200/90 bg-white/95 p-4 shadow-panel backdrop-blur dark:border-slate-700/80 dark:bg-slate-900/95 sm:inset-x-6 sm:bottom-6 sm:p-5"
       role="dialog"
       aria-live="polite"
       aria-labelledby="first-visit-title"

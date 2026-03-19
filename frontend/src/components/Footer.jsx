@@ -4,13 +4,23 @@ import { Github, Instagram } from 'lucide-react';
 function Footer() {
   const { t } = useTranslation();
   const linkedinIcon = `${import.meta.env.BASE_URL}assets/social/linkedin.svg`;
+  const logoSrc = `${import.meta.env.BASE_URL}assets/logo_xinoconvert.png`;
 
   return (
     <footer className="pb-6 pt-6 sm:pb-8">
       <div className="glass-panel px-6 py-6 text-sm text-slate-500 dark:text-slate-400 lg:px-7 lg:py-7">
         <div className="grid gap-6 lg:grid-cols-[1.2fr_0.9fr_0.8fr]">
           <div className="space-y-3 text-center lg:text-left">
-            <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">PDF XinoConvert</p>
+            <div className="inline-flex items-center gap-3">
+              <img
+                src={logoSrc}
+                alt="Logo PDF Xino Convert"
+                className="h-10 w-10 rounded-lg object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <p className="font-display text-2xl text-slate-900 dark:text-slate-100">PDF XinoConvert</p>
+            </div>
             <p className="max-w-[34rem] leading-7 text-slate-600 dark:text-slate-300">
               {t('footer.tagline1')}
             </p>

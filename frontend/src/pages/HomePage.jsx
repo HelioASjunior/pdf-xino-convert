@@ -1,120 +1,182 @@
-import { useMemo, useState } from 'react';
-import {
-  Archive,
-  AudioLines,
-  Crop,
-  FileImage,
-  FileOutput,
-  FileText,
-  FolderArchive,
-  WandSparkles,
-} from 'lucide-react';
+﻿import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import HeroSection from '../components/HeroSection';
 import PrivacyPolicySection from '../components/PrivacyPolicySection';
-import ToolCard from '../components/ToolCard';
-import UploadArea from '../components/UploadArea';
-import { detectToolSuggestion } from '../utils/fileTypeDetector';
-
-const visual = (name) => `${import.meta.env.BASE_URL}assets/visuals/${name}`;
+import {
+  MergePdfIcon, SplitPdfIcon, CompressPdfIcon, PdfToWordIcon,
+  PdfToImagesIcon, RotatePdfIcon, RemovePagesIcon,
+  ImageToPdfIcon, ConvertImageIcon,
+  DocsToPdfIcon, WordToPdfIcon, ScanDocumentIcon,
+  AudioConverterIcon, UtilitiesIcon,
+} from '../components/ToolIcons';
 
 function HomePage() {
   const { t } = useTranslation();
-  const [suggestion, setSuggestion] = useState(null);
+  const [activeMenu, setActiveMenu] = useState('all');
 
-  const catalog = useMemo(() => ({
-    pdf: [
-      { title: t('home.cat.pdfKitTitle'),      description: t('home.cat.pdfKitDesc'),      href: '/pdf-tools',          icon: FileOutput,  accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',  thumbnail: visual('pdf-tools.svg') },
-      { title: t('home.cat.pdfToImagesTitle'), description: t('home.cat.pdfToImagesDesc'), href: '/pdf-para-imagens',   icon: FileImage,   accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300', thumbnail: visual('pdf-tools.svg') },
-      { title: t('home.cat.compressPdfTitle'), description: t('home.cat.compressPdfDesc'), href: '/comprimir-pdf',      icon: Archive,     accent: 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100',        thumbnail: visual('pdf-tools.svg') },
-    ],
-    image: [
-      { title: t('home.cat.imageToPdfTitle'),    description: t('home.cat.imageToPdfDesc'),    href: '/imagem-para-pdf', icon: FileOutput,   accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',  thumbnail: visual('image-tools.svg') },
-      { title: t('home.cat.convertImageTitle'),  description: t('home.cat.convertImageDesc'),  href: '/image-tools',     icon: WandSparkles, accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300', thumbnail: visual('image-tools.svg') },
-    ],
-    document: [
-      { title: t('home.cat.documentsToPdfTitle'), description: t('home.cat.documentsToPdfDesc'), href: '/document-tools',       icon: FileText, accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300', thumbnail: visual('document-tools.svg') },
-      { title: t('home.cat.scanDocumentTitle'),   description: t('home.cat.scanDocumentDesc'),   href: '/pdf-tools',           icon: Crop, accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300', thumbnail: visual('pdf-tools.svg') },
-    ],
-    utility: [
-      { title: t('home.cat.utilitiesTitle'), description: t('home.cat.utilitiesDesc'), href: '/utilities', icon: FolderArchive, accent: 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100', thumbnail: visual('utilities.svg') },
-      { title: 'Conversor de Áudio', description: 'Converta MP3, WAV, OGG, FLAC, AAC, M4A e outros formatos de áudio.', href: '/conversor-audio', icon: AudioLines, accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300', thumbnail: visual('utilities.svg') },
-    ],
-  }), [t]);
+  const menuTabs = useMemo(() => ([
+    { key: 'all',      label: t('home.tab_all',      { defaultValue: 'Todas' }) },
+    { key: 'pdf',      label: t('home.tab_pdf') },
+    { key: 'image',    label: t('home.tab_image') },
+    { key: 'audio',    label: t('home.tab_audio',    { defaultValue: 'Áudio' }) },
+    { key: 'document', label: t('home.tab_document') },
+    { key: 'utility',  label: t('home.tab_utility') },
+  ]), [t]);
 
-  const allTools = useMemo(() => Object.values(catalog).flat(), [catalog]);
+  const tools = useMemo(() => ([
+    {
+      title: t('home.cat.mergePdfTitle', { defaultValue: 'Unir PDF' }),
+      description: t('home.grid.mergePdf', { defaultValue: 'Combine múltiplos PDFs em um único arquivo.' }),
+      href: '/unir-pdf',
+      Icon: MergePdfIcon,
+      category: 'pdf',
+    },
+    {
+      title: t('home.grid.splitPdfTitle', { defaultValue: 'Dividir PDF' }),
+      description: t('home.grid.splitPdf', { defaultValue: 'Separe páginas e exporte as partes separadas.' }),
+      href: '/pdf-tools',
+      Icon: SplitPdfIcon,
+      category: 'pdf',
+    },
+    {
+      title: t('home.cat.compressPdfTitle'),
+      description: t('home.cat.compressPdfDesc'),
+      href: '/comprimir-pdf',
+      Icon: CompressPdfIcon,
+      category: 'pdf',
+    },
+    {
+      title: t('home.cat.pdfToWordTitle', { defaultValue: 'PDF para Word' }),
+      description: t('home.grid.pdfToWord', { defaultValue: 'Converta PDF para documento editável.' }),
+      href: '/pdf-para-word',
+      Icon: PdfToWordIcon,
+      category: 'pdf',
+    },
+    {
+      title: t('home.cat.pdfToImagesTitle'),
+      description: t('home.cat.pdfToImagesDesc'),
+      href: '/pdf-para-imagens',
+      Icon: PdfToImagesIcon,
+      category: 'pdf',
+    },
+    {
+      title: t('home.grid.rotatePdfTitle', { defaultValue: 'Rotacionar PDF' }),
+      description: t('home.grid.rotatePdf', { defaultValue: 'Corrija a orientação das páginas.' }),
+      href: '/pdf-tools',
+      Icon: RotatePdfIcon,
+      category: 'pdf',
+    },
+    {
+      title: t('home.grid.removePagesTitle', { defaultValue: 'Remover Páginas' }),
+      description: t('home.grid.removePages', { defaultValue: 'Elimine páginas específicas do PDF.' }),
+      href: '/pdf-tools',
+      Icon: RemovePagesIcon,
+      category: 'pdf',
+    },
+    {
+      title: t('home.cat.imageToPdfTitle'),
+      description: t('home.cat.imageToPdfDesc'),
+      href: '/imagem-para-pdf',
+      Icon: ImageToPdfIcon,
+      category: 'image',
+    },
+    {
+      title: t('home.cat.convertImageTitle'),
+      description: t('home.cat.convertImageDesc'),
+      href: '/image-tools',
+      Icon: ConvertImageIcon,
+      category: 'image',
+    },
+    {
+      title: t('home.cat.documentsToPdfTitle'),
+      description: t('home.cat.documentsToPdfDesc'),
+      href: '/document-tools',
+      Icon: DocsToPdfIcon,
+      category: 'document',
+    },
+    {
+      title: t('home.cat.wordToPdfTitle', { defaultValue: 'Word para PDF' }),
+      description: t('home.grid.wordToPdf', { defaultValue: 'Converta DOCX para PDF em poucos cliques.' }),
+      href: '/word-para-pdf',
+      Icon: WordToPdfIcon,
+      category: 'document',
+    },
+    {
+      title: t('home.cat.scanDocumentTitle'),
+      description: t('home.cat.scanDocumentDesc'),
+      href: '/escanear-documento',
+      Icon: ScanDocumentIcon,
+      category: 'document',
+    },
+    {
+      title: t('nav.audioTools', { defaultValue: 'Conversor de Áudio' }),
+      description: t('home.grid.audioConvert', { defaultValue: 'Converta MP3, WAV, OGG, FLAC e mais.' }),
+      href: '/conversor-audio',
+      Icon: AudioConverterIcon,
+      category: 'audio',
+    },
+    {
+      title: t('home.cat.utilitiesTitle'),
+      description: t('home.cat.utilitiesDesc'),
+      href: '/utilities',
+      Icon: UtilitiesIcon,
+      category: 'utility',
+    },
+  ]), [t]);
 
-  const detectFromUpload = (files) => {
-    if (!files.length) return;
-    setSuggestion(detectToolSuggestion(files[0]));
-  };
+  const visibleTools = activeMenu === 'all'
+    ? tools
+    : tools.filter((tool) => tool.category === activeMenu);
 
   return (
-    <div className="space-y-14">
-      <HeroSection />
+    <div className="space-y-10 pt-2">
+      <section id="funcionalidades" className="space-y-6">
+        {/* Compact section header */}
+        <div className="mx-auto max-w-2xl text-center">
+          <h1 className="font-display text-[1.65rem] font-semibold text-slate-900 sm:text-3xl">
+            {t('home.sectionTitle')}
+          </h1>
+          <p className="mt-2 text-sm leading-relaxed text-slate-500">
+            {t('home.sectionDesc')}
+          </p>
+        </div>
 
-      <section className="space-y-7">
-        <h2 className="sr-only">Ferramentas principais de PDFXino</h2>
-        <div className="mx-auto grid max-w-6xl auto-rows-fr gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          {allTools.map((tool) => (
-            <ToolCard key={tool.href} {...tool} />
+        {/* Category tabs */}
+        <div className="mx-auto flex max-w-4xl flex-wrap justify-center gap-2">
+          {menuTabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveMenu(tab.key)}
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                activeMenu === tab.key
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50 hover:ring-slate-300'
+              }`}
+            >
+              {tab.label}
+            </button>
           ))}
         </div>
-        <p className="mx-auto max-w-5xl text-sm leading-7 text-slate-600 dark:text-slate-300 sm:text-base">
-          Converta arquivos PDF online gratuitamente com rapidez e segurança. Ferramentas para PDF para Word, JPG, compressão, união e edição de PDFs.
-        </p>
-      </section>
 
-      <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-        <div className="glass-panel h-full min-h-[300px] p-6">
-          <h2 className="sr-only">Área de upload inteligente</h2>
-          <UploadArea
-            title={t('home.uploadTitle')}
-            description={t('home.uploadDesc')}
-            accept="*/*"
-            onFilesSelected={detectFromUpload}
-            error=""
-          />
-        </div>
-
-        <aside className="rounded-3xl border border-slate-200 bg-white/80 p-4 shadow-soft dark:border-slate-700 dark:bg-slate-900/60 lg:p-5">
-          <h2 className="font-display text-lg font-bold text-slate-900 dark:text-slate-100">{t('home.suggestionTitle')}</h2>
-          <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">
-            {suggestion ? suggestion.message : t('home.suggestionDefault')}
-          </p>
-
-          {suggestion ? (
-            <>
-              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                {t('home.suggestionCategory')}: {suggestion.category}
+        {/* Tool grid — iLovePDF style */}
+        <div className="mx-auto grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+          {visibleTools.map((tool) => (
+            <Link
+              key={`${tool.category}-${tool.title}`}
+              to={tool.href}
+              className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md"
+            >
+              <tool.Icon />
+              <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900">
+                {tool.title}
+              </h3>
+              <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500">
+                {tool.description}
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {suggestion.suggestions.map((item) => (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    className="rounded-xl border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </>
-          ) : null}
-        </aside>
-      </section>
-
-      <section className="glass-panel p-5 sm:p-6">
-        <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">Ferramentas em destaque para as proximas paginas</h2>
-        <p className="mt-2 text-sm leading-7 text-slate-600 dark:text-slate-300">
-          Essas rotas ja estao ativas para indexacao e serao expandidas com fluxos completos.
-        </p>
-        <nav aria-label="Ferramentas em preparação" className="mt-4 flex flex-wrap gap-2.5">
-          <Link to="/pdf-para-word" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">PDF para Word</Link>
-          <Link to="/word-para-pdf" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">Word para PDF</Link>
-          <Link to="/unir-pdf" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">Unir PDF</Link>
-        </nav>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <PrivacyPolicySection />
