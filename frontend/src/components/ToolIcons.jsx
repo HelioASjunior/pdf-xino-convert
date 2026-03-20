@@ -236,6 +236,27 @@ export function WordToPdfIcon() {
   );
 }
 
+export function PowerPointToPdfIcon() {
+  return (
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+      <rect width="44" height="44" rx="11" fill="#FFEDD5" />
+      {/* PowerPoint doc (left) */}
+      <rect x="3" y="12" width="15" height="18" rx="2" fill="#EA580C" />
+      {/* P */}
+      <path d="M7 17v8M7 17h3.4c1.4 0 2.6 1 2.6 2.5S11.8 22 10.4 22H7" stroke="white" strokeWidth="1.7" strokeLinecap="round" fill="none" />
+      <circle cx="13.2" cy="17.8" r="2.2" stroke="white" strokeWidth="1.3" fill="none" />
+      {/* Arrow */}
+      <path d="M19.5 21h6" stroke="#C2410C" strokeWidth="2" strokeLinecap="round" />
+      <path d="M23 18.5l2.5 2.5-2.5 2.5" stroke="#C2410C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {/* PDF doc (right) */}
+      <rect x="26.5" y="12" width="14" height="18" rx="2" fill="white" fillOpacity=".92" />
+      <rect x="29" y="18" width="9" height="1.5" rx=".75" fill="#FDBA74" />
+      <rect x="29" y="21.5" width="9" height="1.5" rx=".75" fill="#FDBA74" />
+      <rect x="29" y="25" width="5.5" height="1.5" rx=".75" fill="#FDBA74" />
+    </svg>
+  );
+}
+
 export function ScanDocumentIcon() {
   return (
     <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">

@@ -45,9 +45,9 @@ function Header({ navigation }) {
 
           <div className="hidden items-center justify-end gap-2 lg:flex">
             <LanguageSwitcher dropdownDir="down" />
-            <Link to="/imagem-para-pdf">
-              <Button className="gap-2 rounded-full px-6 py-2.5 text-sm">
-                {t('header.startNow')}
+            <Link to="/tour-pelo-site">
+              <Button className="gap-2 rounded-full border border-emerald-200 bg-emerald-500/90 px-5 py-2 text-sm text-white shadow-sm hover:bg-emerald-600 dark:border-emerald-900 dark:bg-emerald-600 dark:hover:bg-emerald-500">
+                {t('header.siteTour', { defaultValue: 'Tour pelo site' })}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
@@ -83,9 +83,9 @@ function Header({ navigation }) {
               {item.label}
             </NavLink>
           ))}
-          <Link to="/imagem-para-pdf" onClick={() => setOpen(false)}>
-            <Button className="mt-2 w-full gap-2 rounded-full">
-              {t('header.startNow')}
+          <Link to="/tour-pelo-site" onClick={() => setOpen(false)}>
+            <Button className="mt-2 w-full gap-2 rounded-full border border-emerald-200 bg-emerald-500/90 text-white shadow-sm hover:bg-emerald-600 dark:border-emerald-900 dark:bg-emerald-600 dark:hover:bg-emerald-500">
+              {t('header.siteTour', { defaultValue: 'Tour pelo site' })}
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>

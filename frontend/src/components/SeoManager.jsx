@@ -60,6 +60,10 @@ const ROUTE_SEO = {
     title: 'Conversor de Áudio Online Grátis | PDFXino',
     description: 'Converta MP3, WAV, OGG, FLAC, AAC e M4A online grátis no navegador com download imediato.',
   },
+  '/tour-pelo-site': {
+    title: 'Tour Pelo Site e Guia Rápido | PDFXino',
+    description: 'Entenda como usar as principais ferramentas do PDFXino em poucos passos com um guia simples e direto.',
+  },
 };
 
 function normalizePath(pathname) {
