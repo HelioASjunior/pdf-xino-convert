@@ -364,3 +364,135 @@ export async function compressPdfInBrowser(pdfFile, options = {}) {
     strategy: 'rasterize',
   };
 }
+
+function escapeXml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+async function buildDocxFromPages(pageTexts) {
+  const paragraphs = [];
+
+  for (let p = 0; p < pageTexts.length; p += 1) {
+    const { lines } = pageTexts[p];
+
+    if (p > 0) {
+      paragraphs.push('<w:p><w:r><w:br w:type="page"/></w:r></w:p>');
+    }
+
+    for (const line of lines) {
+      const safe = escapeXml(line);
+      if (safe.trim()) {
+        paragraphs.push(`<w:p><w:r><w:t xml:space="preserve">${safe}</w:t></w:r></w:p>`);
+      } else {
+        paragraphs.push('<w:p/>');
+      }
+    }
+  }
+
+  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>
+    ${paragraphs.join('\n    ')}
+    <w:sectPr>
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/>
+    </w:sectPr>
+  </w:body>
+</w:document>`;
+
+  const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`;
+
+  const relsRoot = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`;
+
+  const relsWord = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>`;
+
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', contentTypes);
+  zip.file('_rels/.rels', relsRoot);
+  zip.file('word/document.xml', documentXml);
+  zip.file('word/_rels/document.xml.rels', relsWord);
+
+  return zip.generateAsync({
+    type: 'blob',
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 },
+  });
+}
+
+export async function convertPdfToWord(pdfFile, options = {}) {
+  const { onProgress } = options;
+
+  const buffer = await pdfFile.arrayBuffer();
+  const loadingTask = pdfjsLib.getDocument({ data: buffer });
+  const pdf = await loadingTask.promise;
+
+  const pageTexts = [];
+
+  for (let index = 1; index <= pdf.numPages; index += 1) {
+    const page = await pdf.getPage(index);
+    const textContent = await page.getTextContent();
+
+    const rawItems = textContent.items
+      .filter((item) => typeof item.str === 'string')
+      .map((item) => ({
+        str: item.str,
+        x: item.transform[4],
+        y: Math.round(item.transform[5]),
+      }));
+
+    rawItems.sort((a, b) => b.y - a.y || a.x - b.x);
+
+    const lines = [];
+    let currentY = null;
+    let currentLine = '';
+
+    for (const item of rawItems) {
+      if (currentY === null || Math.abs(item.y - currentY) > 4) {
+        if (currentLine !== '') {
+          lines.push(currentLine);
+        }
+        currentLine = item.str;
+        currentY = item.y;
+      } else {
+        currentLine += (item.str.startsWith(' ') || currentLine.endsWith(' ') ? '' : ' ') + item.str;
+      }
+    }
+
+    if (currentLine !== '') {
+      lines.push(currentLine);
+    }
+
+    pageTexts.push({ pageNumber: index, lines });
+
+    if (typeof onProgress === 'function') {
+      onProgress(Math.round((index / pdf.numPages) * 88));
+    }
+  }
+
+  const docxBlob = await buildDocxFromPages(pageTexts);
+
+  if (typeof onProgress === 'function') {
+    onProgress(100);
+  }
+
+  return {
+    blob: docxBlob,
+    fileName: `${pdfFile.name.replace(/\.[^/.]+$/, '')}.docx`,
+    pageCount: pdf.numPages,
+  };
+}
