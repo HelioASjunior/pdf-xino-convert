@@ -21,6 +21,7 @@ const ROUTES = [
   '/word-para-pdf',
   '/unir-pdf',
   '/conversor-audio',
+  '/tour-pelo-site',
 ];
 
 function ensureNoTrailingSlash(route) {
