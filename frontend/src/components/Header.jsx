@@ -12,8 +12,8 @@ function Header({ navigation }) {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50">
-        <div className="mx-auto w-full max-w-[1360px] px-4 pt-3 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 pt-3">
+        <div className="mx-auto w-full max-w-[1360px] px-4 sm:px-6 lg:px-8">
           <div className="rounded-[20px] border border-slate-200/80 bg-white/72 px-4 py-3 backdrop-blur-md sm:px-5 lg:px-6">
             <div className="grid items-center gap-4 lg:grid-cols-[auto_1fr_auto]">
               <Link to="/" className="flex items-center gap-3">

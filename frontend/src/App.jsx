@@ -46,7 +46,7 @@ function App() {
             <Header navigation={navigation} />
 
             <div className="flex min-h-screen flex-col">
-              <main className="flex-1 pt-24 pb-6 md:pb-10">
+              <main className="flex-1 py-6 md:py-10">
                 <Suspense fallback={<RouteFallback />}>
                   <Routes>
                     <Route path="/" element={<HomePage />} />
