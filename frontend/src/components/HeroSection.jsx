@@ -20,7 +20,7 @@ function HeroSection() {
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-brand-700 dark:text-brand-300">{t('hero.badge')}</p>
           </div>
 
-          <h1 className="mx-auto max-w-[12ch] font-display text-[2.7rem] font-medium leading-[0.93] tracking-tight text-slate-900 dark:text-slate-50 sm:text-[3.5rem] lg:text-[5rem]">
+          <h1 className="mx-auto max-w-[12ch] font-display text-[2.7rem] font-medium leading-[1.1] tracking-tight text-slate-900 dark:text-slate-50 sm:text-[3.5rem] lg:text-[5rem]">
             {t('hero.title')}
           </h1>
 
