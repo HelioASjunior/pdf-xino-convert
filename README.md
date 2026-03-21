@@ -295,5 +295,8 @@ Teste sem scanner físico:
 
 Este projeto está licenciado sob os termos do arquivo LICENSE.
 
-![alt text](<Captura de tela 2026-03-14 130525.png>)
-![alt text](<Captura de tela 2026-03-14 130450.png>)
+<img width="1895" height="899" alt="Captura de tela 2026-03-19 122344" src="https://github.com/user-attachments/assets/6efb6d19-2f28-475c-9e8e-fbf94503232a" />
+<img width="1536" height="1024" alt="Captura de tela 2026-03-19 123" src="https://github.com/user-attachments/assets/443c0e18-8ffd-469a-8c1f-7930dd6413ee" />
+<img width="1883" height="887" alt="Captura de tela 2026-03-19 122324" src="https://github.com/user-attachments/assets/9c168b4e-e26a-4cbe-b06f-b40dd245b36d" />
+<img width="1894" height="888" alt="Captura de tela 2026-03-19 113406" src="https://github.com/user-attachments/assets/cbaedf73-b037-464e-b735-90b10c6ed672" />
+

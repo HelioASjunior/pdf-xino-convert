@@ -22,6 +22,7 @@ const PdfToWordPage = lazy(() => import('./pages/PdfToWordPage'));
 const WordToPdfPage = lazy(() => import('./pages/WordToPdfPage'));
 const MergePdfPage = lazy(() => import('./pages/MergePdfPage'));
 const AudioConverterPage = lazy(() => import('./pages/AudioConverterPage'));
+const SiteTourPage = lazy(() => import('./pages/SiteTourPage'));
 
 function App() {
   const { t } = useTranslation();
@@ -45,7 +46,7 @@ function App() {
             <Header navigation={navigation} />
 
             <div className="flex min-h-screen flex-col">
-              <main className="flex-1 py-6 md:py-10">
+              <main className="flex-1 pt-24 pb-6 md:pb-10">
                 <Suspense fallback={<RouteFallback />}>
                   <Routes>
                     <Route path="/" element={<HomePage />} />
@@ -61,6 +62,7 @@ function App() {
                     <Route path="/word-para-pdf" element={<WordToPdfPage />} />
                     <Route path="/unir-pdf" element={<MergePdfPage />} />
                     <Route path="/conversor-audio" element={<AudioConverterPage />} />
+                    <Route path="/tour-pelo-site" element={<SiteTourPage />} />
                     <Route path="*" element={<HomePage />} />
                   </Routes>
                 </Suspense>
