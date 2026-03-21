@@ -133,7 +133,7 @@ function HomePage() {
       <section id="funcionalidades" className="space-y-6">
         {/* Compact section header */}
         <div className="mx-auto max-w-2xl text-center">
-          <h1 className="font-display text-[1.65rem] font-semibold text-slate-900 sm:text-3xl">
+          <h1 className="font-display text-[1.35rem] font-semibold leading-snug text-slate-900 dark:text-slate-50 text-balance sm:text-[1.65rem] md:text-3xl">
             {t('home.sectionTitle')}
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-slate-500">
