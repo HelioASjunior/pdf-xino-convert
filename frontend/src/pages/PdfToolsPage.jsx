@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink, MoveVertical } from 'lucide-react';
+import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink, MoveVertical, FileText, Image } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
 import FileOrderModal from '../components/FileOrderModal';
@@ -83,6 +83,24 @@ const pdfHubItems = [
     accent: 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100',
     onClick: () => {},
     className: 'hover:-translate-y-0',
+  },
+  {
+    title: 'PDF para Word',
+    description: 'Converta PDF para DOCX editável com layout organizado para retomar a edição do conteúdo.',
+    icon: FileText,
+    badge: 'DOCX',
+    actionLabel: 'Converter para Word',
+    accent: 'bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300',
+    href: '/pdf-para-word',
+  },
+  {
+    title: 'PDF para Imagens',
+    description: 'Extraia cada página do PDF como imagem PNG ou JPEG para uso em apresentações ou revisão visual.',
+    icon: Image,
+    badge: 'PNG · JPEG',
+    actionLabel: 'Exportar imagens',
+    accent: 'bg-violet-50 text-violet-600 dark:bg-violet-900/40 dark:text-violet-300',
+    href: '/pdf-para-imagens',
   },
 ];
 

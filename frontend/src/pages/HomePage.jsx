@@ -6,7 +6,7 @@ import {
   MergePdfIcon, SplitPdfIcon, CompressPdfIcon, PdfToWordIcon,
   PdfToImagesIcon, RotatePdfIcon, RemovePagesIcon,
   ImageToPdfIcon, ConvertImageIcon,
-  DocsToPdfIcon, WordToPdfIcon, ScanDocumentIcon,
+  DocsToPdfIcon, WordToPdfIcon, PowerPointToPdfIcon, ScanDocumentIcon,
   AudioConverterIcon, UtilitiesIcon,
 } from '../components/ToolIcons';
 
@@ -102,6 +102,13 @@ function HomePage() {
       category: 'document',
     },
     {
+      title: t('home.grid.powerPointToPdfTitle', { defaultValue: 'PowerPoint para PDF' }),
+      description: t('home.grid.powerPointToPdf', { defaultValue: 'Converta apresentações PPT e PPTX para PDF com acesso rápido na central de documentos.' }),
+      href: '/document-tools',
+      Icon: PowerPointToPdfIcon,
+      category: 'document',
+    },
+    {
       title: t('home.cat.scanDocumentTitle'),
       description: t('home.cat.scanDocumentDesc'),
       href: '/escanear-documento',
@@ -162,19 +169,37 @@ function HomePage() {
         {/* Tool grid — iLovePDF style */}
         <div className="mx-auto grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
           {visibleTools.map((tool) => (
-            <Link
-              key={`${tool.category}-${tool.title}`}
-              to={tool.href}
-              className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md"
-            >
-              <tool.Icon />
-              <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900">
-                {tool.title}
-              </h3>
-              <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500">
-                {tool.description}
-              </p>
-            </Link>
+            tool.external ? (
+              <a
+                key={`${tool.category}-${tool.title}`}
+                href={tool.href}
+                target="_blank"
+                rel="noreferrer"
+                className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md"
+              >
+                <tool.Icon />
+                <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900">
+                  {tool.title}
+                </h3>
+                <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500">
+                  {tool.description}
+                </p>
+              </a>
+            ) : (
+              <Link
+                key={`${tool.category}-${tool.title}`}
+                to={tool.href}
+                className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md"
+              >
+                <tool.Icon />
+                <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900">
+                  {tool.title}
+                </h3>
+                <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500">
+                  {tool.description}
+                </p>
+              </Link>
+            )
           ))}
         </div>
       </section>
