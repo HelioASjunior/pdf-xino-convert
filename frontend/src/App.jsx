@@ -39,7 +39,7 @@ function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <div className="relative min-h-screen overflow-x-hidden">
+        <div className="relative min-h-screen [overflow-x:clip]">
           <SeoManager />
           <div className="pointer-events-none absolute right-0 top-0 h-[86vh] w-[54%] grid-pattern opacity-55" />
           <div className="relative mx-auto flex min-h-screen w-full max-w-[1360px] flex-col px-4 sm:px-6 lg:px-8">

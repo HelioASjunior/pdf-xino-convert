@@ -137,7 +137,7 @@ function HomePage() {
 
   return (
     <div className="space-y-10 pt-2">
-      <section id="funcionalidades" className="space-y-6">
+      <section id="funcionalidades" className="space-y-6 scroll-mt-24">
         {/* Compact section header */}
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="font-display text-[1.35rem] font-semibold leading-snug text-slate-900 dark:text-slate-50 text-balance sm:text-[1.65rem] md:text-3xl">
