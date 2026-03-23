@@ -64,7 +64,7 @@ function Footer() {
               </a>
 
               <a
-                href="https://instagram.com/xinoqs"
+                href="https://instagram.com/pdfxinoconvert"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
