@@ -90,7 +90,7 @@ const socialLinks = [
   },
   {
     name: 'Instagram',
-    href: 'https://instagram.com/xinoqs',
+    href: 'https://instagram.com/pdfxinoconvert',
     label: 'Acompanhar no Instagram',
   },
 ];
