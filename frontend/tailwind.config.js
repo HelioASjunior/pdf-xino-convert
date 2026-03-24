@@ -32,7 +32,7 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
-        display: ['Playfair Display', 'serif'],
+        display: ['Libre Baskerville', 'serif'],
       },
       boxShadow: {
         panel: '0 14px 42px rgba(21, 24, 27, 0.08)',
