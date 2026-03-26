@@ -61,13 +61,6 @@ const iphoneSteps = [
   },
 ];
 
-const SCREENSHOT_SPECS = {
-  ratio: '9:19.5',
-  recommended: '1179 x 2556 px',
-  minWidth: '900 px',
-  crop: 'Recorte vertical central, mantendo barra superior e botao/acao principal visivel.',
-};
-
 function InstallOnIphonePage() {
   const { t } = useTranslation();
   const visualBase = `${import.meta.env.BASE_URL}assets/visuals`;
@@ -145,13 +138,6 @@ function InstallOnIphonePage() {
             })}
           </li>
         </ul>
-
-        <div className="mt-4 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-sm leading-6 text-cyan-900">
-          <p className="font-semibold">Padrão recomendado para screenshots reais</p>
-          <p className="mt-1">Proporção: {SCREENSHOT_SPECS.ratio} | Tamanho recomendado: {SCREENSHOT_SPECS.recommended}</p>
-          <p>Largura mínima: {SCREENSHOT_SPECS.minWidth}</p>
-          <p>{SCREENSHOT_SPECS.crop}</p>
-        </div>
 
         <div className="mt-5 flex flex-wrap gap-3">
           <Link

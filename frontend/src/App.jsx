@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import FloatingSocialButtons from './components/FloatingSocialButtons';
 import FirstVisitNotice from './components/FirstVisitNotice';
+import ScrollToTop from './components/ScrollToTop';
 import SeoManager from './components/SeoManager';
 import HomePage from './pages/HomePage';
 import { ToastProvider } from './hooks/useToast.jsx';
@@ -42,6 +43,7 @@ function App() {
       <ToastProvider>
         <div className="relative min-h-screen [overflow-x:clip]">
           <SeoManager />
+          <ScrollToTop />
           <div className="pointer-events-none absolute right-0 top-0 h-[86vh] w-[54%] grid-pattern opacity-55" />
           <div className="relative mx-auto flex min-h-screen w-full max-w-[1360px] flex-col px-4 sm:px-6 lg:px-8">
             <Header navigation={navigation} />
