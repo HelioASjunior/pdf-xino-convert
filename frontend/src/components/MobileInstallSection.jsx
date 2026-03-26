@@ -38,7 +38,7 @@ function MobileInstallSection() {
     if (!deferredPrompt) {
       setStatus('unavailable');
       // Mostrar instrução de como fazer manualmente
-      alert('Se o prompt automático não aparecer, siga este caminho no Chrome:\n1. Toque no menu (⋮) no canto superior direito\n2. Selecione "Instalar app"\n3. Confirme a instalação\n\nOu acesse mais tarde quando o navegador oferecer a opção automaticamente.');
+      alert('Se o prompt automático não aparecer, siga este caminho no Chrome:\n1. Toque no menu (⋮) no canto superior direito\n2. Selecione "Adicionar à tela inicial"\n3. Confirme a instalação\n\nOu acesse mais tarde quando o navegador oferecer a opção automaticamente.');
       return;
     }
 
