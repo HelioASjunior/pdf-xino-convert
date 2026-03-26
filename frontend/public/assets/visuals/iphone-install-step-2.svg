@@ -1,0 +1,17 @@
+<svg width="1120" height="630" viewBox="0 0 1120 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1120" height="630" rx="28" fill="#F8FAFC"/>
+  <rect x="100" y="40" width="920" height="550" rx="34" fill="white" stroke="#CBD5E1" stroke-width="3"/>
+  <rect x="170" y="90" width="780" height="88" rx="16" fill="#EEF2FF"/>
+  <text x="560" y="145" text-anchor="middle" fill="#1E293B" font-size="28" font-family="Arial, sans-serif" font-weight="700">Menu de acoes da pagina</text>
+  <rect x="170" y="200" width="780" height="300" rx="20" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+  <rect x="205" y="230" width="710" height="56" rx="12" fill="#E2E8F0"/>
+  <rect x="205" y="302" width="710" height="56" rx="12" fill="#E2E8F0"/>
+  <rect x="205" y="374" width="710" height="56" rx="12" fill="#DCFCE7" stroke="#22C55E" stroke-width="2"/>
+  <text x="560" y="410" text-anchor="middle" fill="#166534" font-size="25" font-family="Arial, sans-serif" font-weight="700">Toque no botao Compartilhar</text>
+  <g transform="translate(860 505)">
+    <circle cx="58" cy="58" r="50" fill="#0EA5E9"/>
+    <path d="M58 32V73" stroke="white" stroke-width="8" stroke-linecap="round"/>
+    <path d="M38 52L58 32L78 52" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="33" y="68" width="50" height="30" rx="9" stroke="white" stroke-width="8"/>
+  </g>
+</svg>

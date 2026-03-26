@@ -64,6 +64,10 @@ const ROUTE_SEO = {
     title: 'Tour Pelo Site e Guia Rápido | PDFXino',
     description: 'Entenda como usar as principais ferramentas do PDFXino em poucos passos com um guia simples e direto.',
   },
+  '/instalar-no-iphone': {
+    title: 'Como Instalar no iPhone (Safari) | PDFXino',
+    description: 'Veja o passo a passo para adicionar o PDFXino na tela inicial do iPhone usando o Safari.',
+  },
 };
 
 function normalizePath(pathname) {

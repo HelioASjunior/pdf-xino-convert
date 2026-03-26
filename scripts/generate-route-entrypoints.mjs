@@ -22,6 +22,7 @@ const ROUTES = [
   '/unir-pdf',
   '/conversor-audio',
   '/tour-pelo-site',
+  '/instalar-no-iphone',
 ];
 
 function ensureNoTrailingSlash(route) {

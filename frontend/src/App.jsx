@@ -23,6 +23,7 @@ const WordToPdfPage = lazy(() => import('./pages/WordToPdfPage'));
 const MergePdfPage = lazy(() => import('./pages/MergePdfPage'));
 const AudioConverterPage = lazy(() => import('./pages/AudioConverterPage'));
 const SiteTourPage = lazy(() => import('./pages/SiteTourPage'));
+const InstallOnIphonePage = lazy(() => import('./pages/InstallOnIphonePage'));
 
 function App() {
   const { t } = useTranslation();
@@ -63,6 +64,7 @@ function App() {
                     <Route path="/unir-pdf" element={<MergePdfPage />} />
                     <Route path="/conversor-audio" element={<AudioConverterPage />} />
                     <Route path="/tour-pelo-site" element={<SiteTourPage />} />
+                    <Route path="/instalar-no-iphone" element={<InstallOnIphonePage />} />
                     <Route path="*" element={<HomePage />} />
                   </Routes>
                 </Suspense>

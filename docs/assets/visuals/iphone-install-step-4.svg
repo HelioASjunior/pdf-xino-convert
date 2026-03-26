@@ -1,0 +1,21 @@
+<svg width="1120" height="630" viewBox="0 0 1120 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1120" height="630" rx="28" fill="#F1F5F9"/>
+  <rect x="160" y="40" width="800" height="550" rx="40" fill="#0F172A"/>
+  <rect x="200" y="90" width="720" height="430" rx="24" fill="#F8FAFC"/>
+  <text x="560" y="140" text-anchor="middle" fill="#0F172A" font-size="24" font-family="Arial, sans-serif" font-weight="700">Tela inicial do iPhone</text>
+  <g>
+    <rect x="260" y="190" width="120" height="120" rx="28" fill="#22C55E"/>
+    <text x="320" y="260" text-anchor="middle" fill="white" font-size="52" font-family="Arial, sans-serif" font-weight="800">PDF</text>
+    <text x="320" y="338" text-anchor="middle" fill="#334155" font-size="17" font-family="Arial, sans-serif">PDF Xino</text>
+  </g>
+  <g>
+    <rect x="430" y="190" width="120" height="120" rx="28" fill="#E2E8F0"/>
+    <rect x="600" y="190" width="120" height="120" rx="28" fill="#E2E8F0"/>
+    <rect x="770" y="190" width="120" height="120" rx="28" fill="#E2E8F0"/>
+    <rect x="260" y="360" width="120" height="120" rx="28" fill="#E2E8F0"/>
+    <rect x="430" y="360" width="120" height="120" rx="28" fill="#E2E8F0"/>
+    <rect x="600" y="360" width="120" height="120" rx="28" fill="#E2E8F0"/>
+    <rect x="770" y="360" width="120" height="120" rx="28" fill="#E2E8F0"/>
+  </g>
+  <text x="560" y="560" text-anchor="middle" fill="#334155" font-size="24" font-family="Arial, sans-serif">Atalho criado. Agora e so tocar e usar.</text>
+</svg>

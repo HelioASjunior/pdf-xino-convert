@@ -1,0 +1,12 @@
+<svg width="1120" height="630" viewBox="0 0 1120 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1120" height="630" rx="28" fill="#F8FAFC"/>
+  <rect x="70" y="60" width="980" height="510" rx="26" fill="white" stroke="#CBD5E1" stroke-width="3"/>
+  <rect x="120" y="110" width="880" height="58" rx="16" fill="#E2E8F0"/>
+  <circle cx="158" cy="139" r="11" fill="#94A3B8"/>
+  <rect x="188" y="127" width="648" height="24" rx="8" fill="#475569"/>
+  <rect x="850" y="121" width="132" height="36" rx="10" fill="#0EA5E9"/>
+  <text x="915" y="144" text-anchor="middle" fill="white" font-size="17" font-family="Arial, sans-serif" font-weight="700">Safari</text>
+  <rect x="120" y="205" width="880" height="300" rx="20" fill="#ECFEFF" stroke="#A5F3FC" stroke-width="2"/>
+  <text x="560" y="308" text-anchor="middle" fill="#0F172A" font-size="42" font-family="Arial, sans-serif" font-weight="800">pdfxino.com.br</text>
+  <text x="560" y="360" text-anchor="middle" fill="#334155" font-size="26" font-family="Arial, sans-serif">Abra o site no Safari para instalar no iPhone</text>
+</svg>

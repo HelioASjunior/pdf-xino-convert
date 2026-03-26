@@ -1,6 +1,7 @@
 ﻿import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import MobileInstallSection from '../components/MobileInstallSection';
 import PrivacyPolicySection from '../components/PrivacyPolicySection';
 import {
   MergePdfIcon, SplitPdfIcon, CompressPdfIcon, PdfToWordIcon,
@@ -204,6 +205,7 @@ function HomePage() {
         </div>
       </section>
 
+      <MobileInstallSection />
       <PrivacyPolicySection />
     </div>
   );
