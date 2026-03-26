@@ -37,6 +37,8 @@ function MobileInstallSection() {
   async function handleAndroidInstall() {
     if (!deferredPrompt) {
       setStatus('unavailable');
+      // Mostrar instrução de como fazer manualmente
+      alert('Se o prompt automático não aparecer, siga este caminho no Chrome:\n1. Toque no menu (⋮) no canto superior direito\n2. Selecione "Instalar app"\n3. Confirme a instalação\n\nOu acesse mais tarde quando o navegador oferecer a opção automaticamente.');
       return;
     }
 
@@ -125,8 +127,7 @@ function MobileInstallSection() {
           <button
             type="button"
             onClick={handleAndroidInstall}
-            disabled={!androidAvailable}
-            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
           >
             <Download className="h-4 w-4" />
             {t('installSection.androidButton', { defaultValue: 'Instalar no Android' })}
