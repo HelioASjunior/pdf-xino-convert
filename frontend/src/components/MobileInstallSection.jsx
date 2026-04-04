@@ -105,7 +105,7 @@ function MobileInstallSection() {
         <p className="max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
           {t('installSection.intro', {
             defaultValue:
-              'No Android, voce pode instalar com um toque quando o navegador liberar o recurso. No iPhone, veja o passo a passo para adicionar ao inicio com seguranca.',
+              'No Android, você pode instalar com um toque quando o navegador liberar o recurso. No iPhone, veja o passo a passo para adicionar à tela de início com segurança.',
           })}
         </p>
       </div>
