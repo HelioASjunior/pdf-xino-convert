@@ -14,6 +14,7 @@ import { useToast } from '../hooks/useToast.jsx';
 import { zipDownloadItems } from '../services/pdfToolkitService';
 import { downloadBlob } from '../utils/formatters';
 import { detectToolSuggestion } from '../utils/fileTypeDetector';
+import { createImagePreviewUrl } from '../utils/imagePreview';
 
 const MAX_GENERIC_FILE_SIZE = 100 * 1024 * 1024;
 
@@ -120,7 +121,7 @@ function UtilitiesPage() {
     }
   }, []);
 
-  const onFilesSelected = (files) => {
+  const onFilesSelected = async (files) => {
     for (const file of files) {
       if (file.size > MAX_GENERIC_FILE_SIZE) {
         setError(`O arquivo ${file.name} ultrapassa o limite de 100 MB por arquivo.`);
@@ -129,14 +130,18 @@ function UtilitiesPage() {
     }
 
     setError('');
+    const mappedFiles = await Promise.all(files.map(async (file) => ({
+      id: crypto.randomUUID(),
+      file,
+      preview: (file.type.startsWith('image/') || /\.(heic|heif)$/i.test(file.name))
+        ? await createImagePreviewUrl(file)
+        : null,
+      kind: file.type === 'application/pdf' ? 'pdf' : 'image',
+    })));
+
     setItems((current) => [
       ...current,
-      ...files.map((file) => ({
-        id: crypto.randomUUID(),
-        file,
-        preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
-        kind: file.type === 'application/pdf' ? 'pdf' : 'image',
-      })),
+      ...mappedFiles,
     ]);
   };
 

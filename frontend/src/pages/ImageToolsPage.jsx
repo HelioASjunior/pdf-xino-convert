@@ -15,6 +15,7 @@ import { useSessionHistory } from '../hooks/useSessionHistory';
 import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
 import { buildImagesZip, convertImageFiles } from '../services/imageToolsService';
 import { downloadBlob } from '../utils/formatters';
+import { createImagePreviewUrl } from '../utils/imagePreview';
 
 const acceptedImageMime = [
   'image/jpeg',
@@ -22,6 +23,8 @@ const acceptedImageMime = [
   'image/webp',
   'image/bmp',
   'image/gif',
+  'image/heic',
+  'image/heif',
   'image/svg+xml',
   'image/tiff',
 ];
@@ -37,7 +40,7 @@ const imageCategoryTools = [
   },
   {
     title: 'Converter Formato de Imagem',
-    description: 'Padronize arquivos em JPG, PNG, WEBP, BMP ou GIF com download em ZIP.',
+    description: 'Padronize arquivos HEIC, JPG, PNG, WEBP, BMP ou GIF com download em ZIP.',
     href: '/image-tools',
     icon: FileImage,
     accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
@@ -74,7 +77,7 @@ const imageFaqItems = [
   },
   {
     question: 'Quais formatos de entrada são aceitos?',
-    answer: 'Você pode enviar JPG, PNG, WEBP, BMP, GIF, TIFF e SVG para conversão nesta área.',
+    answer: 'Você pode enviar HEIC, HEIF, JPG, PNG, WEBP, BMP, GIF, TIFF e SVG para conversão nesta área.',
   },
   {
     question: 'Como funciona a qualidade da saída?',
@@ -115,9 +118,10 @@ function ImageToolsPage() {
     setResult(null);
   };
 
-  const onFilesSelected = (files) => {
+  const onFilesSelected = async (files) => {
     const validationError = validateFiles(files, {
       mimeTypes: acceptedImageMime,
+      extensions: ['.heic', '.heif'],
       maxSize: MAX_IMAGE_SIZE,
       multiple: true,
     });
@@ -129,13 +133,15 @@ function ImageToolsPage() {
 
     setError('');
     clearResult();
+    const mappedFiles = await Promise.all(files.map(async (file) => ({
+      id: crypto.randomUUID(),
+      file,
+      preview: await createImagePreviewUrl(file),
+    })));
+
     setItems((current) => [
       ...current,
-      ...files.map((file) => ({
-        id: crypto.randomUUID(),
-        file,
-        preview: URL.createObjectURL(file),
-      })),
+      ...mappedFiles,
     ]);
   };
 
@@ -209,7 +215,7 @@ function ImageToolsPage() {
           <UploadArea
             title="Adicionar imagens"
             description="Faça upload de múltiplas imagens e baixe tudo em ZIP ao final."
-            accept="image/jpeg,image/png,image/webp,image/bmp,image/gif,image/tiff,image/svg+xml"
+            accept="image/jpeg,image/png,image/webp,image/bmp,image/gif,image/heic,image/heif,image/tiff,image/svg+xml,.heic,.heif"
             multiple
             onFilesSelected={onFilesSelected}
             error={error}

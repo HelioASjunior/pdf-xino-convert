@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
+import heic2any from 'heic2any';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).toString();
 
@@ -12,6 +13,36 @@ const PAGE_SIZES = {
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+function hasImageExtension(fileName = '', extensions = []) {
+  const normalizedName = String(fileName || '').toLowerCase();
+  return extensions.some((extension) => normalizedName.endsWith(extension));
+}
+
+function isHeicFile(file) {
+  return ['image/heic', 'image/heif'].includes(file?.type)
+    || hasImageExtension(file?.name, ['.heic', '.heif']);
+}
+
+async function normalizeInputImage(file) {
+  if (!isHeicFile(file)) {
+    return file;
+  }
+
+  try {
+    const converted = await heic2any({
+      blob: file,
+      toType: 'image/png',
+    });
+
+    const blob = Array.isArray(converted) ? converted[0] : converted;
+    return new File([blob], `${file.name.replace(/\.[^/.]+$/, '')}.png`, {
+      type: blob.type || 'image/png',
+    });
+  } catch {
+    throw new Error(`Não foi possível decodificar o arquivo HEIC/HEIF ${file.name} neste navegador.`);
+  }
 }
 
 async function blobFromCanvas(canvas, mimeType, quality) {
@@ -51,12 +82,13 @@ async function fileToImageBitmap(file) {
 }
 
 async function normalizeImageFile(file, compressImages) {
-  const canUseDirectly = file.type === 'image/jpeg' || file.type === 'image/png';
+  const sourceInput = await normalizeInputImage(file);
+  const canUseDirectly = sourceInput.type === 'image/jpeg' || sourceInput.type === 'image/png';
   if (canUseDirectly && !compressImages) {
-    return file;
+    return sourceInput;
   }
 
-  const bitmap = await fileToImageBitmap(file);
+  const bitmap = await fileToImageBitmap(sourceInput);
   const maxDimension = compressImages ? 2200 : 3200;
   const widthScale = maxDimension / bitmap.width;
   const heightScale = maxDimension / bitmap.height;
@@ -81,14 +113,14 @@ async function normalizeImageFile(file, compressImages) {
     bitmap.close();
   }
 
-  const shouldUsePng = file.type === 'image/png' && !compressImages;
+  const shouldUsePng = sourceInput.type === 'image/png' && !compressImages;
   const normalizedBlob = await blobFromCanvas(
     canvas,
     shouldUsePng ? 'image/png' : 'image/jpeg',
     compressImages ? 0.82 : 0.92,
   );
 
-  return new File([normalizedBlob], file.name.replace(/\.[^/.]+$/, shouldUsePng ? '.png' : '.jpg'), {
+  return new File([normalizedBlob], sourceInput.name.replace(/\.[^/.]+$/, shouldUsePng ? '.png' : '.jpg'), {
     type: normalizedBlob.type,
   });
 }

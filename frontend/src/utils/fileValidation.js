@@ -14,7 +14,21 @@ function matchesMimeType(fileType, acceptedType) {
   return fileType === acceptedType;
 }
 
-export function validateFiles(files, { mimeTypes, maxSize, multiple = true }) {
+function hasAcceptedExtension(fileName, acceptedExtensions) {
+  if (!fileName || !acceptedExtensions?.length) {
+    return false;
+  }
+
+  const normalizedName = String(fileName).toLowerCase();
+  return acceptedExtensions.some((extension) => normalizedName.endsWith(String(extension).toLowerCase()));
+}
+
+export function validateFiles(files, {
+  mimeTypes,
+  extensions,
+  maxSize,
+  multiple = true,
+}) {
   if (!files.length) {
     return 'Selecione pelo menos um arquivo.';
   }
@@ -24,7 +38,12 @@ export function validateFiles(files, { mimeTypes, maxSize, multiple = true }) {
   }
 
   for (const file of files) {
-    if (mimeTypes && !mimeTypes.some((acceptedType) => matchesMimeType(file.type, acceptedType))) {
+    const mimeAccepted = mimeTypes
+      ? mimeTypes.some((acceptedType) => matchesMimeType(file.type, acceptedType))
+      : false;
+    const extensionAccepted = hasAcceptedExtension(file.name, extensions);
+
+    if ((mimeTypes || extensions) && !mimeAccepted && !extensionAccepted) {
       return `O arquivo ${file.name} não possui um formato aceito.`;
     }
 

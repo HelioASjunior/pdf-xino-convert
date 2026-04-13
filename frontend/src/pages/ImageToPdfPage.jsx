@@ -13,8 +13,10 @@ import { useSessionHistory } from '../hooks/useSessionHistory';
 import { imagesToPdf, imagesToSeparatePdfs } from '../services/clientPdfTools';
 import { downloadBlob } from '../utils/formatters';
 import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
+import { createImagePreviewUrl } from '../utils/imagePreview';
 
 const imageMimeTypes = ['image/*'];
+const imageExtensions = ['.heic', '.heif'];
 
 function ImageToPdfPage() {
   const { showToast } = useToast();
@@ -56,9 +58,10 @@ function ImageToPdfPage() {
     }
   }, []);
 
-  const handleFilesSelected = (selectedFiles) => {
+  const handleFilesSelected = async (selectedFiles) => {
     const validationError = validateFiles(selectedFiles, {
       mimeTypes: imageMimeTypes,
+      extensions: imageExtensions,
       maxSize: MAX_IMAGE_SIZE,
       multiple: true,
     });
@@ -69,13 +72,15 @@ function ImageToPdfPage() {
     }
 
     setError('');
+    const mappedFiles = await Promise.all(selectedFiles.map(async (file) => ({
+      id: crypto.randomUUID(),
+      file,
+      preview: await createImagePreviewUrl(file),
+    })));
+
     setItems((current) => [
       ...current,
-      ...selectedFiles.map((file) => ({
-        id: crypto.randomUUID(),
-        file,
-        preview: URL.createObjectURL(file),
-      })),
+      ...mappedFiles,
     ]);
     setOrderConfirmed(false);
   };
@@ -184,7 +189,7 @@ function ImageToPdfPage() {
         <UploadArea
           title="Envie suas imagens"
           description="Faça upload de múltiplos arquivos, reorganize a sequência e exporte tudo em um único PDF ou em PDFs individuais."
-          accept="image/*"
+          accept="image/*,.heic,.heif"
           multiple
           onFilesSelected={handleFilesSelected}
           error={error}

@@ -11,8 +11,10 @@ import { useSessionHistory } from '../hooks/useSessionHistory';
 import { compressPdfInBrowser, imagesToPdf } from '../services/clientPdfTools';
 import { downloadBlob, formatBytes, formatPercent } from '../utils/formatters';
 import { MAX_IMAGE_SIZE, MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
+import { createImagePreviewUrl } from '../utils/imagePreview';
 
-const acceptedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+const acceptedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+const acceptedExtensions = ['.heic', '.heif'];
 
 function ScanDocumentPage() {
   const { showToast } = useToast();
@@ -55,9 +57,10 @@ function ScanDocumentPage() {
     setResult(null);
   };
 
-  const addFiles = (files) => {
+  const addFiles = async (files) => {
     const validationError = validateFiles(files, {
       mimeTypes: acceptedTypes,
+      extensions: acceptedExtensions,
       maxSize: Math.max(MAX_IMAGE_SIZE, MAX_PDF_SIZE),
       multiple: true,
     });
@@ -100,13 +103,15 @@ function ScanDocumentPage() {
     }
 
     if (imageFiles.length) {
+      const mappedImages = await Promise.all(imageFiles.map(async (file) => ({
+        id: crypto.randomUUID(),
+        file,
+        preview: await createImagePreviewUrl(file),
+      })));
+
       setImages((current) => [
         ...current,
-        ...imageFiles.map((file) => ({
-          id: crypto.randomUUID(),
-          file,
-          preview: URL.createObjectURL(file),
-        })),
+        ...mappedImages,
       ]);
       showToast({ type: 'success', title: 'Imagens carregadas', message: `${imageFiles.length} página(s) adicionada(s).` });
     }
@@ -261,8 +266,8 @@ function ScanDocumentPage() {
 
           <UploadArea
             title="Adicionar arquivo escaneado"
-            description="Aceita PDF, JPG, PNG e WEBP. Você pode enviar um PDF escaneado pronto ou múltiplas imagens de páginas."
-            accept="application/pdf,image/jpeg,image/png,image/webp"
+            description="Aceita PDF, JPG, PNG, WEBP e HEIC/HEIF. Você pode enviar um PDF escaneado pronto ou múltiplas imagens de páginas."
+            accept="application/pdf,image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
             multiple
             onFilesSelected={addFiles}
             error={error}

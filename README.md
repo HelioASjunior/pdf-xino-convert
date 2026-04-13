@@ -1,109 +1,174 @@
 # PDF XinoConvert
 
-Plataforma web para conversão, organização e preparação de arquivos com foco em produtividade.
+[![Build](https://img.shields.io/github/actions/workflow/status/helioasjunior/pdf-xino-convert/validate-pr.yml?branch=main&label=build)](https://github.com/helioasjunior/pdf-xino-convert/actions/workflows/validate-pr.yml)
+[![License](https://img.shields.io/github/license/helioasjunior/pdf-xino-convert)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D20.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-O projeto é frontend-only, com interface em React + Vite e processamento executado no navegador.
+Plataforma web para conversao, organizacao e preparacao de arquivos com foco em produtividade.
 
-Versão em inglês: [README.en.md](README.en.md)
+O projeto e frontend-only, com interface em React + Vite e processamento local no navegador.
 
-- Frontend: `frontend/`
-- Build estático para GitHub Pages: `docs/`
+Versao em ingles: [README.en.md](README.en.md)
 
-## Sumário
+- Workspace frontend: `frontend/`
+- Build estatico para GitHub Pages: `docs/`
 
-- [Language](#language)
-- [Visão geral](#visão-geral)
-- [Recursos](#recursos)
-- [Idiomas](#idiomas)
+## Sumario
+
+- [Idioma](#idioma)
+- [Visao geral](#visao-geral)
+- [Principais recursos](#principais-recursos)
+- [Idiomas da interface](#idiomas-da-interface)
 - [Arquitetura](#arquitetura)
-- [Stack](#stack)
-- [Estrutura do projeto](#estrutura-do-projeto)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Variáveis de ambiente](#variáveis-de-ambiente)
-- [Como rodar localmente](#como-rodar-localmente)
-- [Build e deploy](#build-e-deploy)
+- [Arquitetura em camadas](#arquitetura-em-camadas)
+- [Stack tecnologica](#stack-tecnologica)
+- [Estrutura do repositorio](#estrutura-do-repositorio)
+- [Pre-requisitos](#pre-requisitos)
+- [Instalacao](#instalacao)
+- [Variaveis de ambiente](#variaveis-de-ambiente)
+- [Execucao local](#execucao-local)
+- [Build, preview e deploy](#build-preview-e-deploy)
 - [Scanner (bridge local)](#scanner-bridge-local)
-- [Limitações conhecidas](#limitações-conhecidas)
-- [Scripts disponíveis](#scripts-disponíveis)
+- [Seguranca e privacidade](#seguranca-e-privacidade)
+- [Limitacoes conhecidas](#limitacoes-conhecidas)
+- [Troubleshooting](#troubleshooting)
+- [Scripts disponiveis](#scripts-disponiveis)
+- [Contribuicao](#contribuicao)
 - [Roadmap](#roadmap)
-- [Licença](#licença)
+- [Licenca](#licenca)
 
-## Language
+## Idioma
 
-- Documentação principal (Português): [README.md](README.md)
+- Documentacao principal (PT-BR): [README.md](README.md)
 - English version: [README.en.md](README.en.md)
 
-## Visão geral
+## Visao geral
 
-O PDF XinoConvert reúne ferramentas de PDF, imagem, documentos e utilitários em uma interface única.
+O PDF XinoConvert consolida ferramentas de PDF, imagem, documentos, scanner e utilitarios em uma unica experiencia.
 
-Os fluxos principais rodam diretamente no navegador e podem ser publicados como site estático.
+Objetivos principais:
 
-## Recursos
+- reduzir friccao em tarefas recorrentes de manipulacao de arquivos
+- manter operacoes sensiveis no navegador (client-side)
+- permitir publicacao simples em ambiente estatico (GitHub Pages)
+
+## Principais recursos
 
 ### PDF
 
-- Imagem para PDF com múltiplos arquivos e ordenação
-- PDF para imagens em JPG ou PNG com exportação ZIP
-- Compressão de PDF no navegador
+- Imagem para PDF com upload multiplo, organizacao de ordem e exportacao unica ou separada
+- PDF para imagens (JPG/PNG) com pacote ZIP
+- Compressao de PDF no navegador
 - Juntar PDF
 - Dividir PDF
-- Rotacionar PDF
-- Remover páginas
-- Extrair páginas
+- Rotacionar PDF por paginas
+- Remover paginas
+- Extrair paginas
 
 ### Imagem
 
-- Conversão de formato entre JPG, PNG, WEBP, BMP e GIF
-- Fluxo de múltiplos arquivos
+- Conversao entre JPG, PNG, WEBP, BMP e GIF
+- Suporte de entrada para HEIC/HEIF
+- Processamento em lote com download final em ZIP
 
 ### Documentos
 
-- Conversão de documentos para PDF, incluindo TXT, MD, RTF, DOCX, CSV, XLS e XLSX
-- Fluxo de digitalização com preparação de páginas
+- Conversao para PDF de TXT, MD, RTF, DOCX, CSV, XLS e XLSX
+- Fluxo de digitalizacao com preparacao de paginas
 
-### Utilitários
+### Scanner
 
-- Geração de ZIP para múltiplos downloads
-- Detecção automática de formato com sugestão de ferramenta
-- Conversor de áudio com suporte a MP3, WAV, OGG, FLAC, AAC, M4A, MP4 e OPUS
-- Conversão em lote de até 10 arquivos
+- Integra com bridge local opcional
+- Fluxo alternativo com provider mock para desenvolvimento
+- Etapas de importacao, preparacao e saida em PDF
+
+### Audio
+
+- Conversao entre MP3, WAV, OGG, FLAC, AAC, M4A, MP4 e OPUS
+- Conversao em lote (limite atual de 10 arquivos)
+
+### Utilitarios
+
+- Geracao de ZIP para multiplos arquivos
+- Deteccao automatica de tipo de arquivo com sugestao de ferramenta
 
 ### UX / UI
 
-- Layout responsivo para desktop e mobile
+- Interface responsiva (desktop e mobile)
 - Sidebar flutuante no desktop
 - Tema claro/escuro
-- Feedback visual de progresso e estado
-- Navegação por categoria de ferramentas
+- Feedback de progresso e estado
+- Navegacao por categorias de ferramenta
 
-## Idiomas
+## Idiomas da interface
 
-A interface possui alternância de idioma no menu.
+Idiomas disponiveis:
 
-- Português (pt-BR)
+- Portugues (pt-BR)
 - English (en)
-- Español (es)
-- Français (fr)
+- Espanol (es)
+- Francais (fr)
 
-Detalhes da implementação:
+Implementacao:
 
-- i18n com `i18next` e `react-i18next`
+- `i18next` + `react-i18next`
 - idioma persistido em `localStorage`
-- seletor com bandeiras SVG em `frontend/public/assets/flags/`
+- bandeiras SVG em `frontend/public/assets/flags/`
 
 ## Arquitetura
 
 ### Frontend-first para GitHub Pages
 
-A aplicação pode ser publicada como site estático no GitHub Pages com saída em `docs/`.
+A aplicacao e preparada para deploy estatico em `docs/`.
 
 - roteamento SPA com `HashRouter`
-- assets estáticos otimizados pelo Vite
-- processamento local no navegador para os fluxos principais
+- assets versionados e otimizados pelo Vite
+- processamento local no navegador para fluxos principais
 
-## Stack
+### Monorepo simples com workspaces
+
+- raiz controla scripts de build/preview/deploy
+- `frontend` concentra o app React
+- `docs` concentra artefatos para publicacao
+
+## Arquitetura em camadas
+
+```mermaid
+flowchart TB
+	subgraph L1[Camada 1 - Apresentacao]
+		P1[Pages]
+		P2[Components]
+		P3[i18n]
+		P4[Hooks de UI]
+	end
+
+	subgraph L2[Camada 2 - Aplicacao]
+		A1[Services]
+		A2[Utils]
+		A3[Validacao de arquivos]
+		A4[Orquestracao de fluxos]
+	end
+
+	subgraph L3[Camada 3 - Dominio de Conversao]
+		D1[PDF pipeline]
+		D2[Image pipeline]
+		D3[Document pipeline]
+		D4[Audio pipeline]
+	end
+
+	subgraph L4[Camada 4 - Infraestrutura]
+		I1[Browser APIs]
+		I2[Workers]
+		I3[Libraries externas]
+		I4[Static assets]
+	end
+
+	L1 --> L2
+	L2 --> L3
+	L3 --> L4
+```
+
+## Stack tecnologica
 
 ### Frontend
 
@@ -117,12 +182,14 @@ A aplicação pode ser publicada como site estático no GitHub Pages com saída 
 - pdfjs-dist
 - jsPDF
 - JSZip
-- ffmpeg.wasm carregado em runtime no navegador
+- heic2any
+- browser-image-compression
+- ffmpeg.wasm (carregado em runtime)
 - Mammoth
 - xlsx
 - Lucide React
 
-## Estrutura do projeto
+## Estrutura do repositorio
 
 ```text
 .
@@ -148,16 +215,18 @@ A aplicação pode ser publicada como site estático no GitHub Pages com saída 
 │  │  └─ utils/
 │  ├─ index.html
 │  └─ vite.config.js
+├─ scripts/
 ├─ package.json
-└─ README.md
+├─ README.md
+└─ README.en.md
 ```
 
-## Pré-requisitos
+## Pre-requisitos
 
 - Node.js 20+
 - npm 10+
 
-## Instalação
+## Instalacao
 
 Na raiz do projeto:
 
@@ -165,9 +234,9 @@ Na raiz do projeto:
 npm install
 ```
 
-Esse comando instala as dependências da raiz e do workspace `frontend`.
+Esse comando instala dependencias da raiz e do workspace `frontend`.
 
-## Variáveis de ambiente
+## Variaveis de ambiente
 
 ### Frontend
 
@@ -180,9 +249,9 @@ VITE_SCANNER_BRIDGE_URL=http://127.0.0.1:24833
 
 Notas:
 
-- `VITE_SCANNER_PROVIDER=mock` permite testar a UI de scanner sem dispositivo real.
+- `VITE_SCANNER_PROVIDER=mock` permite testar fluxo de scanner sem hardware
 
-## Como rodar localmente
+## Execucao local
 
 Na raiz:
 
@@ -190,65 +259,64 @@ Na raiz:
 npm run dev
 ```
 
-URL padrão: `http://localhost:5173`
+URL padrao: `http://localhost:5173`
 
-Comando equivalente do workspace:
+Comando equivalente no workspace:
 
 ```bash
 npm run dev -w frontend
 ```
 
-## Build e deploy
+## Build, preview e deploy
 
-### Build local do frontend
+### Build local
 
 ```bash
 npm run build
 ```
 
-### Build para GitHub Pages
+### Build para paginas estaticas
 
 ```bash
 npm run build:pages
 ```
 
-O artefato final é gerado em `docs/`.
+O artefato final e gerado em `docs/`.
 
-Durante o build, o script `scripts/generate-route-entrypoints.mjs` cria arquivos `index.html`
-em cada rota publica (por exemplo `docs/pdf-tools/index.html`). Isso evita resposta 404
-em acesso direto por URL e melhora a cobertura de indexacao no Search Console.
+Durante o build, o script `scripts/generate-route-entrypoints.mjs` cria `index.html`
+em rotas publicas (exemplo: `docs/pdf-tools/index.html`) para evitar 404 em acesso direto.
 
-### Preview do build
+### Preview local do build
 
 ```bash
 npm run preview:pages
 ```
 
-### CI/CD (GitHub Actions)
+### CI/CD com GitHub Actions
 
-Workflows incluídos:
+Workflows principais:
 
 - `.github/workflows/validate-pr.yml`
 - `.github/workflows/deploy-pages.yml`
 
 Fluxo esperado:
 
-1. PR para a branch principal valida o build.
-2. Push na branch principal gera o build e publica no GitHub Pages.
+1. Pull request para branch principal valida build
+2. Push na branch principal gera build e publica no GitHub Pages
 
-URL pública:
+URL publica:
 
 - https://helioasjunior.github.io/pdf-xino-convert/
 
 ## Scanner (bridge local)
 
-A camada de scanner é desacoplada por providers:
+Providers da camada de scanner:
 
 - `frontend/src/scanner/providers/ScannerProvider.js`
 - `frontend/src/scanner/providers/LocalBridgeScannerProvider.js`
 - `frontend/src/scanner/providers/MockScannerProvider.js`
 
-Endpoints esperados no bridge local:
+Endpoints esperados do bridge local:
 
 - `GET /status`
 - `GET /devices`
@@ -256,47 +324,94 @@ Endpoints esperados no bridge local:
 - `POST /scan`
 - `POST /cancel`
 
-Teste sem scanner físico:
+Teste sem scanner fisico:
 
-1. Defina `VITE_SCANNER_PROVIDER=mock`.
-2. Rode `npm run dev`.
-3. Acesse a página de escaneamento.
+1. Defina `VITE_SCANNER_PROVIDER=mock`
+2. Rode `npm run dev`
+3. Acesse a pagina de escaneamento
 
-## Limitações conhecidas
+## Seguranca e privacidade
 
-- Alguns formatos de escritório, como DOC, ODT, PPT e PPTX, podem ter fidelidade parcial em conversão puramente client-side.
-- Compressão de PDF baseada em recomposição de páginas pode gerar perda visual em níveis mais agressivos.
-- O conversor de áudio depende do carregamento do FFmpeg via CDN no navegador; redes com bloqueio de CDN ou proxy podem impedir a conversão.
-- A primeira carga do conversor de áudio pode ser mais lenta devido ao download inicial dos arquivos do FFmpeg.
+- Os fluxos principais rodam client-side
+- Arquivos nao sao enviados para backend do projeto
+- Dependencias de runtime (como FFmpeg via CDN) podem existir em algumas funcionalidades
 
-## Scripts disponíveis
+Recomendacao:
+
+- Para ambientes corporativos restritivos, valide politicas de rede/CDN antes da adocao
+
+## Limitacoes conhecidas
+
+- Alguns formatos de escritorio (DOC, ODT, PPT, PPTX) podem ter fidelidade parcial em conversao puramente client-side
+- Compressao de PDF por recomposicao de paginas pode gerar perda visual em niveis agressivos
+- Conversor de audio depende de carregamento de FFmpeg em runtime
+- Primeira carga de algumas ferramentas pode ser mais lenta por download inicial de assets
+
+## Troubleshooting
+
+### Erro de formato aceito para HEIC/HEIF
+
+- Verifique se o arquivo termina com `.heic` ou `.heif`
+- Atualize para a versao mais recente do projeto (suporte por extensao e fallback de preview)
+
+### Preview de imagem nao aparece
+
+- Alguns navegadores nao renderizam HEIC diretamente
+- O projeto aplica fallback de decodificacao para preview; se falhar, teste outro navegador Chromium atualizado
+
+### Porta em uso no preview
+
+Use scripts auxiliares na raiz:
+
+```bash
+npm run kill:4173
+npm run preview:pages
+```
+
+## Scripts disponiveis
 
 ### Raiz
 
-- `npm run dev` para o frontend
-- `npm run build` para o build do frontend
-- `npm run build:pages` para gerar `docs/`
-- `npm run preview:pages` para visualizar o build
+- `npm run dev` inicia frontend
+- `npm run build` build de producao do frontend e geracao de entrypoints estaticos
+- `npm run build:pages` alias para build de paginas
+- `npm run preview:pages` preview do build
+- `npm run preview:pages:auto` preview sem strictPort
+- `npm run kill:port` encerra processo por porta
+- `npm run kill:4173` encerra porta 4173
+- `npm run qa:assets` gera assets de QA
+- `npm run test:xlsx-pdf` executa rotina de teste para fluxo de planilha->PDF
 
-### Frontend
+### Frontend workspace
 
 - `npm run dev -w frontend`
 - `npm run build -w frontend`
 - `npm run preview -w frontend`
 
+## Contribuicao
+
+Sugestao de fluxo:
+
+1. Crie branch de feature
+2. Rode `npm install`
+3. Desenvolva e valide com `npm run dev`
+4. Gere build com `npm run build`
+5. Abra PR com descricao clara de impacto funcional
+
+Boas praticas:
+
+- manter mudancas focadas por PR
+- evitar alterar artefatos `docs/` quando o objetivo for apenas desenvolvimento local
+- incluir contexto funcional e teste manual no PR
+
 ## Roadmap
 
-- Persistência de histórico por usuário
-- Fila assíncrona para arquivos grandes
-- Melhoria de fidelidade para formatos de escritório complexos
+- Persistencia de historico por usuario
+- Fila assincrona para arquivos grandes
+- Melhor fidelidade para formatos de escritorio complexos
 - Pipeline opcional de processamento remoto
 
-## Licença
+## Licenca
 
-Este projeto está licenciado sob os termos do arquivo LICENSE.
-
-<img width="1895" height="899" alt="Captura de tela 2026-03-19 122344" src="https://github.com/user-attachments/assets/6efb6d19-2f28-475c-9e8e-fbf94503232a" />
-<img width="1536" height="1024" alt="Captura de tela 2026-03-19 123" src="https://github.com/user-attachments/assets/443c0e18-8ffd-469a-8c1f-7930dd6413ee" />
-<img width="1883" height="887" alt="Captura de tela 2026-03-19 122324" src="https://github.com/user-attachments/assets/9c168b4e-e26a-4cbe-b06f-b40dd245b36d" />
-<img width="1894" height="888" alt="Captura de tela 2026-03-19 113406" src="https://github.com/user-attachments/assets/cbaedf73-b037-464e-b735-90b10c6ed672" />
+Este projeto esta licenciado sob os termos do arquivo [LICENSE](LICENSE).
 

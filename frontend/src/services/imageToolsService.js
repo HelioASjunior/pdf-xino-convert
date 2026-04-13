@@ -1,4 +1,5 @@
 import imageCompression from 'browser-image-compression';
+import heic2any from 'heic2any';
 import JSZip from 'jszip';
 
 const targetMimeMap = {
@@ -16,6 +17,36 @@ function extensionFor(format) {
     return 'jpg';
   }
   return normalized;
+}
+
+function hasImageExtension(fileName = '', extensions = []) {
+  const normalizedName = String(fileName || '').toLowerCase();
+  return extensions.some((extension) => normalizedName.endsWith(extension));
+}
+
+function isHeicFile(file) {
+  return ['image/heic', 'image/heif'].includes(file?.type)
+    || hasImageExtension(file?.name, ['.heic', '.heif']);
+}
+
+async function normalizeInputImage(file) {
+  if (!isHeicFile(file)) {
+    return file;
+  }
+
+  try {
+    const converted = await heic2any({
+      blob: file,
+      toType: 'image/png',
+    });
+
+    const blob = Array.isArray(converted) ? converted[0] : converted;
+    return new File([blob], `${file.name.replace(/\.[^/.]+$/, '')}.png`, {
+      type: blob.type || 'image/png',
+    });
+  } catch {
+    throw new Error(`Não foi possível decodificar o arquivo HEIC/HEIF ${file.name} neste navegador.`);
+  }
 }
 
 async function readImage(file) {
@@ -54,7 +85,8 @@ async function convertSingleImage(file, targetFormat, quality = 0.9) {
     throw new Error(`Formato de saída não suportado: ${targetFormat}`);
   }
 
-  const image = await readImage(file);
+  const sourceInput = await normalizeInputImage(file);
+  const image = await readImage(sourceInput);
   const canvas = document.createElement('canvas');
   canvas.width = image.width;
   canvas.height = image.height;
@@ -68,14 +100,14 @@ async function convertSingleImage(file, targetFormat, quality = 0.9) {
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.drawImage(image, 0, 0);
 
-  const sourceNeedsCompression = ['image/jpeg', 'image/webp'].includes(file.type);
+  const sourceNeedsCompression = ['image/jpeg', 'image/webp'].includes(sourceInput.type);
   const sourceFile = sourceNeedsCompression
-    ? await imageCompression(file, {
+    ? await imageCompression(sourceInput, {
       maxWidthOrHeight: 2800,
       initialQuality: quality,
       useWebWorker: true,
     })
-    : file;
+    : sourceInput;
 
   const sourceImage = sourceNeedsCompression ? await readImage(sourceFile) : null;
   if (sourceImage) {

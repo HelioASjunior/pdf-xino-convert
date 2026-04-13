@@ -1,31 +1,39 @@
 # PDF XinoConvert
 
-Web platform for file conversion, organization, and preparation focused on productivity.
+[![Build](https://img.shields.io/github/actions/workflow/status/helioasjunior/pdf-xino-convert/validate-pr.yml?branch=main&label=build)](https://github.com/helioasjunior/pdf-xino-convert/actions/workflows/validate-pr.yml)
+[![License](https://img.shields.io/github/license/helioasjunior/pdf-xino-convert)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D20.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-This repository is frontend-only, with a React + Vite interface and browser-side processing.
+Web platform for file conversion, organization, and preparation with a strong productivity focus.
+
+This repository is frontend-only, built with React + Vite, with most processing executed locally in the browser.
 
 Main Portuguese documentation: [README.md](README.md)
 
-- Frontend workspace: frontend
-- Static GitHub Pages build output: docs
+- Frontend workspace: `frontend/`
+- Static GitHub Pages output: `docs/`
 
 ## Table of Contents
 
 - [Language](#language)
 - [Overview](#overview)
-- [Features](#features)
-- [Languages](#languages)
+- [Core capabilities](#core-capabilities)
+- [Interface languages](#interface-languages)
 - [Architecture](#architecture)
-- [Stack](#stack)
-- [Project Structure](#project-structure)
+- [Layered architecture](#layered-architecture)
+- [Technology stack](#technology-stack)
+- [Repository structure](#repository-structure)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [Run Locally](#run-locally)
-- [Build and Deploy](#build-and-deploy)
-- [Scanner (Local Bridge)](#scanner-local-bridge)
-- [Known Limitations](#known-limitations)
-- [Available Scripts](#available-scripts)
+- [Environment variables](#environment-variables)
+- [Local development](#local-development)
+- [Build, preview, and deployment](#build-preview-and-deployment)
+- [Scanner (local bridge)](#scanner-local-bridge)
+- [Security and privacy](#security-and-privacy)
+- [Known limitations](#known-limitations)
+- [Troubleshooting](#troubleshooting)
+- [Available scripts](#available-scripts)
+- [Contributing](#contributing)
 - [Roadmap](#roadmap)
 - [License](#license)
 
@@ -36,76 +44,131 @@ Main Portuguese documentation: [README.md](README.md)
 
 ## Overview
 
-PDF XinoConvert brings together PDF, image, document, and utility tools in a single interface.
+PDF XinoConvert unifies PDF, image, document, scanner, and utility workflows in one application.
 
-The frontend includes browser-based flows and supports static deployment on GitHub Pages.
+Primary goals:
 
-## Features
+- reduce friction in repetitive file-processing tasks
+- keep sensitive processing client-side whenever possible
+- support straightforward static deployment (GitHub Pages)
 
-### PDF
+## Core capabilities
 
-- Image to PDF (multi-upload, ordering, and PDF output)
-- PDF to Images (JPG/PNG with optional ZIP)
-- Compress PDF
+### PDF tools
+
+- Image to PDF (multi-upload, file ordering, single or separate output)
+- PDF to Images (JPG/PNG plus ZIP packaging)
+- In-browser PDF compression
 - Merge PDF
 - Split PDF
-- Rotate PDF
+- Rotate PDF pages
 - Remove pages
 - Extract pages
 
-### Image
+### Image tools
 
-- Image format conversion (JPG, PNG, WEBP, BMP, GIF)
-- Multi-file workflow
+- Conversion between JPG, PNG, WEBP, BMP, and GIF
+- HEIC/HEIF input support
+- Batch processing with ZIP output
 
-### Documents
+### Document tools
 
-- Convert documents to PDF (for example TXT, MD, RTF, DOCX, CSV, XLS, XLSX)
-- Scan workflow with page preparation
+- Document to PDF conversion for TXT, MD, RTF, DOCX, CSV, XLS, and XLSX
+- Scan-oriented preparation flow
+
+### Scanner flow
+
+- Optional local bridge integration
+- Mock provider for development/testing
+- Import, prepare, and export scanned output as PDF
+
+### Audio tools
+
+- Conversion across MP3, WAV, OGG, FLAC, AAC, M4A, MP4, and OPUS
+- Batch conversion (current limit: 10 files)
 
 ### Utilities
 
-- ZIP generation for multiple downloads
-- Automatic format detection with tool suggestion
-- Audio converter (MP3, WAV, OGG, FLAC, AAC, M4A, MP4, OPUS)
-- Audio batch conversion (up to 10 files) with direct download for one file and ZIP for multiple files
+- ZIP packaging for multiple downloads
+- Automatic file-type detection and tool suggestion
 
 ### UX / UI
 
-- Responsive layout (desktop and mobile)
+- Responsive layout for desktop and mobile
 - Floating desktop sidebar
-- Light and dark theme
-- Progress and status visual feedback
-- Tool-category navigation
+- Light/dark theme
+- Progress and state feedback
+- Category-driven navigation
 
-## Languages
+## Interface languages
 
-The interface includes language switching in the menu.
-
-Available languages:
+Supported languages:
 
 - Portuguese (pt-BR)
 - English (en)
 - Spanish (es)
 - French (fr)
 
-Implementation details:
+Implementation notes:
 
-- i18n with i18next and react-i18next
-- Language persisted in localStorage
-- Flag icons in frontend/public/assets/flags
+- `i18next` + `react-i18next`
+- language persisted via `localStorage`
+- SVG flags located in `frontend/public/assets/flags/`
 
 ## Architecture
 
 ### Frontend-first for GitHub Pages
 
-The app can be published as a static site on GitHub Pages with output generated in docs.
+The application is designed for static publishing in `docs/`.
 
-- SPA routing with HashRouter
-- Static assets optimized by Vite
-- Local browser processing for the main conversion flows
+- SPA routing through `HashRouter`
+- versioned and optimized assets generated by Vite
+- local browser processing for primary workflows
 
-## Stack
+### Simple workspace layout
+
+- root scripts orchestrate build/preview/deploy
+- `frontend` contains the React application
+- `docs` contains publishable artifacts
+
+## Layered architecture
+
+```mermaid
+flowchart TB
+	subgraph L1[Layer 1 - Presentation]
+		P1[Pages]
+		P2[Components]
+		P3[i18n]
+		P4[UI hooks]
+	end
+
+	subgraph L2[Layer 2 - Application]
+		A1[Services]
+		A2[Utils]
+		A3[File validation]
+		A4[Workflow orchestration]
+	end
+
+	subgraph L3[Layer 3 - Conversion Domain]
+		D1[PDF pipeline]
+		D2[Image pipeline]
+		D3[Document pipeline]
+		D4[Audio pipeline]
+	end
+
+	subgraph L4[Layer 4 - Infrastructure]
+		I1[Browser APIs]
+		I2[Workers]
+		I3[External libraries]
+		I4[Static assets]
+	end
+
+	L1 --> L2
+	L2 --> L3
+	L3 --> L4
+```
+
+## Technology stack
 
 ### Frontend
 
@@ -113,18 +176,20 @@ The app can be published as a static site on GitHub Pages with output generated 
 - Vite
 - Tailwind CSS
 - React Router
-- i18next and react-i18next
+- i18next + react-i18next
 - dnd-kit
 - pdf-lib
 - pdfjs-dist
 - jsPDF
 - JSZip
-- ffmpeg.wasm (core loaded at runtime in the browser)
+- heic2any
+- browser-image-compression
+- ffmpeg.wasm (runtime loaded)
 - Mammoth
 - xlsx
 - Lucide React
 
-## Project Structure
+## Repository structure
 
 ```text
 .
@@ -150,11 +215,10 @@ The app can be published as a static site on GitHub Pages with output generated 
 │  │  └─ utils/
 │  ├─ index.html
 │  └─ vite.config.js
-├─ .github/workflows/
-│  ├─ deploy-pages.yml
-│  └─ validate-pr.yml
+├─ scripts/
 ├─ package.json
-└─ README.md
+├─ README.md
+└─ README.en.md
 ```
 
 ## Prerequisites
@@ -170,13 +234,13 @@ From the project root:
 npm install
 ```
 
-This installs root and workspace dependencies for frontend.
+This installs dependencies for root and `frontend` workspace.
 
-## Environment Variables
+## Environment variables
 
 ### Frontend
 
-Example file: frontend/.env.example
+Example file: `frontend/.env.example`
 
 ```env
 VITE_SCANNER_PROVIDER=bridge
@@ -185,9 +249,9 @@ VITE_SCANNER_BRIDGE_URL=http://127.0.0.1:24833
 
 Notes:
 
-- VITE_SCANNER_PROVIDER=mock allows scanner UI testing without physical hardware.
+- Set `VITE_SCANNER_PROVIDER=mock` to test scanner UI without physical hardware.
 
-## Run Locally
+## Local development
 
 From root:
 
@@ -195,99 +259,150 @@ From root:
 npm run dev
 ```
 
-Default URL: http://localhost:5173
+Default URL: `http://localhost:5173`
 
-### Frontend
+Equivalent workspace command:
 
 ```bash
 npm run dev -w frontend
 ```
 
-## Build and Deploy
+## Build, preview, and deployment
 
-### Local frontend build
+### Production build
 
 ```bash
 npm run build
 ```
 
-### Build for GitHub Pages
+### Build for static pages
 
 ```bash
 npm run build:pages
 ```
 
-Final artifacts are generated in docs.
+Final artifacts are generated in `docs/`.
 
-During build, `scripts/generate-route-entrypoints.mjs` also creates `index.html`
-files for each public route (for example `docs/pdf-tools/index.html`). This avoids
-404 on direct URL access and improves indexing coverage in Search Console.
+During build, `scripts/generate-route-entrypoints.mjs` creates route-level `index.html`
+files (for example `docs/pdf-tools/index.html`) to avoid direct-access 404 issues.
 
-### Build preview
+### Preview build locally
 
 ```bash
 npm run preview:pages
 ```
 
-### CI/CD (GitHub Actions)
+### CI/CD with GitHub Actions
 
-Included workflows:
+Primary workflows:
 
-- .github/workflows/validate-pr.yml
-- .github/workflows/deploy-pages.yml
+- `.github/workflows/validate-pr.yml`
+- `.github/workflows/deploy-pages.yml`
 
 Expected flow:
 
-1. Pull request to main branch validates build.
-2. Push to main branch builds and publishes GitHub Pages.
+1. Pull request validates build in CI
+2. Push to main branch builds and deploys GitHub Pages
 
 Public URL:
 
 - https://helioasjunior.github.io/pdf-xino-convert/
 
-## Scanner (Local Bridge)
+## Scanner (local bridge)
 
-Scanner layer providers:
+Scanner providers:
 
-- frontend/src/scanner/providers/ScannerProvider.js
-- frontend/src/scanner/providers/LocalBridgeScannerProvider.js
-- frontend/src/scanner/providers/MockScannerProvider.js
+- `frontend/src/scanner/providers/ScannerProvider.js`
+- `frontend/src/scanner/providers/LocalBridgeScannerProvider.js`
+- `frontend/src/scanner/providers/MockScannerProvider.js`
 
 Expected local bridge endpoints:
 
-- GET /status
-- GET /devices
-- POST /connect
-- POST /scan
-- POST /cancel
+- `GET /status`
+- `GET /devices`
+- `POST /connect`
+- `POST /scan`
+- `POST /cancel`
 
 Scanner-free test flow:
 
-1. Set VITE_SCANNER_PROVIDER=mock.
-2. Run npm run dev.
-3. Open the scan page.
+1. Set `VITE_SCANNER_PROVIDER=mock`
+2. Run `npm run dev`
+3. Open the scan page
 
-## Known Limitations
+## Security and privacy
 
-- Some office formats (for example DOC, ODT, PPT, PPTX) may have partial fidelity in fully client-side conversion.
-- PDF recomposition-based compression can introduce visual loss at aggressive levels.
-- Audio conversion depends on runtime FFmpeg loading from CDN; restricted networks or proxy blocks may prevent initialization.
-- First audio conversion load may be slower due to FFmpeg asset download.
+- Primary workflows run client-side
+- Files are not sent to a project backend by default
+- Some features rely on runtime third-party assets (for example FFmpeg CDN)
 
-## Available Scripts
+Recommendation:
+
+- Validate network and CDN policies for restricted enterprise environments.
+
+## Known limitations
+
+- Some office formats (DOC, ODT, PPT, PPTX) may have partial fidelity in fully client-side conversion.
+- Recomposition-based PDF compression can introduce visual degradation at aggressive levels.
+- Audio conversion depends on runtime FFmpeg loading.
+- First use of some tools may be slower due to initial asset download.
+
+## Troubleshooting
+
+### "File format not accepted" for HEIC/HEIF
+
+- Ensure file extension is `.heic` or `.heif`
+- Update to the latest project version (extension fallback and preview fallback are included)
+
+### HEIC image preview does not render
+
+- Some browsers do not natively display HEIC in `<img>`
+- The project includes a HEIC-to-preview fallback; if it still fails, test in an up-to-date Chromium browser
+
+### Preview port already in use
+
+Use root scripts:
+
+```bash
+npm run kill:4173
+npm run preview:pages
+```
+
+## Available scripts
 
 ### Root
 
-- npm run dev (frontend)
-- npm run build (frontend build)
-- npm run build:pages (frontend build to docs)
-- npm run preview:pages (build preview)
+- `npm run dev` starts frontend dev mode
+- `npm run build` production build + static route entrypoint generation
+- `npm run build:pages` alias for static build
+- `npm run preview:pages` preview static build
+- `npm run preview:pages:auto` preview without strict port
+- `npm run kill:port` kill process by port
+- `npm run kill:4173` kill port 4173
+- `npm run qa:assets` generate QA assets
+- `npm run test:xlsx-pdf` run XLSX-to-PDF test routine
 
-### Frontend
+### Frontend workspace
 
-- npm run dev -w frontend
-- npm run build -w frontend
-- npm run preview -w frontend
+- `npm run dev -w frontend`
+- `npm run build -w frontend`
+- `npm run preview -w frontend`
+
+## Contributing
+
+Suggested flow:
+
+1. Create a feature branch
+2. Run `npm install`
+3. Develop and validate with `npm run dev`
+4. Validate production build with `npm run build`
+5. Open PR with clear functional impact and manual test notes
+
+Best practices:
+
+- keep PR scope focused
+- avoid changing `docs/` artifacts unless deployment/build output is intended
+- include reproducible context for bug fixes
 
 ## Roadmap
 
@@ -298,4 +413,4 @@ Scanner-free test flow:
 
 ## License
 
-This project is licensed under the terms of the LICENSE file.
+This project is licensed under the terms of [LICENSE](LICENSE).
