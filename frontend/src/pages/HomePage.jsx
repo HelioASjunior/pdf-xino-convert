@@ -144,7 +144,7 @@ function HomePage() {
           <h1 className="font-display text-[1.25rem] font-semibold leading-[1.2] text-slate-900 dark:text-slate-50 sm:text-[1.55rem] md:text-3xl">
             {t('home.sectionTitle')}
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-slate-500">
+          <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
             {t('home.sectionDesc')}
           </p>
         </div>
@@ -158,8 +158,8 @@ function HomePage() {
               onClick={() => setActiveMenu(tab.key)}
               className={`rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
                 activeMenu === tab.key
-                  ? 'bg-slate-900 text-white shadow-sm'
-                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50 hover:ring-slate-300'
+                  ? 'bg-slate-900 text-white shadow-sm dark:bg-slate-100 dark:text-slate-900'
+                  : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50 hover:ring-slate-300 dark:bg-slate-800/70 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800 dark:hover:ring-slate-600'
               }`}
             >
               {tab.label}
@@ -176,13 +176,13 @@ function HomePage() {
                 href={tool.href}
                 target="_blank"
                 rel="noreferrer"
-                className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md"
+                className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md dark:border-slate-700/70 dark:bg-slate-800/80 dark:hover:border-slate-600/70 dark:hover:shadow-panel-dark"
               >
                 <tool.Icon />
-                <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900">
+                <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900 dark:text-slate-100">
                   {tool.title}
                 </h3>
-                <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500">
+                <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500 dark:text-slate-400">
                   {tool.description}
                 </p>
               </a>
@@ -190,13 +190,13 @@ function HomePage() {
               <Link
                 key={`${tool.category}-${tool.title}`}
                 to={tool.href}
-                className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md"
+                className="group flex min-h-[160px] flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-md dark:border-slate-700/70 dark:bg-slate-800/80 dark:hover:border-slate-600/70 dark:hover:shadow-panel-dark"
               >
                 <tool.Icon />
-                <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900">
+                <h3 className="mt-3.5 text-sm font-semibold leading-5 text-slate-900 dark:text-slate-100">
                   {tool.title}
                 </h3>
-                <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500">
+                <p className="mt-1 line-clamp-2 text-[0.72rem] leading-[1.5] text-slate-500 dark:text-slate-400">
                   {tool.description}
                 </p>
               </Link>

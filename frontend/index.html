@@ -56,6 +56,17 @@
     />
 
     <title>PDFXino - Converter PDF Online Grátis | PDF para Word, JPG e Mais</title>
+    <!-- Theme init: applied before React mounts to prevent flash of wrong theme -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      }());
+    </script>
     <!-- GitHub Pages SPA: decode the path that 404.html encoded as a query string.
          This runs before React mounts, so react-router sees the correct pathname. -->
     <script>
