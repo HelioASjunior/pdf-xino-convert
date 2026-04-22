@@ -14,7 +14,6 @@ import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
 import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
 import { buildImagesZip, convertImageFiles } from '../services/imageToolsService';
-import { downloadBlob } from '../utils/formatters';
 import { createImagePreviewUrl } from '../utils/imagePreview';
 
 const acceptedImageMime = [
@@ -40,7 +39,7 @@ const imageCategoryTools = [
   },
   {
     title: 'Converter Formato de Imagem',
-    description: 'Padronize arquivos HEIC, JPG, PNG, WEBP, BMP ou GIF com download em ZIP.',
+    description: 'Padronize arquivos HEIC, JPG, PNG, WEBP, BMP ou GIF. Uma imagem baixa direto; múltiplas vão para ZIP.',
     href: '/image-tools',
     icon: FileImage,
     accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
@@ -57,8 +56,8 @@ const imageTrustItems = [
     accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
   },
   {
-    title: 'Download organizado',
-    description: 'As imagens convertidas são entregues em ZIP para manter a distribuição simples.',
+    title: 'Download inteligente',
+    description: 'Uma única imagem é entregue diretamente; múltiplas ficam disponíveis em ZIP ou como arquivos individuais.',
     icon: PackageCheck,
     accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
   },
@@ -73,7 +72,7 @@ const imageTrustItems = [
 const imageFaqItems = [
   {
     question: 'Posso converter várias imagens ao mesmo tempo?',
-    answer: 'Sim. O fluxo foi preparado para lotes, mantendo todos os arquivos finais agrupados em um único ZIP.',
+    answer: 'Sim. Para uma única imagem o download é direto; para lotes, você pode baixar tudo em ZIP ou cada arquivo individualmente.',
   },
   {
     question: 'Quais formatos de entrada são aceitos?',
@@ -96,6 +95,7 @@ function ImageToolsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
+  const [showIndividual, setShowIndividual] = useState(false);
   const resultRef = useRef(null);
 
   useEffect(() => {
@@ -116,6 +116,7 @@ function ImageToolsPage() {
     }
     result?.converted?.forEach((item) => item.previewUrl && URL.revokeObjectURL(item.previewUrl));
     setResult(null);
+    setShowIndividual(false);
   };
 
   const onFilesSelected = async (files) => {
@@ -178,21 +179,32 @@ function ImageToolsPage() {
         throw new Error('Nenhum arquivo pôde ser convertido com o formato escolhido.');
       }
 
-      const zip = await buildImagesZip(
-        convertedResult.converted,
-        `imagens-convertidas-${Date.now()}.zip`,
-      );
+      const isSingle = convertedResult.converted.length === 1;
 
-      const url = downloadBlob(zip.zipBlob, zip.zipName);
-      setResult({
-        url,
-        zipName: zip.zipName,
-        converted: convertedResult.converted,
-        failed: convertedResult.failed,
-      });
+      if (isSingle) {
+        const single = convertedResult.converted[0];
+        setResult({
+          mode: 'single',
+          url: URL.createObjectURL(single.blob),
+          fileName: single.name,
+          converted: convertedResult.converted,
+          failed: convertedResult.failed,
+        });
+        showToast({ type: 'success', title: 'Conversão concluída', message: 'Escolha como baixar o arquivo.' });
+      } else {
+        const zipName = `imagens-convertidas-${Date.now()}.zip`;
+        const zip = await buildImagesZip(convertedResult.converted, zipName);
+        setResult({
+          mode: 'multiple',
+          url: URL.createObjectURL(zip.zipBlob),
+          zipName: zip.zipName,
+          converted: convertedResult.converted,
+          failed: convertedResult.failed,
+        });
+        showToast({ type: 'success', title: 'Conversão concluída', message: 'Escolha como baixar os arquivos.' });
+      }
 
       addEntry({ tool: 'Ferramentas de Imagem', summary: `${convertedResult.converted.length} arquivo(s) convertido(s)` });
-      showToast({ type: 'success', title: 'Conversão concluída', message: 'Download do ZIP iniciado.' });
     } catch (processingError) {
       const message = processingError.message || 'Erro ao converter imagens.';
       setError(message);
@@ -214,7 +226,7 @@ function ImageToolsPage() {
         <section className="space-y-6">
           <UploadArea
             title="Adicionar imagens"
-            description="Faça upload de múltiplas imagens e baixe tudo em ZIP ao final."
+            description="Faça upload de imagens e converta para o formato desejado."
             accept="image/jpeg,image/png,image/webp,image/bmp,image/gif,image/heic,image/heif,image/tiff,image/svg+xml,.heic,.heif"
             multiple
             onFilesSelected={onFilesSelected}
@@ -273,7 +285,7 @@ function ImageToolsPage() {
 
             <Button className="w-full gap-2" onClick={runConversion} disabled={isLoading || !items.length}>
               <Download className="h-4 w-4" />
-              Converter e gerar ZIP
+              Converter imagens
             </Button>
           </div>
 
@@ -284,9 +296,42 @@ function ImageToolsPage() {
               tone="success"
             >
               <div className="space-y-3">
-                <a href={result.url} download={result.zipName}>
-                  <Button>Baixar ZIP</Button>
-                </a>
+                {result.mode === 'single' ? (
+                  <a href={result.url} download={result.fileName} className="block">
+                    <Button className="w-full gap-2">
+                      <Download className="h-4 w-4" />
+                      <span className="truncate">Baixar {result.fileName}</span>
+                    </Button>
+                  </a>
+                ) : (
+                  <>
+                    <a href={result.url} download={result.zipName} className="block">
+                      <Button className="w-full gap-2">
+                        <Download className="h-4 w-4" />
+                        Baixar como ZIP
+                      </Button>
+                    </a>
+                    <Button
+                      variant="ghost"
+                      className="w-full"
+                      onClick={() => setShowIndividual((v) => !v)}
+                    >
+                      {showIndividual ? 'Ocultar arquivos individuais' : 'Baixar arquivos individuais'}
+                    </Button>
+                    {showIndividual ? (
+                      <div className="space-y-2">
+                        {result.converted.map((item) => (
+                          <a key={item.name} href={item.previewUrl} download={item.name} className="block">
+                            <Button variant="ghost" className="w-full gap-2">
+                              <Download className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{item.name}</span>
+                            </Button>
+                          </a>
+                        ))}
+                      </div>
+                    ) : null}
+                  </>
+                )}
                 {result.failed?.length ? (
                   <div className="text-sm text-amber-700 dark:text-amber-300">
                     {result.failed.length} arquivo(s) não puderam ser processados com este formato de saída.
@@ -316,7 +361,7 @@ function ImageToolsPage() {
             </div>
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrega final</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">ZIP organizado</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Direto ou ZIP</p>
             </div>
           </div>
         </div>

@@ -11,7 +11,6 @@ import ResultCard from '../components/ResultCard';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
 import { imagesToPdf, imagesToSeparatePdfs } from '../services/clientPdfTools';
-import { downloadBlob } from '../utils/formatters';
 import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
 import { createImagePreviewUrl } from '../utils/imagePreview';
 
@@ -143,7 +142,7 @@ function ImageToPdfPage() {
           },
         );
 
-        const url = downloadBlob(bundle.zipBlob, bundle.zipFileName);
+        const url = URL.createObjectURL(bundle.zipBlob);
         setResult({
           kind: 'separate',
           fileName: bundle.zipFileName,
@@ -151,7 +150,7 @@ function ImageToPdfPage() {
           generatedCount: bundle.files.length,
           failed: bundle.failed,
         });
-        showToast({ type: 'success', title: 'PDFs gerados', message: 'ZIP com PDFs individuais iniciado.' });
+        showToast({ type: 'success', title: 'PDFs gerados', message: `${bundle.files.length} PDF(s) prontos para download.` });
         addEntry({ tool: 'Imagem para PDF', summary: `${bundle.files.length} PDF(s) individuais gerados` });
       } else {
         const pdfBlob = await imagesToPdf(
@@ -163,7 +162,7 @@ function ImageToPdfPage() {
         );
 
         const fileName = `imagens-convertidas-${Date.now()}.pdf`;
-        const url = downloadBlob(pdfBlob, fileName);
+        const url = URL.createObjectURL(pdfBlob);
         setResult({
           kind: 'single',
           fileName,
@@ -171,7 +170,7 @@ function ImageToPdfPage() {
           generatedCount: items.length,
           failed: [],
         });
-        showToast({ type: 'success', title: 'PDF gerado', message: 'Conversão concluída e download iniciado.' });
+        showToast({ type: 'success', title: 'PDF gerado', message: 'Conversão concluída. Clique para baixar.' });
         addEntry({ tool: 'Imagem para PDF', summary: `${items.length} imagens convertidas em ${fileName}` });
       }
     } catch (requestError) {
@@ -321,8 +320,8 @@ function ImageToPdfPage() {
           <ResultCard
             title={result.kind === 'separate' ? 'PDFs individuais prontos' : 'PDF final pronto'}
             description={result.kind === 'separate'
-              ? `Foram gerados ${result.generatedCount} PDF(s). O download do ZIP já foi iniciado automaticamente.`
-              : 'O download já foi iniciado automaticamente. Você também pode baixar novamente pelo botão abaixo.'}
+              ? `Foram gerados ${result.generatedCount} PDF(s) prontos para download.`
+              : 'PDF gerado com sucesso. Clique no botão abaixo para baixar.'}
             tone="success"
           >
             <div className="flex flex-col gap-3 sm:flex-row">

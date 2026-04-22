@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink, MoveVertical, FileText, Image } from 'lucide-react';
+import { Download, FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink, MoveVertical, FileText, Image } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
 import FileOrderModal from '../components/FileOrderModal';
@@ -14,7 +14,7 @@ import FaqSection from '../components/FaqSection';
 import PdfCropEditorModal from '../components/PdfCropEditorModal';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
-import { downloadBlob, formatPercent } from '../utils/formatters';
+import { formatPercent } from '../utils/formatters';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
 import { createPdfPreviewUrl } from '../utils/pdfPreview';
 import { compressPdfInBrowser } from '../services/clientPdfTools';
@@ -157,6 +157,7 @@ function PdfToolsPage() {
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
+  const [showIndividual, setShowIndividual] = useState(false);
   const filesRef = useRef([]);
   const resultRef = useRef(null);
   const workbenchRef = useRef(null);
@@ -197,13 +198,16 @@ function PdfToolsPage() {
     if (resultRef.current?.url) {
       URL.revokeObjectURL(resultRef.current.url);
     }
+    resultRef.current?.individualFiles?.forEach((f) => URL.revokeObjectURL(f.url));
   }, []);
 
   const clearResult = () => {
     if (result?.url) {
       URL.revokeObjectURL(result.url);
     }
+    result?.individualFiles?.forEach((f) => URL.revokeObjectURL(f.url));
     setResult(null);
+    setShowIndividual(false);
   };
 
   const handleFilesSelected = async (selectedFiles) => {
@@ -292,11 +296,15 @@ function PdfToolsPage() {
 
     try {
       clearResult();
+
+      const fileProgress = (i) => (v) => setProgress(Math.round((i * 100 + v) / files.length));
+
       let output;
 
       if (operation === 'merge') {
         const blob = await mergePdfFiles(files.map((item) => item.file), (value) => setProgress(value));
         output = {
+          mode: 'single',
           blob,
           fileName: `pdf-unificado-${Date.now()}.pdf`,
           description: `${files.length} arquivos combinados em um único PDF.`,
@@ -304,61 +312,124 @@ function PdfToolsPage() {
       }
 
       if (operation === 'split') {
-        const parts = await splitPdf(files[0].file, range, (value) => setProgress(value));
-        const zip = await zipDownloadItems(parts, `pdf-dividido-${Date.now()}.zip`);
+        const allParts = [];
+        for (let i = 0; i < files.length; i++) {
+          const parts = await splitPdf(files[i].file, range, fileProgress(i));
+          allParts.push(...parts);
+        }
+        const zip = await zipDownloadItems(allParts, `pdf-dividido-${Date.now()}.zip`);
         output = {
+          mode: 'multiple',
           blob: zip.zipBlob,
           fileName: zip.zipName,
-          description: `${parts.length} parte(s) gerada(s).`,
+          description: `${allParts.length} parte(s) gerada(s).`,
+          individualFiles: allParts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
         };
       }
 
       if (operation === 'rotate') {
-        const blob = await rotatePdf(files[0].file, Number(angle), range, (value) => setProgress(value));
-        output = {
-          blob,
-          fileName: `${files[0].file.name.replace(/\.[^/.]+$/, '')}-rotacionado.pdf`,
-          description: 'Rotação aplicada com sucesso.',
-        };
+        const parts = [];
+        for (let i = 0; i < files.length; i++) {
+          const blob = await rotatePdf(files[i].file, Number(angle), range, fileProgress(i));
+          parts.push({ name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}-rotacionado.pdf`, blob });
+        }
+        if (parts.length === 1) {
+          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: 'Rotação aplicada com sucesso.' };
+        } else {
+          const zip = await zipDownloadItems(parts, `pdfs-rotacionados-${Date.now()}.zip`);
+          output = {
+            mode: 'multiple',
+            blob: zip.zipBlob,
+            fileName: zip.zipName,
+            description: `${parts.length} arquivo(s) rotacionados.`,
+            individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
+          };
+        }
       }
 
       if (operation === 'remove') {
-        const blob = await removePdfPages(files[0].file, range, (value) => setProgress(value));
-        output = {
-          blob,
-          fileName: `${files[0].file.name.replace(/\.[^/.]+$/, '')}-sem-paginas.pdf`,
-          description: 'Páginas selecionadas removidas.',
-        };
+        const parts = [];
+        for (let i = 0; i < files.length; i++) {
+          const blob = await removePdfPages(files[i].file, range, fileProgress(i));
+          parts.push({ name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}-sem-paginas.pdf`, blob });
+        }
+        if (parts.length === 1) {
+          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: 'Páginas selecionadas removidas.' };
+        } else {
+          const zip = await zipDownloadItems(parts, `pdfs-sem-paginas-${Date.now()}.zip`);
+          output = {
+            mode: 'multiple',
+            blob: zip.zipBlob,
+            fileName: zip.zipName,
+            description: `${parts.length} arquivo(s) processados.`,
+            individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
+          };
+        }
       }
 
       if (operation === 'extract') {
-        const blob = await extractPdfPages(files[0].file, range, (value) => setProgress(value));
-        output = {
-          blob,
-          fileName: `${files[0].file.name.replace(/\.[^/.]+$/, '')}-extraido.pdf`,
-          description: 'Páginas selecionadas extraídas para novo PDF.',
-        };
+        const parts = [];
+        for (let i = 0; i < files.length; i++) {
+          const blob = await extractPdfPages(files[i].file, range, fileProgress(i));
+          parts.push({ name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}-extraido.pdf`, blob });
+        }
+        if (parts.length === 1) {
+          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: 'Páginas selecionadas extraídas para novo PDF.' };
+        } else {
+          const zip = await zipDownloadItems(parts, `pdfs-extraidos-${Date.now()}.zip`);
+          output = {
+            mode: 'multiple',
+            blob: zip.zipBlob,
+            fileName: zip.zipName,
+            description: `${parts.length} arquivo(s) com páginas extraídas.`,
+            individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
+          };
+        }
       }
 
       if (operation === 'compress') {
-        const compression = await compressPdfInBrowser(files[0].file, {
-          level: compressionLevel,
-          onProgress: (value) => setProgress(value),
-        });
-
-        output = {
-          blob: compression.blob,
-          fileName: `${files[0].file.name.replace(/\.[^/.]+$/, '')}-comprimido.pdf`,
-          description: compression.wasReduced
-            ? `Compressão concluída com redução de ${formatPercent(compression.reductionPercent)}.`
-            : 'Compressão concluída. O PDF já estava otimizado e não houve redução relevante.',
-        };
+        const parts = [];
+        for (let i = 0; i < files.length; i++) {
+          const compression = await compressPdfInBrowser(files[i].file, {
+            level: compressionLevel,
+            onProgress: fileProgress(i),
+          });
+          parts.push({
+            name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}-comprimido.pdf`,
+            blob: compression.blob,
+            wasReduced: compression.wasReduced,
+            reductionPercent: compression.reductionPercent,
+          });
+        }
+        if (parts.length === 1) {
+          output = {
+            mode: 'single',
+            blob: parts[0].blob,
+            fileName: parts[0].name,
+            description: parts[0].wasReduced
+              ? `Compressão concluída com redução de ${formatPercent(parts[0].reductionPercent)}.`
+              : 'Compressão concluída. O PDF já estava otimizado e não houve redução relevante.',
+          };
+        } else {
+          const reduced = parts.filter((p) => p.wasReduced).length;
+          const zip = await zipDownloadItems(
+            parts.map((p) => ({ name: p.name, blob: p.blob })),
+            `pdfs-comprimidos-${Date.now()}.zip`,
+          );
+          output = {
+            mode: 'multiple',
+            blob: zip.zipBlob,
+            fileName: zip.zipName,
+            description: `${parts.length} arquivo(s) comprimidos. ${reduced} com redução relevante.`,
+            individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
+          };
+        }
       }
 
-      const url = downloadBlob(output.blob, output.fileName);
+      const url = URL.createObjectURL(output.blob);
       setResult({ url, ...output });
 
-      addEntry({ tool: 'Ferramentas de PDF', summary: `${operation} executado em ${files[0].file.name}` });
+      addEntry({ tool: 'Ferramentas de PDF', summary: `${operation} executado em ${files.length} arquivo(s)` });
       showToast({ type: 'success', title: 'Processamento concluído', message: output.description });
     } catch (processingError) {
       const message = processingError.message || 'Erro ao processar PDF.';
@@ -389,7 +460,7 @@ function PdfToolsPage() {
           : `Área de recorte aplicada na página ${config.currentPage}.`,
       };
 
-      const url = downloadBlob(output.blob, output.fileName);
+      const url = URL.createObjectURL(output.blob);
       setResult({ url, ...output });
 
       addEntry({ tool: 'Ferramentas de PDF', summary: `crop executado em ${files[0].file.name}` });
@@ -547,9 +618,44 @@ function PdfToolsPage() {
 
           {result ? (
             <ResultCard title="Arquivo pronto" description={result.description} tone="success">
-              <a href={result.url} download={result.fileName}>
-                <Button>Baixar resultado</Button>
-              </a>
+              <div className="space-y-3">
+                {result.mode === 'multiple' ? (
+                  <>
+                    <a href={result.url} download={result.fileName} className="block">
+                      <Button className="w-full gap-2">
+                        <Download className="h-4 w-4" />
+                        Baixar como ZIP
+                      </Button>
+                    </a>
+                    <Button
+                      variant="ghost"
+                      className="w-full"
+                      onClick={() => setShowIndividual((v) => !v)}
+                    >
+                      {showIndividual ? 'Ocultar arquivos individuais' : 'Baixar arquivos individuais'}
+                    </Button>
+                    {showIndividual ? (
+                      <div className="space-y-2">
+                        {result.individualFiles.map((f) => (
+                          <a key={f.name} href={f.url} download={f.name} className="block">
+                            <Button variant="ghost" className="w-full gap-2">
+                              <Download className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{f.name}</span>
+                            </Button>
+                          </a>
+                        ))}
+                      </div>
+                    ) : null}
+                  </>
+                ) : (
+                  <a href={result.url} download={result.fileName} className="block">
+                    <Button className="w-full gap-2">
+                      <Download className="h-4 w-4" />
+                      Baixar resultado
+                    </Button>
+                  </a>
+                )}
+              </div>
             </ResultCard>
           ) : null}
         </aside>
