@@ -9,7 +9,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ProgressBar from '../components/ProgressBar';
 import HubFeatureGrid from '../components/HubFeatureGrid';
 import TrustSection from '../components/TrustSection';
-import FaqSection from '../components/FaqSection';
 import { useToast } from '../hooks/useToast.jsx';
 import { zipDownloadItems } from '../services/pdfToolkitService';
 import { downloadBlob } from '../utils/formatters';
@@ -68,21 +67,6 @@ const utilitiesTrustItems = [
     description: 'A sugestão automática ajuda a localizar a ferramenta correta quando o tipo de arquivo é reconhecido.',
     icon: ShieldCheck,
     accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
-const utilitiesFaqItems = [
-  {
-    question: 'Quais arquivos posso enviar nesta área?',
-    answer: 'Qualquer arquivo com até 100 MB por item pode ser usado para organização e geração de ZIP.',
-  },
-  {
-    question: 'A detecção automática converte meus arquivos?',
-    answer: 'Não. Ela apenas analisa o tipo enviado e sugere a área mais adequada da plataforma para continuar o trabalho.',
-  },
-  {
-    question: 'Posso usar utilitários sem converter nada?',
-    answer: 'Sim. Esta página também funciona como uma central simples para agrupar downloads em um único pacote ZIP.',
   },
 ];
 
@@ -297,11 +281,6 @@ function UtilitiesPage() {
         title="Por que manter esta central"
         description="Nem todo fluxo começa com conversão. Em muitos casos, organizar e encaminhar arquivos é a etapa mais útil."
         items={utilitiesTrustItems}
-      />
-
-      <FaqSection
-        description="Pontos rápidos para orientar o uso dos utilitários no dia a dia."
-        items={utilitiesFaqItems}
       />
     </div>
   );

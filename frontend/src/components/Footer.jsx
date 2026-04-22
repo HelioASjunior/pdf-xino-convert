@@ -7,9 +7,9 @@ function Footer() {
   const logoSrc = `${import.meta.env.BASE_URL}assets/logo_xinoconvert.png`;
 
   return (
-    <footer className="pb-6 pt-6 sm:pb-8">
-      <div className="glass-panel px-6 py-6 text-sm text-slate-500 dark:text-slate-400 lg:px-7 lg:py-7">
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.9fr_0.8fr]">
+    <footer className="w-full border-t border-slate-200/80 bg-slate-50/90 backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/95">
+      <div className="mx-auto w-full max-w-[1600px] px-4 py-10 text-sm text-slate-500 dark:text-slate-400 sm:px-6 lg:px-8 lg:py-12">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.9fr_0.8fr]">
           <div className="space-y-3 text-center lg:text-left">
             <div className="inline-flex items-center gap-3">
               <img
@@ -45,7 +45,7 @@ function Footer() {
                 href="https://www.linkedin.com/in/heliojunior1218/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-white px-4 py-3 font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700 sm:w-auto"
                 aria-label="LinkedIn de Hélio Júnior"
               >
                 <img src={linkedinIcon} alt="LinkedIn" className="h-5 w-5" loading="lazy" />
@@ -56,7 +56,7 @@ function Footer() {
                 href="https://github.com/HelioASjunior/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-white px-4 py-3 font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700 sm:w-auto"
                 aria-label="GitHub de Hélio Júnior"
               >
                 <Github className="h-5 w-5" />
@@ -67,7 +67,7 @@ function Footer() {
                 href="https://instagram.com/pdfxinoconvert"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-slate-100 px-4 py-3 font-semibold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 sm:w-auto"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2.5 rounded-2xl bg-white px-4 py-3 font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700 dark:hover:bg-slate-700 sm:w-auto"
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
@@ -77,7 +77,7 @@ function Footer() {
           </div>
         </div>
 
-        <p className="mt-6 border-t border-slate-200 pt-4 text-center text-xs leading-6 text-slate-500 dark:border-slate-700 dark:text-slate-400 lg:text-left">
+        <p className="mt-8 border-t border-slate-200 pt-6 text-center text-xs leading-6 text-slate-400 dark:border-slate-700 dark:text-slate-500 lg:text-left">
           {t('footer.privacyNotice')}
         </p>
       </div>

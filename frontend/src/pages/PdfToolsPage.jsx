@@ -10,7 +10,6 @@ import ProgressBar from '../components/ProgressBar';
 import LoadingSpinner from '../components/LoadingSpinner';
 import HubFeatureGrid from '../components/HubFeatureGrid';
 import TrustSection from '../components/TrustSection';
-import FaqSection from '../components/FaqSection';
 import PdfCropEditorModal from '../components/PdfCropEditorModal';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
@@ -122,21 +121,6 @@ const pdfTrustItems = [
     description: 'O painel lateral concentra configuração, progresso e download para reduzir o tempo de operação.',
     icon: TimerReset,
     accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
-const pdfFaqItems = [
-  {
-    question: 'Posso juntar vários PDFs de uma vez?',
-    answer: 'Sim. A opção de juntar PDF aceita múltiplos arquivos e gera um único documento consolidado ao final.',
-  },
-  {
-    question: 'Como informar páginas específicas?',
-    answer: 'Use formatos como 1,3-5 para trabalhar com páginas isoladas e intervalos no mesmo campo.',
-  },
-  {
-    question: 'A divisão gera vários downloads separados?',
-    answer: 'Não. As partes geradas são agrupadas em um ZIP para manter o processo mais organizado.',
   },
 ];
 
@@ -700,11 +684,6 @@ function PdfToolsPage() {
         title="Por que usar esta central de PDF"
         description="A interface foi estruturada para tarefas recorrentes de escritório, revisão e organização documental."
         items={pdfTrustItems}
-      />
-
-      <FaqSection
-        description="Respostas rápidas para dúvidas comuns antes de iniciar o processamento."
-        items={pdfFaqItems}
       />
 
       <PdfCropEditorModal

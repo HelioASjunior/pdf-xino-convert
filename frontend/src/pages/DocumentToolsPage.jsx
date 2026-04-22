@@ -8,7 +8,6 @@ import ProgressBar from '../components/ProgressBar';
 import LoadingSpinner from '../components/LoadingSpinner';
 import HubFeatureGrid from '../components/HubFeatureGrid';
 import TrustSection from '../components/TrustSection';
-import FaqSection from '../components/FaqSection';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
 import { convertDocumentFileToPdf } from '../services/documentToolsService';
@@ -97,21 +96,6 @@ const documentTrustItems = [
     description: 'Quando o tipo de arquivo pede cuidado extra, o sistema mostra um encaminhamento mais seguro.',
     icon: ShieldCheck,
     accent: 'bg-amber-50 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
-  },
-];
-
-const documentFaqItems = [
-  {
-    question: 'Quais formatos posso enviar nesta área?',
-    answer: 'Você pode enviar DOC, DOCX, ODT, XLS, XLSX, CSV, PPT, PPTX, TXT, RTF e MD.',
-  },
-  {
-    question: 'Todos os formatos têm o mesmo tratamento?',
-    answer: 'Não. Alguns tipos contam com conversão direta e outros usam um fluxo assistido para preservar melhor a leitura final.',
-  },
-  {
-    question: 'Posso converter mais de um documento por vez?',
-    answer: 'Nesta área, o processo foi desenhado para um documento por vez, com foco em controle e revisão do resultado.',
   },
 ];
 
@@ -319,11 +303,6 @@ function DocumentToolsPage() {
         title="Por que usar esta central de documentos"
         description="A página foi expandida para orientar o envio e reduzir a incerteza entre formatos diferentes de escritório."
         items={documentTrustItems}
-      />
-
-      <FaqSection
-        description="Informações úteis antes de iniciar a conversão do seu documento."
-        items={documentFaqItems}
       />
     </div>
   );

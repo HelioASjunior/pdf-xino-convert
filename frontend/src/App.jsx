@@ -25,6 +25,7 @@ const MergePdfPage = lazy(() => import('./pages/MergePdfPage'));
 const AudioConverterPage = lazy(() => import('./pages/AudioConverterPage'));
 const SiteTourPage = lazy(() => import('./pages/SiteTourPage'));
 const InstallOnIphonePage = lazy(() => import('./pages/InstallOnIphonePage'));
+const FaqPage = lazy(() => import('./pages/FaqPage'));
 
 function App() {
   const { t } = useTranslation();
@@ -36,6 +37,7 @@ function App() {
     { label: t('nav.documentTools'), href: '/document-tools' },
     { label: t('nav.audioTools'), href: '/conversor-audio' },
     { label: t('nav.utilities'), href: '/utilities' },
+    { label: t('nav.faq'), href: '/faq' },
   ];
 
   return (
@@ -45,9 +47,8 @@ function App() {
           <SeoManager />
           <ScrollToTop />
           <div className="pointer-events-none absolute right-0 top-0 h-[86vh] w-[54%] grid-pattern opacity-55" />
-          <div className="relative mx-auto flex min-h-screen w-full max-w-[1360px] flex-col px-4 sm:px-6 lg:px-8">
-            <Header navigation={navigation} />
-
+          <Header navigation={navigation} />
+          <div className="relative mx-auto flex min-h-screen w-full max-w-[1600px] flex-col px-4 sm:px-6 lg:px-8">
             <div className="flex min-h-screen flex-col">
               <main className="flex-1 py-6 md:py-10">
                 <Suspense fallback={<RouteFallback />}>
@@ -67,13 +68,14 @@ function App() {
                     <Route path="/conversor-audio" element={<AudioConverterPage />} />
                     <Route path="/tour-pelo-site" element={<SiteTourPage />} />
                     <Route path="/instalar-no-iphone" element={<InstallOnIphonePage />} />
+                    <Route path="/faq" element={<FaqPage />} />
                     <Route path="*" element={<HomePage />} />
                   </Routes>
                 </Suspense>
               </main>
-              <Footer />
             </div>
           </div>
+          <Footer />
           <FloatingSocialButtons />
           <FirstVisitNotice />
         </div>

@@ -9,7 +9,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import ProgressBar from '../components/ProgressBar';
 import HubFeatureGrid from '../components/HubFeatureGrid';
 import TrustSection from '../components/TrustSection';
-import FaqSection from '../components/FaqSection';
 import { useToast } from '../hooks/useToast.jsx';
 import { useSessionHistory } from '../hooks/useSessionHistory';
 import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
@@ -66,21 +65,6 @@ const imageTrustItems = [
     description: 'Você decide o formato final e a qualidade antes de processar todos os arquivos.',
     icon: ShieldCheck,
     accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
-const imageFaqItems = [
-  {
-    question: 'Posso converter várias imagens ao mesmo tempo?',
-    answer: 'Sim. Para uma única imagem o download é direto; para lotes, você pode baixar tudo em ZIP ou cada arquivo individualmente.',
-  },
-  {
-    question: 'Quais formatos de entrada são aceitos?',
-    answer: 'Você pode enviar HEIC, HEIF, JPG, PNG, WEBP, BMP, GIF, TIFF e SVG para conversão nesta área.',
-  },
-  {
-    question: 'Como funciona a qualidade da saída?',
-    answer: 'O controle deslizante ajusta a compressão para formatos compatíveis e ajuda a equilibrar peso e aparência.',
   },
 ];
 
@@ -377,11 +361,6 @@ function ImageToolsPage() {
         title="Por que usar esta área de imagem"
         description="Os fluxos foram organizados para manter consistência visual e reduzir o tempo de preparação dos arquivos."
         items={imageTrustItems}
-      />
-
-      <FaqSection
-        description="Informações rápidas para orientar a conversão antes do processamento."
-        items={imageFaqItems}
       />
     </div>
   );

@@ -8,7 +8,6 @@ import ResultCard from '../components/ResultCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ProgressBar from '../components/ProgressBar';
 import TrustSection from '../components/TrustSection';
-import FaqSection from '../components/FaqSection';
 import { useToast } from '../hooks/useToast.jsx';
 import { zipDownloadItems } from '../services/pdfToolkitService';
 import { AUDIO_OUTPUT_OPTIONS, convertAudioFiles } from '../services/audioToolsService';
@@ -37,21 +36,6 @@ const audioTrustItems = [
     description: 'Defina bitrate para formatos com perda e ajuste o equilíbrio entre tamanho e qualidade.',
     icon: SlidersHorizontal,
     accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
-const audioFaqItems = [
-  {
-    question: 'Posso converter vários formatos para um único formato de saída?',
-    answer: 'Sim. Você pode misturar formatos de entrada e escolher apenas um formato final para todo o lote.',
-  },
-  {
-    question: 'Quando o download sai em ZIP?',
-    answer: 'Quando houver dois ou mais arquivos convertidos, o sistema prepara um ZIP automaticamente.',
-  },
-  {
-    question: 'Se algum arquivo estiver corrompido, perco o lote inteiro?',
-    answer: 'Não. Arquivos com falha são listados e os demais são convertidos normalmente sempre que possível.',
   },
 ];
 
@@ -305,11 +289,6 @@ function AudioConverterPage() {
         title="Por que usar o conversor de áudio"
         description="Fluxo pensado para conversões rápidas, com interface simples, validação de arquivos e download imediato."
         items={audioTrustItems}
-      />
-
-      <FaqSection
-        description="Dúvidas frequentes sobre formatos, desempenho e entrega dos resultados."
-        items={audioFaqItems}
       />
 
       <ResultCard
