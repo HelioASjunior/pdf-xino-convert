@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, FileArchive, Scissors, Trash2, RotateCw, Files, Layers3, ShieldCheck, TimerReset, Crop, Shrink, MoveVertical, FileText, Image } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
@@ -27,106 +28,10 @@ import {
   zipDownloadItems,
 } from '../services/pdfToolkitService';
 
-const pdfHubItems = [
-  {
-    title: 'Juntar PDF',
-    description: 'Reúna contratos, relatórios e anexos em um único arquivo final.',
-    icon: Files,
-    badge: 'Mais usado',
-    actionLabel: 'Abrir fluxo',
-    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-    onClick: () => {},
-    className: 'hover:-translate-y-0',
-  },
-  {
-    title: 'Dividir páginas',
-    description: 'Separe capítulos, recibos ou páginas específicas com exportação em ZIP.',
-    icon: Scissors,
-    actionLabel: 'Preparar recorte',
-    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-    onClick: () => {},
-    className: 'hover:-translate-y-0',
-  },
-  {
-    title: 'Rotacionar e corrigir',
-    description: 'Ajuste a orientação de páginas digitalizadas sem retrabalho manual.',
-    icon: RotateCw,
-    actionLabel: 'Corrigir páginas',
-    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-    onClick: () => {},
-    className: 'hover:-translate-y-0',
-  },
-  {
-    title: 'Remover ou extrair',
-    description: 'Monte uma versão enxuta do arquivo retirando ou reaproveitando páginas.',
-    icon: Trash2,
-    actionLabel: 'Ajustar conteúdo',
-    accent: 'bg-amber-50 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
-    onClick: () => {},
-    className: 'hover:-translate-y-0',
-  },
-  {
-    title: 'Recortar PDF',
-    description: 'Selecione somente as páginas que deseja manter e gere um novo PDF limpo.',
-    icon: Crop,
-    actionLabel: 'Definir recorte',
-    accent: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300',
-    onClick: () => {},
-    className: 'hover:-translate-y-0',
-  },
-  {
-    title: 'Comprimir PDF',
-    description: 'Reduza o tamanho do arquivo com níveis claros para compartilhar e armazenar melhor.',
-    icon: Shrink,
-    actionLabel: 'Compactar arquivo',
-    accent: 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100',
-    onClick: () => {},
-    className: 'hover:-translate-y-0',
-  },
-  {
-    title: 'PDF para Word',
-    description: 'Converta PDF para DOCX editável com layout organizado para retomar a edição do conteúdo.',
-    icon: FileText,
-    badge: 'DOCX',
-    actionLabel: 'Converter para Word',
-    accent: 'bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300',
-    href: '/pdf-para-word',
-  },
-  {
-    title: 'PDF para Imagens',
-    description: 'Extraia cada página do PDF como imagem PNG ou JPEG para uso em apresentações ou revisão visual.',
-    icon: Image,
-    badge: 'PNG · JPEG',
-    actionLabel: 'Exportar imagens',
-    accent: 'bg-violet-50 text-violet-600 dark:bg-violet-900/40 dark:text-violet-300',
-    href: '/pdf-para-imagens',
-  },
-];
-
-const pdfTrustItems = [
-  {
-    title: 'Fluxo direto',
-    description: 'Você envia os PDFs, escolhe a ação e baixa o resultado sem etapas desnecessárias.',
-    icon: Layers3,
-    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-  },
-  {
-    title: 'Ajuste preciso',
-    description: 'Campos de intervalo permitem trabalhar só nas páginas relevantes de cada documento.',
-    icon: ShieldCheck,
-    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-  },
-  {
-    title: 'Entrega rápida',
-    description: 'O painel lateral concentra configuração, progresso e download para reduzir o tempo de operação.',
-    icon: TimerReset,
-    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
 function PdfToolsPage() {
   const { showToast } = useToast();
   const { addEntry } = useSessionHistory();
+  const { t } = useTranslation();
 
   const [files, setFiles] = useState([]);
   const [operation, setOperation] = useState('merge');
@@ -145,22 +50,127 @@ function PdfToolsPage() {
   const filesRef = useRef([]);
   const resultRef = useRef(null);
   const workbenchRef = useRef(null);
+
+  const pdfHubItems = [
+    {
+      title: t('pdfTools.merge.title'),
+      description: t('pdfTools.merge.description'),
+      icon: Files,
+      badge: t('pdfTools.merge.badge'),
+      actionLabel: t('pdfTools.merge.actionLabel'),
+      accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+      onClick: () => {},
+      className: 'hover:-translate-y-0',
+    },
+    {
+      title: t('pdfTools.split.title'),
+      description: t('pdfTools.split.description'),
+      icon: Scissors,
+      actionLabel: t('pdfTools.split.actionLabel'),
+      accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+      onClick: () => {},
+      className: 'hover:-translate-y-0',
+    },
+    {
+      title: t('pdfTools.rotate.title'),
+      description: t('pdfTools.rotate.description'),
+      icon: RotateCw,
+      actionLabel: t('pdfTools.rotate.actionLabel'),
+      accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+      onClick: () => {},
+      className: 'hover:-translate-y-0',
+    },
+    {
+      title: t('pdfTools.removeExtract.title'),
+      description: t('pdfTools.removeExtract.description'),
+      icon: Trash2,
+      actionLabel: t('pdfTools.removeExtract.actionLabel'),
+      accent: 'bg-amber-50 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300',
+      onClick: () => {},
+      className: 'hover:-translate-y-0',
+    },
+    {
+      title: t('pdfTools.crop.title'),
+      description: t('pdfTools.crop.description'),
+      icon: Crop,
+      actionLabel: t('pdfTools.crop.actionLabel'),
+      accent: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300',
+      onClick: () => {},
+      className: 'hover:-translate-y-0',
+    },
+    {
+      title: t('pdfTools.compress.title'),
+      description: t('pdfTools.compress.description'),
+      icon: Shrink,
+      actionLabel: t('pdfTools.compress.actionLabel'),
+      accent: 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100',
+      onClick: () => {},
+      className: 'hover:-translate-y-0',
+    },
+    {
+      title: t('pdfTools.pdfToWord.title'),
+      description: t('pdfTools.pdfToWord.description'),
+      icon: FileText,
+      badge: t('pdfTools.pdfToWord.badge'),
+      actionLabel: t('pdfTools.pdfToWord.actionLabel'),
+      accent: 'bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300',
+      href: '/pdf-para-word',
+    },
+    {
+      title: t('pdfTools.pdfToImages.title'),
+      description: t('pdfTools.pdfToImages.description'),
+      icon: Image,
+      badge: t('pdfTools.pdfToImages.badge'),
+      actionLabel: t('pdfTools.pdfToImages.actionLabel'),
+      accent: 'bg-violet-50 text-violet-600 dark:bg-violet-900/40 dark:text-violet-300',
+      href: '/pdf-para-imagens',
+    },
+  ];
+
+  const pdfTrustItems = [
+    {
+      title: t('pdfTools.trust.directFlow.title'),
+      description: t('pdfTools.trust.directFlow.description'),
+      icon: Layers3,
+      accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+    },
+    {
+      title: t('pdfTools.trust.preciseAdjust.title'),
+      description: t('pdfTools.trust.preciseAdjust.description'),
+      icon: ShieldCheck,
+      accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+    },
+    {
+      title: t('pdfTools.trust.fastDelivery.title'),
+      description: t('pdfTools.trust.fastDelivery.description'),
+      icon: TimerReset,
+      accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+    },
+  ];
+
   const pdfOperations = pdfHubItems.map((item) => ({
     ...item,
     current:
-      (item.title === 'Juntar PDF' && operation === 'merge')
-      || (item.title === 'Dividir páginas' && operation === 'split')
-      || (item.title === 'Rotacionar e corrigir' && operation === 'rotate')
-      || (item.title === 'Remover ou extrair' && (operation === 'remove' || operation === 'extract'))
-      || (item.title === 'Recortar PDF' && operation === 'crop')
-      || (item.title === 'Comprimir PDF' && operation === 'compress'),
+      (item.title === t('pdfTools.merge.title') && operation === 'merge')
+      || (item.title === t('pdfTools.split.title') && operation === 'split')
+      || (item.title === t('pdfTools.rotate.title') && operation === 'rotate')
+      || (item.title === t('pdfTools.removeExtract.title') && (operation === 'remove' || operation === 'extract'))
+      || (item.title === t('pdfTools.crop.title') && operation === 'crop')
+      || (item.title === t('pdfTools.compress.title') && operation === 'compress'),
     onClick: () => {
-      if (item.title === 'Juntar PDF') setOperation('merge');
-      if (item.title === 'Dividir páginas') setOperation('split');
-      if (item.title === 'Rotacionar e corrigir') setOperation('rotate');
-      if (item.title === 'Remover ou extrair') setOperation('remove');
-      if (item.title === 'Recortar PDF') setOperation('crop');
-      if (item.title === 'Comprimir PDF') setOperation('compress');
+      const mergeTitle = t('pdfTools.merge.title');
+      const splitTitle = t('pdfTools.split.title');
+      const rotateTitle = t('pdfTools.rotate.title');
+      const removeTitle = t('pdfTools.removeExtract.title');
+      const cropTitle = t('pdfTools.crop.title');
+      const compressTitle = t('pdfTools.compress.title');
+
+      if (item.title === mergeTitle) setOperation('merge');
+      if (item.title === splitTitle) setOperation('split');
+      if (item.title === rotateTitle) setOperation('rotate');
+      if (item.title === removeTitle) setOperation('remove');
+      if (item.title === cropTitle) setOperation('crop');
+      if (item.title === compressTitle) setOperation('compress');
       workbenchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
   }));
@@ -255,12 +265,12 @@ function PdfToolsPage() {
 
   const runOperation = async () => {
     if (!files.length) {
-      setError('Envie ao menos um PDF para continuar.');
+      setError(t('pdfTools.emptyFiles'));
       return;
     }
 
     if (operation === 'merge' && files.length < 2) {
-      setError('Para juntar PDF, envie pelo menos dois arquivos.');
+      setError(t('pdfTools.minFiles'));
       return;
     }
 
@@ -290,8 +300,8 @@ function PdfToolsPage() {
         output = {
           mode: 'single',
           blob,
-          fileName: `pdf-unificado-${Date.now()}.pdf`,
-          description: `${files.length} arquivos combinados em um único PDF.`,
+          fileName: `${t('pdfTools.merge.successFile')}-${Date.now()}.pdf`,
+          description: t('pdfTools.merge.successMsg', { count: files.length }),
         };
       }
 
@@ -301,12 +311,12 @@ function PdfToolsPage() {
           const parts = await splitPdf(files[i].file, range, fileProgress(i));
           allParts.push(...parts);
         }
-        const zip = await zipDownloadItems(allParts, `pdf-dividido-${Date.now()}.zip`);
+        const zip = await zipDownloadItems(allParts, `${t('pdfTools.split.successFile')}-${Date.now()}.zip`);
         output = {
           mode: 'multiple',
           blob: zip.zipBlob,
           fileName: zip.zipName,
-          description: `${allParts.length} parte(s) gerada(s).`,
+          description: t('pdfTools.split.successMsg', { count: allParts.length }),
           individualFiles: allParts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
         };
       }
@@ -318,14 +328,14 @@ function PdfToolsPage() {
           parts.push({ name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}-rotacionado.pdf`, blob });
         }
         if (parts.length === 1) {
-          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: 'Rotação aplicada com sucesso.' };
+          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: t('pdfTools.rotate.successMsg2') };
         } else {
-          const zip = await zipDownloadItems(parts, `pdfs-rotacionados-${Date.now()}.zip`);
+          const zip = await zipDownloadItems(parts, `${t('pdfTools.rotate.successFile')}-${Date.now()}.zip`);
           output = {
             mode: 'multiple',
             blob: zip.zipBlob,
             fileName: zip.zipName,
-            description: `${parts.length} arquivo(s) rotacionados.`,
+            description: t('pdfTools.rotate.successMsg', { count: parts.length }),
             individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
           };
         }
@@ -338,14 +348,14 @@ function PdfToolsPage() {
           parts.push({ name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}-sem-paginas.pdf`, blob });
         }
         if (parts.length === 1) {
-          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: 'Páginas selecionadas removidas.' };
+          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: t('pdfTools.removeExtract.removedMsg') };
         } else {
-          const zip = await zipDownloadItems(parts, `pdfs-sem-paginas-${Date.now()}.zip`);
+          const zip = await zipDownloadItems(parts, `${t('pdfTools.removeExtract.successFile')}-${Date.now()}.zip`);
           output = {
             mode: 'multiple',
             blob: zip.zipBlob,
             fileName: zip.zipName,
-            description: `${parts.length} arquivo(s) processados.`,
+            description: t('pdfTools.removeExtract.successMsg', { count: parts.length }),
             individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
           };
         }
@@ -358,14 +368,14 @@ function PdfToolsPage() {
           parts.push({ name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}-extraido.pdf`, blob });
         }
         if (parts.length === 1) {
-          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: 'Páginas selecionadas extraídas para novo PDF.' };
+          output = { mode: 'single', blob: parts[0].blob, fileName: parts[0].name, description: t('pdfTools.removeExtract.extractedMsg') };
         } else {
-          const zip = await zipDownloadItems(parts, `pdfs-extraidos-${Date.now()}.zip`);
+          const zip = await zipDownloadItems(parts, `${t('pdfTools.removeExtract.extractedFile')}-${Date.now()}.zip`);
           output = {
             mode: 'multiple',
             blob: zip.zipBlob,
             fileName: zip.zipName,
-            description: `${parts.length} arquivo(s) com páginas extraídas.`,
+            description: t('pdfTools.removeExtract.extractedCountMsg', { count: parts.length }),
             individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
           };
         }
@@ -391,20 +401,20 @@ function PdfToolsPage() {
             blob: parts[0].blob,
             fileName: parts[0].name,
             description: parts[0].wasReduced
-              ? `Compressão concluída com redução de ${formatPercent(parts[0].reductionPercent)}.`
-              : 'Compressão concluída. O PDF já estava otimizado e não houve redução relevante.',
+              ? t('pdfTools.compress.successMsg', { percent: formatPercent(parts[0].reductionPercent) })
+              : t('pdfTools.compress.noReductionMsg'),
           };
         } else {
           const reduced = parts.filter((p) => p.wasReduced).length;
           const zip = await zipDownloadItems(
             parts.map((p) => ({ name: p.name, blob: p.blob })),
-            `pdfs-comprimidos-${Date.now()}.zip`,
+            `${t('pdfTools.compress.successFile')}-${Date.now()}.zip`,
           );
           output = {
             mode: 'multiple',
             blob: zip.zipBlob,
             fileName: zip.zipName,
-            description: `${parts.length} arquivo(s) comprimidos. ${reduced} com redução relevante.`,
+            description: t('pdfTools.compress.multiMsg', { count: parts.length, reduced }),
             individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
           };
         }
@@ -414,9 +424,9 @@ function PdfToolsPage() {
       setResult({ url, ...output });
 
       addEntry({ tool: 'Ferramentas de PDF', summary: `${operation} executado em ${files.length} arquivo(s)` });
-      showToast({ type: 'success', title: 'Processamento concluído', message: output.description });
+      showToast({ type: 'success', title: t('pdfTools.processComplete'), message: output.description });
     } catch (processingError) {
-      const message = processingError.message || 'Erro ao processar PDF.';
+      const message = processingError.message || t('pdfTools.processError');
       setError(message);
       showToast({ type: 'error', title: 'Erro ao processar arquivo', message });
     } finally {
@@ -440,17 +450,17 @@ function PdfToolsPage() {
         blob,
         fileName: `${files[0].file.name.replace(/\.[^/.]+$/, '')}-recortado.pdf`,
         description: config.applyMode === 'all'
-          ? 'Área de recorte aplicada em todas as páginas.'
-          : `Área de recorte aplicada na página ${config.currentPage}.`,
+          ? t('pdfTools.crop.appliedAll')
+          : t('pdfTools.crop.appliedPage', { page: config.currentPage }),
       };
 
       const url = URL.createObjectURL(output.blob);
       setResult({ url, ...output });
 
       addEntry({ tool: 'Ferramentas de PDF', summary: `crop executado em ${files[0].file.name}` });
-      showToast({ type: 'success', title: 'Recorte concluído', message: output.description });
+      showToast({ type: 'success', title: t('pdfTools.crop.successMsg'), message: output.description });
     } catch (processingError) {
-      const message = processingError.message || 'Erro ao recortar PDF.';
+      const message = processingError.message || t('pdfTools.crop.errorMsg');
       setError(message);
       showToast({ type: 'error', title: 'Erro ao recortar arquivo', message });
     } finally {
@@ -461,16 +471,16 @@ function PdfToolsPage() {
   return (
     <div className="space-y-10">
       <HubFeatureGrid
-        title="Escolha o tipo de operação"
-        description="Cada cartão abaixo ajusta automaticamente a ferramenta principal no painel de execução."
+        title={t('pdfTools.selectOperation')}
+        description={t('pdfTools.operationHint')}
         items={pdfOperations}
       />
 
       <div ref={workbenchRef} className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="space-y-6">
           <UploadArea
-            title="Enviar arquivos PDF"
-            description="Para juntar PDF, envie múltiplos arquivos. Para as demais ações, um único PDF é suficiente."
+            title={t('pdfTools.uploadLabel')}
+            description={t('pdfTools.uploadHint')}
             accept="application/pdf"
             multiple
             onFilesSelected={handleFilesSelected}
@@ -482,10 +492,10 @@ function PdfToolsPage() {
             <div className="space-y-3">
               {(operation === 'merge' && files.length > 1) ? (
                 <div className="flex items-center justify-between rounded-2xl bg-slate-50 px-3 py-2 dark:bg-slate-800/70">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">Ordem de uniao</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">{t('pdfTools.orderModal')}</p>
                   <Button variant="ghost" onClick={() => setOrderModalOpen(true)}>
                     <MoveVertical className="mr-1 h-4 w-4" />
-                    Organizar ordem
+                    {t('pdfTools.orderButton')}
                   </Button>
                 </div>
               ) : null}
@@ -578,7 +588,7 @@ function PdfToolsPage() {
 
             {(operation === 'merge' && files.length > 1 && !orderConfirmed) ? (
               <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-700 dark:bg-amber-900/20 dark:text-amber-200">
-                Para unir PDFs, a organizacao da ordem e obrigatoria. Clique em "Organizar ordem" e confirme para habilitar a execucao.
+                Para unir PDFs, a organizacao da ordem e obrigatoria. Clique em "{t('pdfTools.orderButton')}" e confirme para habilitar a execucao.
               </p>
             ) : null}
 
@@ -697,8 +707,8 @@ function PdfToolsPage() {
       <FileOrderModal
         open={orderModalOpen}
         items={files}
-        title="Organizar PDFs antes de unir"
-        description="A ordem mostrada aqui define a sequencia de paginas no PDF final."
+        title={t('pdfTools.orderModal')}
+        description={t('pdfTools.orderHint')}
         onClose={() => setOrderModalOpen(false)}
         onConfirm={applyOrderedFiles}
       />

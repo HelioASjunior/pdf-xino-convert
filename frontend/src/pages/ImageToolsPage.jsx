@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, FileImage, FileOutput, Layers3, PackageCheck, ShieldCheck } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
@@ -15,62 +16,10 @@ import { MAX_IMAGE_SIZE, validateFiles } from '../utils/fileValidation';
 import { buildImagesZip, convertImageFiles } from '../services/imageToolsService';
 import { createImagePreviewUrl } from '../utils/imagePreview';
 
-const acceptedImageMime = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/bmp',
-  'image/gif',
-  'image/heic',
-  'image/heif',
-  'image/svg+xml',
-  'image/tiff',
-];
-
-const imageCategoryTools = [
-  {
-    title: 'Imagem para PDF',
-    description: 'Reúna várias imagens em um PDF único ou gere PDFs separados por arquivo.',
-    href: '/imagem-para-pdf',
-    icon: FileOutput,
-    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-    actionLabel: 'Abrir montagem em PDF',
-  },
-  {
-    title: 'Converter Formato de Imagem',
-    description: 'Padronize arquivos HEIC, JPG, PNG, WEBP, BMP ou GIF. Uma imagem baixa direto; múltiplas vão para ZIP.',
-    href: '/image-tools',
-    icon: FileImage,
-    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-    actionLabel: 'Ferramenta atual',
-    current: true,
-  },
-];
-
-const imageTrustItems = [
-  {
-    title: 'Padronização rápida',
-    description: 'Converta lotes inteiros para um mesmo formato antes de publicar, compartilhar ou arquivar.',
-    icon: Layers3,
-    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-  },
-  {
-    title: 'Download inteligente',
-    description: 'Uma única imagem é entregue diretamente; múltiplas ficam disponíveis em ZIP ou como arquivos individuais.',
-    icon: PackageCheck,
-    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-  },
-  {
-    title: 'Escolha controlada',
-    description: 'Você decide o formato final e a qualidade antes de processar todos os arquivos.',
-    icon: ShieldCheck,
-    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
 function ImageToolsPage() {
   const { showToast } = useToast();
   const { addEntry } = useSessionHistory();
+  const { t } = useTranslation();
 
   const [items, setItems] = useState([]);
   const [targetFormat, setTargetFormat] = useState('jpg');
@@ -81,6 +30,59 @@ function ImageToolsPage() {
   const [result, setResult] = useState(null);
   const [showIndividual, setShowIndividual] = useState(false);
   const resultRef = useRef(null);
+
+  const acceptedImageMime = [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/bmp',
+    'image/gif',
+    'image/heic',
+    'image/heif',
+    'image/svg+xml',
+    'image/tiff',
+  ];
+
+  const imageCategoryTools = [
+    {
+      title: t('imageTools.categoryTools.imageToPdf.title'),
+      description: t('imageTools.categoryTools.imageToPdf.description'),
+      href: '/imagem-para-pdf',
+      icon: FileOutput,
+      accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+      actionLabel: t('imageTools.categoryTools.imageToPdf.actionLabel'),
+    },
+    {
+      title: t('imageTools.categoryTools.convertFormat.title'),
+      description: t('imageTools.categoryTools.convertFormat.description'),
+      href: '/image-tools',
+      icon: FileImage,
+      accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+      actionLabel: t('imageTools.categoryTools.convertFormat.actionLabel'),
+      current: true,
+    },
+  ];
+
+  const imageTrustItems = [
+    {
+      title: t('imageTools.trust.standardization.title'),
+      description: t('imageTools.trust.standardization.description'),
+      icon: Layers3,
+      accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+    },
+    {
+      title: t('imageTools.trust.smartDownload.title'),
+      description: t('imageTools.trust.smartDownload.description'),
+      icon: PackageCheck,
+      accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+    },
+    {
+      title: t('imageTools.trust.controlledChoice.title'),
+      description: t('imageTools.trust.controlledChoice.description'),
+      icon: ShieldCheck,
+      accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+    },
+  ];
 
   useEffect(() => {
     resultRef.current = result;
@@ -160,7 +162,7 @@ function ImageToolsPage() {
       );
 
       if (!convertedResult.converted.length) {
-        throw new Error('Nenhum arquivo pôde ser convertido com o formato escolhido.');
+        throw new Error(t('imageTools.uploadHint'));
       }
 
       const isSingle = convertedResult.converted.length === 1;
@@ -201,16 +203,16 @@ function ImageToolsPage() {
   return (
     <div className="space-y-10">
       <HubFeatureGrid
-        title="Trilhas rápidas da categoria"
-        description="Acesse os dois principais fluxos de imagem a partir de uma única página de entrada."
+        title={t('imageTools.shortcutsLabel')}
+        description={t('imageTools.shortcutsDesc')}
         items={imageCategoryTools}
       />
 
       <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="space-y-6">
           <UploadArea
-            title="Adicionar imagens"
-            description="Faça upload de imagens e converta para o formato desejado."
+            title={t('imageTools.uploadLabel')}
+            description={t('imageTools.uploadHint')}
             accept="image/jpeg,image/png,image/webp,image/bmp,image/gif,image/heic,image/heif,image/tiff,image/svg+xml,.heic,.heif"
             multiple
             onFilesSelected={onFilesSelected}

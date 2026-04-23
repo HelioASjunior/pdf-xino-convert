@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Archive, AudioLines, Download, Sparkles, Compass, Package, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import UploadArea from '../components/UploadArea';
@@ -17,62 +18,64 @@ import { createImagePreviewUrl } from '../utils/imagePreview';
 
 const MAX_GENERIC_FILE_SIZE = 100 * 1024 * 1024;
 
-const utilitiesHubItems = [
-  {
-    key: 'zip',
-    title: 'Gerar ZIP',
-    description: 'Agrupe vários arquivos em um único pacote para download, envio ou organização interna.',
-    icon: Package,
-    badge: 'Fluxo principal',
-    actionLabel: 'Preparar pacote',
-    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-    className: 'hover:-translate-y-0',
-  },
-  {
-    key: 'detector',
-    title: 'Detecção automática',
-    description: 'Envie um arquivo e receba um encaminhamento para a área mais adequada da plataforma.',
-    icon: Compass,
-    actionLabel: 'Ver recomendação',
-    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-    className: 'hover:-translate-y-0',
-  },
-  {
-    key: 'audio-converter',
-    title: 'Conversor de Áudio',
-    description: 'Converta MP3, WAV, OGG, FLAC, AAC, M4A e outros formatos compatíveis direto no navegador.',
-    icon: AudioLines,
-    href: '/conversor-audio',
-    actionLabel: 'Abrir conversor',
-    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-    badge: 'Novo',
-  },
-];
-
-const utilitiesTrustItems = [
-  {
-    title: 'Área de apoio',
-    description: 'Use os utilitários como etapa de preparação antes de converter, empacotar ou redistribuir arquivos.',
-    icon: Compass,
-    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-  },
-  {
-    title: 'Pacotes prontos',
-    description: 'A geração de ZIP simplifica entregas com muitos arquivos e reduz a dispersão de downloads.',
-    icon: Package,
-    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-  },
-  {
-    title: 'Encaminhamento claro',
-    description: 'A sugestão automática ajuda a localizar a ferramenta correta quando o tipo de arquivo é reconhecido.',
-    icon: ShieldCheck,
-    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
 function UtilitiesPage() {
   const { showToast } = useToast();
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
+
+  const utilitiesHubItems = [
+    {
+      key: 'zip',
+      title: t('utilities.zipGenerator.title'),
+      description: t('utilities.zipGenerator.description'),
+      icon: Package,
+      badge: t('utilities.zipGenerator.badge'),
+      actionLabel: t('utilities.zipGenerator.actionLabel'),
+      accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+      className: 'hover:-translate-y-0',
+    },
+    {
+      key: 'detector',
+      title: t('utilities.autoDetector.title'),
+      description: t('utilities.autoDetector.description'),
+      icon: Compass,
+      actionLabel: t('utilities.autoDetector.actionLabel'),
+      accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+      className: 'hover:-translate-y-0',
+    },
+    {
+      key: 'audio-converter',
+      title: t('utilities.audioConverter.title'),
+      description: t('utilities.audioConverter.description'),
+      icon: AudioLines,
+      href: '/conversor-audio',
+      actionLabel: t('utilities.audioConverter.actionLabel'),
+      accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+      badge: t('utilities.audioConverter.badge'),
+    },
+  ];
+
+  const utilitiesTrustItems = [
+    {
+      title: t('utilities.trust.supportArea.title'),
+      description: t('utilities.trust.supportArea.description'),
+      icon: Compass,
+      accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+    },
+    {
+      title: t('utilities.trust.readyPackages.title'),
+      description: t('utilities.trust.readyPackages.description'),
+      icon: Package,
+      accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+    },
+    {
+      title: t('utilities.trust.clearForwarding.title'),
+      description: t('utilities.trust.clearForwarding.description'),
+      icon: ShieldCheck,
+      accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+    },
+  ];
+
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -108,7 +111,7 @@ function UtilitiesPage() {
   const onFilesSelected = async (files) => {
     for (const file of files) {
       if (file.size > MAX_GENERIC_FILE_SIZE) {
-        setError(`O arquivo ${file.name} ultrapassa o limite de 100 MB por arquivo.`);
+        setError(t('utilities.errorSizeLimit', { name: file.name }));
         return;
       }
     }
@@ -141,7 +144,7 @@ function UtilitiesPage() {
 
   const buildZip = async () => {
     if (!items.length) {
-      setError('Adicione arquivos para criar o ZIP.');
+      setError(t('utilities.errorNoFiles'));
       return;
     }
 
@@ -161,11 +164,11 @@ function UtilitiesPage() {
 
       const url = downloadBlob(zip.zipBlob, zip.zipName);
       setResult({ url, fileName: zip.zipName });
-      showToast({ type: 'success', title: 'ZIP pronto', message: 'Download iniciado.' });
+      showToast({ type: 'success', title: t('utilities.successTitle'), message: t('utilities.downloadStarted') });
     } catch (processingError) {
-      const message = processingError.message || 'Não foi possível criar o ZIP.';
+      const message = processingError.message || t('utilities.zipCreationError');
       setError(message);
-      showToast({ type: 'error', title: 'Erro ao processar arquivo', message });
+      showToast({ type: 'error', title: t('utilities.processingError'), message });
     } finally {
       setIsLoading(false);
     }
@@ -174,8 +177,8 @@ function UtilitiesPage() {
   return (
     <div className="space-y-10">
       <HubFeatureGrid
-        title="Recursos principais da área"
-        description="A central combina organização simples com encaminhamento para outras categorias quando necessário."
+        title={t('utilities.hubTitle')}
+        description={t('utilities.hubDescription')}
         items={utilityActions}
         columnsClassName="md:grid-cols-3"
       />
@@ -183,8 +186,8 @@ function UtilitiesPage() {
       <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <section ref={uploadRef} className="space-y-6">
           <UploadArea
-            title="Adicionar arquivos"
-            description="Aceita qualquer arquivo até 100 MB para organização e pacote ZIP."
+            title={t('utilities.uploadLabel')}
+            description={t('utilities.uploadDescription')}
             accept="*/*"
             multiple
             onFilesSelected={onFilesSelected}
@@ -207,23 +210,23 @@ function UtilitiesPage() {
                 <Archive className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Gerador de ZIP</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Empacote múltiplos arquivos em um único download.</p>
+                <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('utilities.panelTitle')}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t('utilities.panelDescription')}</p>
               </div>
             </div>
 
-            {isLoading ? <LoadingSpinner label="Preparando download..." /> : null}
-            {isLoading ? <ProgressBar value={progress} label="Gerando ZIP" /> : null}
+            {isLoading ? <LoadingSpinner label={t('utilities.loadingLabel')} /> : null}
+            {isLoading ? <ProgressBar value={progress} label={t('utilities.progressLabel')} /> : null}
 
             <Button className="w-full gap-2" onClick={buildZip} disabled={isLoading || !items.length}>
               <Download className="h-4 w-4" />
-              Gerar ZIP
+              {t('utilities.generateButton')}
             </Button>
           </div>
 
           {suggestions ? (
-            <ResultCard ref={suggestionsRef} title="Detecção automática" description={suggestions.message} tone="info">
-              <p className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">Categoria sugerida: {suggestions.category}</p>
+            <ResultCard ref={suggestionsRef} title={t('utilities.detectorTitle')} description={suggestions.message} tone="info">
+              <p className="mb-3 text-sm font-semibold text-slate-700 dark:text-slate-300">{t('utilities.suggestedCategory')}: {suggestions.category}</p>
               <div className="flex flex-wrap gap-2">
                 {suggestions.suggestions.map((item) => (
                   <Link key={item.href} to={item.href}>
@@ -238,9 +241,9 @@ function UtilitiesPage() {
           ) : null}
 
           {result ? (
-            <ResultCard title="ZIP pronto" description="Arquivo gerado com sucesso." tone="success">
+            <ResultCard title={t('utilities.successTitle')} description={t('utilities.successDesc')} tone="success">
               <a href={result.url} download={result.fileName}>
-                <Button>Baixar ZIP</Button>
+                <Button>{t('utilities.downloadButton')}</Button>
               </a>
             </ResultCard>
           ) : null}
@@ -250,36 +253,36 @@ function UtilitiesPage() {
       <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
         <div className="space-y-5">
           <div className="section-intro">
-            <p className="section-kicker">Utilitários</p>
-            <h1 className="section-title">Use esta central para preparar arquivos, gerar pacotes ZIP e descobrir a melhor ferramenta para cada caso.</h1>
-            <p className="section-copy">A área de utilitários foi desenhada como suporte operacional: um ponto de entrada simples para organização, agrupamento e encaminhamento de arquivos.</p>
+            <p className="section-kicker">{t('utilities.kicker')}</p>
+            <h1 className="section-title">{t('utilities.introTitle')}</h1>
+            <p className="section-copy">{t('utilities.introDescription')}</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Limite por arquivo</p>
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t('utilities.statLimitLabel')}</p>
               <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">100 MB</p>
             </div>
             <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Entrada flexível</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Qualquer tipo</p>
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t('utilities.statFlexibleLabel')}</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('utilities.statFlexibleValue')}</p>
             </div>
             <div className="glass-panel p-4">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Uso principal</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Apoio rápido</p>
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t('utilities.statMainLabel')}</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('utilities.statMainValue')}</p>
             </div>
           </div>
         </div>
 
         <ResultCard
-          title="Quando usar utilitários"
-          description="Esta página faz mais sentido quando você precisa apenas agrupar downloads ou descobrir rapidamente qual área da plataforma atende melhor o arquivo enviado."
+          title={t('utilities.whenToUseTitle')}
+          description={t('utilities.whenToUseDescription')}
           tone="info"
         />
       </section>
 
       <TrustSection
-        title="Por que manter esta central"
-        description="Nem todo fluxo começa com conversão. Em muitos casos, organizar e encaminhar arquivos é a etapa mais útil."
+        title={t('utilities.trustTitle')}
+        description={t('utilities.trustDescription')}
         items={utilitiesTrustItems}
       />
     </div>

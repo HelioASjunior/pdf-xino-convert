@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AudioLines, Download, Music4, PackageCheck, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
@@ -18,27 +19,6 @@ const MAX_AUDIO_FILES = 10;
 
 const supportedAudioExtensions = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'opus', 'wma', 'aiff', 'amr', 'webm'];
 
-const audioTrustItems = [
-  {
-    title: 'Conversão local',
-    description: 'O processamento acontece no navegador, sem envio de arquivos para servidor.',
-    icon: ShieldCheck,
-    accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
-  },
-  {
-    title: 'Lotes até 10 arquivos',
-    description: 'Adicione vários áudios de uma vez e receba os resultados organizados automaticamente.',
-    icon: PackageCheck,
-    accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
-  },
-  {
-    title: 'Qualidade opcional',
-    description: 'Defina bitrate para formatos com perda e ajuste o equilíbrio entre tamanho e qualidade.',
-    icon: SlidersHorizontal,
-    accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
-  },
-];
-
 function fileExtension(fileName) {
   return fileName.includes('.') ? fileName.split('.').pop().toLowerCase() : '';
 }
@@ -53,6 +33,15 @@ function isAudioFile(file) {
 
 function AudioConverterPage() {
   const { showToast } = useToast();
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage || 'pt-BR').toLowerCase();
+  const ui = lang.startsWith('en')
+    ? { bitrateLabel: 'Quality (bitrate)', b96: '96 kbps (smaller)', b192: '192 kbps (recommended)', b320: '320 kbps (higher quality)' }
+    : lang.startsWith('es')
+      ? { bitrateLabel: 'Calidad (bitrate)', b96: '96 kbps (más ligero)', b192: '192 kbps (recomendado)', b320: '320 kbps (más calidad)' }
+      : lang.startsWith('fr')
+        ? { bitrateLabel: 'Qualité (débit)', b96: '96 kbps (plus léger)', b192: '192 kbps (recommandé)', b320: '320 kbps (plus de qualité)' }
+        : { bitrateLabel: 'Qualidade (bitrate)', b96: '96 kbps (mais leve)', b192: '192 kbps (recomendado)', b320: '320 kbps (mais qualidade)' };
   const [items, setItems] = useState([]);
   const [targetFormat, setTargetFormat] = useState('mp3');
   const [bitrate, setBitrate] = useState('192');
@@ -61,6 +50,26 @@ function AudioConverterPage() {
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
   const resultRef = useRef(null);
+  const audioTrustItems = [
+    {
+      title: t('audioTools.title'),
+      description: t('audioTools.description'),
+      icon: ShieldCheck,
+      accent: 'bg-brand-50 text-brand-600 dark:bg-brand-900/40 dark:text-brand-300',
+    },
+    {
+      title: t('audioTools.uploadLabel'),
+      description: t('audioTools.uploadDescription'),
+      icon: PackageCheck,
+      accent: 'bg-accent-50 text-accent-600 dark:bg-accent-900/40 dark:text-accent-300',
+    },
+    {
+      title: t('audioTools.formatLabel'),
+      description: t('audioTools.convertButton'),
+      icon: SlidersHorizontal,
+      accent: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-300',
+    },
+  ];
 
   useEffect(() => {
     resultRef.current = result;
@@ -83,18 +92,18 @@ function AudioConverterPage() {
     const mergedCount = items.length + files.length;
 
     if (mergedCount > MAX_AUDIO_FILES) {
-      setError(`Você pode converter no máximo ${MAX_AUDIO_FILES} arquivos por lote.`);
+      setError(t('audioTools.errorMaxFiles', { max: MAX_AUDIO_FILES }));
       return;
     }
 
     for (const file of files) {
       if (!isAudioFile(file)) {
-        setError(`O arquivo ${file.name} não parece ser um áudio válido.`);
+        setError(t('audioTools.errorConversion'));
         return;
       }
 
       if (file.size > MAX_AUDIO_SIZE) {
-        setError(`O arquivo ${file.name} ultrapassa o limite de 50 MB por arquivo.`);
+        setError(t('utilities.errorSizeLimit', { name: file.name }));
         return;
       }
     }
@@ -117,7 +126,7 @@ function AudioConverterPage() {
 
   const runConversion = async () => {
     if (!items.length) {
-      setError('Adicione arquivos para converter.');
+      setError(t('audioTools.errorNoFiles'));
       return;
     }
 
@@ -135,7 +144,7 @@ function AudioConverterPage() {
       );
 
       if (!conversion.converted.length) {
-        throw new Error('Nenhum arquivo pôde ser convertido. Verifique o formato e tente novamente.');
+        throw new Error(t('audioTools.errorConversion'));
       }
 
       let outputUrl;
@@ -173,13 +182,13 @@ function AudioConverterPage() {
 
       showToast({
         type: 'success',
-        title: 'Conversão concluída',
-        message: `${conversion.converted.length} arquivo(s) processado(s) com sucesso.`,
+        title: t('audioTools.successTitle'),
+        message: t('audioTools.successMessage', { count: conversion.converted.length }),
       });
     } catch (processingError) {
-      const message = processingError.message || 'Erro ao converter áudio.';
+      const message = processingError.message || t('audioTools.errorConversion');
       setError(message);
-      showToast({ type: 'error', title: 'Erro ao processar arquivo', message });
+      showToast({ type: 'error', title: t('pdfTools.fileError'), message });
     } finally {
       setIsLoading(false);
     }
@@ -188,16 +197,16 @@ function AudioConverterPage() {
   return (
     <div className="space-y-10">
       <div className="section-intro">
-        <p className="section-kicker">Utilitários</p>
-        <h1 className="section-title">Conversor de Áudio online com suporte a múltiplos formatos.</h1>
-        <p className="section-copy">Converta MP3, WAV, OGG, FLAC, AAC, M4A, MP4, OPUS e outros formatos compatíveis direto no navegador, com download automático individual ou em ZIP.</p>
+        <p className="section-kicker">{t('nav.utilities')}</p>
+        <h1 className="section-title">{t('audioTools.title')}</h1>
+        <p className="section-copy">{t('audioTools.description')}</p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="space-y-6">
           <UploadArea
-            title="Adicionar áudios"
-            description="Envie até 10 arquivos por lote. Limite de 50 MB por arquivo."
+            title={t('audioTools.uploadLabel')}
+            description={t('audioTools.uploadDescription')}
             accept="audio/*,.mp3,.wav,.ogg,.flac,.aac,.m4a,.opus,.wma,.aiff,.amr,.webm"
             multiple
             onFilesSelected={onFilesSelected}
@@ -206,7 +215,7 @@ function AudioConverterPage() {
 
           <div className="glass-panel p-4">
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              Arquivos selecionados: {items.length}/{MAX_AUDIO_FILES}
+              {t('utilities.uploadLabel')}: {items.length}/{MAX_AUDIO_FILES}
             </p>
           </div>
 
@@ -226,57 +235,57 @@ function AudioConverterPage() {
                 <AudioLines className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Configurar conversão</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Escolha o formato final e bitrate opcional.</p>
+                <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('audioTools.convertButton')}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{t('audioTools.description')}</p>
               </div>
             </div>
 
             <SelectField
-              label="Formato de saída"
+              label={t('audioTools.formatLabel')}
               value={targetFormat}
               onChange={(event) => setTargetFormat(event.target.value)}
               options={AUDIO_OUTPUT_OPTIONS}
-              helperText="Todos os arquivos válidos serão convertidos para este formato."
+              helperText={t('audioTools.description')}
             />
 
             <SelectField
-              label="Qualidade (bitrate)"
+              label={ui.bitrateLabel}
               value={bitrate}
               onChange={(event) => setBitrate(event.target.value)}
               options={[
-                { value: '96', label: '96 kbps (mais leve)' },
+                { value: '96', label: ui.b96 },
                 { value: '128', label: '128 kbps' },
-                { value: '192', label: '192 kbps (recomendado)' },
+                { value: '192', label: ui.b192 },
                 { value: '256', label: '256 kbps' },
-                { value: '320', label: '320 kbps (mais qualidade)' },
+                { value: '320', label: ui.b320 },
               ]}
-              helperText="Bitrate é aplicado para formatos com compressão com perda."
+              helperText={t('audioTools.description')}
             />
 
-            {isLoading ? <LoadingSpinner label="Convertendo áudios..." /> : null}
-            {isLoading ? <ProgressBar value={progress} label="Processando lote" /> : null}
+            {isLoading ? <LoadingSpinner label={t('audioTools.convertButton')} /> : null}
+            {isLoading ? <ProgressBar value={progress} label={t('audioTools.convertButton')} /> : null}
 
             <Button className="w-full gap-2" onClick={runConversion} disabled={isLoading || !items.length}>
               <Download className="h-4 w-4" />
-              Converter e baixar
+              {t('audioTools.convertButton')}
             </Button>
           </div>
 
           {result ? (
             <ResultCard
-              title="Conversão concluída"
-              description={`${result.convertedCount} arquivo(s) convertido(s).`}
+              title={t('audioTools.successTitle')}
+              description={t('audioTools.successMessage', { count: result.convertedCount })}
               tone="success"
             >
               <div className="space-y-3">
                 <a href={result.url} download={result.fileName}>
                   <Button>
-                    {result.outputType === 'single' ? 'Baixar arquivo convertido' : 'Baixar ZIP'}
+                    {result.outputType === 'single' ? t('audioTools.downloadSingle') : t('audioTools.downloadZip')}
                   </Button>
                 </a>
                 {result.failed?.length ? (
                   <div className="text-sm text-amber-700 dark:text-amber-300">
-                    {result.failed.length} arquivo(s) falharam durante a conversão.
+                    {t('audioTools.errorConversion')}
                   </div>
                 ) : null}
               </div>
@@ -286,19 +295,19 @@ function AudioConverterPage() {
       </div>
 
       <TrustSection
-        title="Por que usar o conversor de áudio"
-        description="Fluxo pensado para conversões rápidas, com interface simples, validação de arquivos e download imediato."
+        title={t('audioTools.title')}
+        description={t('audioTools.description')}
         items={audioTrustItems}
       />
 
       <ResultCard
-        title="Compatibilidade"
-        description="A ferramenta usa FFmpeg WebAssembly no navegador. Alguns formatos muito específicos podem depender dos codecs disponíveis no seu dispositivo."
+        title={t('audioTools.title')}
+        description={t('audioTools.description')}
         tone="info"
       >
         <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
           <Music4 className="h-4 w-4" />
-          Recomendado manter lotes menores para maior velocidade
+          {t('audioTools.uploadDescription')}
         </div>
       </ResultCard>
     </div>

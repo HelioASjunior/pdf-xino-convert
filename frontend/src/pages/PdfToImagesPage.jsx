@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, FileImage, Files } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import SelectField from '../components/SelectField';
@@ -13,6 +14,7 @@ import { convertPdfToImages } from '../services/clientPdfTools';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
 
 function PdfToImagesPage() {
+  const { t } = useTranslation();
   const { showToast } = useToast();
   const { addEntry } = useSessionHistory();
   const [fileItem, setFileItem] = useState(null);
@@ -72,7 +74,7 @@ function PdfToImagesPage() {
 
   const handleSubmit = async () => {
     if (!fileItem) {
-      setError('Selecione um PDF antes de converter.');
+      setError(t('pdfTools.emptyFiles'));
       return;
     }
 
@@ -106,12 +108,12 @@ function PdfToImagesPage() {
         zipFileName: conversion.zipFileName,
       });
 
-      addEntry({ tool: 'PDF para Imagens', summary: `${conversion.pageCount} páginas exportadas em ${format.toUpperCase()}` });
-      showToast({ type: 'success', title: 'Conversão concluída', message: 'As páginas foram extraídas com sucesso.' });
+      addEntry({ tool: t('pdfTools.pdfToImages.title'), summary: `${conversion.pageCount} ${format.toUpperCase()}` });
+      showToast({ type: 'success', title: t('pdfTools.processComplete'), message: t('pdfTools.pdfToImages.description') });
     } catch (requestError) {
-      const message = requestError.message || 'Não foi possível converter o PDF em imagens.';
+      const message = requestError.message || t('pdfTools.processError');
       setError(message);
-      showToast({ type: 'error', title: 'Falha na extração', message });
+      showToast({ type: 'error', title: t('pdfTools.fileError'), message });
     } finally {
       setIsLoading(false);
     }
@@ -121,8 +123,8 @@ function PdfToImagesPage() {
     <div className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
       <section className="space-y-6">
         <UploadArea
-          title="Envie um PDF"
-          description="A ferramenta detecta a quantidade de páginas e converte cada página em imagem, com arquivo ZIP pronto para download."
+          title={t('pdfTools.uploadLabel')}
+          description={t('pdfTools.pdfToImages.description')}
           accept="application/pdf"
           onFilesSelected={handleFileSelected}
           error={error}
@@ -134,9 +136,9 @@ function PdfToImagesPage() {
         ) : null}
 
         <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">PDF para Imagens</p>
-          <h1 className="section-title">Extraia páginas do PDF como imagens e baixe tudo em um clique.</h1>
-          <p className="section-copy">Envie um PDF, escolha PNG ou JPG e visualize o resultado de cada página antes de baixar.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">{t('pdfTools.pdfToImages.title')}</p>
+          <h1 className="section-title">{t('home.tools.pdfToImagesTitle')}</h1>
+          <p className="section-copy">{t('pdfTools.pdfToImages.description')}</p>
         </div>
       </section>
 
@@ -147,13 +149,13 @@ function PdfToImagesPage() {
               <FileImage className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Saída das imagens</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Escolha o formato e execute a extração.</p>
+              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('pdfTools.pdfToImages.actionLabel')}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('pdfTools.pdfToImages.description')}</p>
             </div>
           </div>
 
           <SelectField
-            label="Formato de saída"
+            label={t('audioTools.formatLabel')}
             value={format}
             onChange={(event) => setFormat(event.target.value)}
             options={[
@@ -162,26 +164,26 @@ function PdfToImagesPage() {
             ]}
           />
 
-          {isLoading ? <LoadingSpinner label="Convertendo PDF..." /> : null}
-          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Renderizando páginas e preparando ZIP" /> : null}
+          {isLoading ? <LoadingSpinner label={t('pdfTools.processComplete')} /> : null}
+          {progress > 0 && isLoading ? <ProgressBar value={progress} label={t('pdfTools.pdfToImages.actionLabel')} /> : null}
 
           <Button className="w-full gap-2" onClick={handleSubmit} disabled={isLoading || !fileItem}>
             <Files className="h-4 w-4" />
-            Converter PDF em imagens
+            {t('pdfTools.pdfToImages.actionLabel')}
           </Button>
         </div>
 
         {result ? (
           <ResultCard
-            title="Páginas extraídas"
-            description={`${result.pageCount} páginas detectadas. Faça o download individual ou baixe todas em ZIP.`}
+            title={t('pdfTools.processComplete')}
+            description={t('pdfTools.pdfToImages.description')}
             tone="success"
           >
             <div className="flex flex-wrap gap-3">
               <a href={result.zipUrl} download={result.zipFileName}>
                 <Button className="gap-2" type="button">
                   <Download className="h-4 w-4" />
-                  Baixar ZIP
+                  {t('audioTools.downloadZip')}
                 </Button>
               </a>
             </div>
@@ -195,7 +197,7 @@ function PdfToImagesPage() {
                       <p className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{image.name}</p>
                     </div>
                     <a href={image.url} download={image.name}>
-                      <Button variant="ghost">Baixar</Button>
+                      <Button variant="ghost">{t('utilities.downloadButton')}</Button>
                     </a>
                   </div>
                 </div>

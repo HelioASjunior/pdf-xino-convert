@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, Shrink } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
@@ -15,6 +16,15 @@ import { formatBytes, formatPercent } from '../utils/formatters';
 import { MAX_PDF_SIZE, validateFiles } from '../utils/fileValidation';
 
 function CompressPdfPage() {
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage || 'pt-BR').toLowerCase();
+  const ui = lang.startsWith('en')
+    ? { originalSize: 'Original size', originalSizeMany: 'Original size ({{count}} files)', original: 'Original', final: 'Final', reduction: 'Reduction', hide: 'Hide individual files', show: 'Download individual files', low: 'Low', medium: 'Medium', high: 'High', downloadSingle: 'Download compressed PDF' }
+    : lang.startsWith('es')
+      ? { originalSize: 'Tamaño original', originalSizeMany: 'Tamaño original ({{count}} archivos)', original: 'Original', final: 'Final', reduction: 'Reducción', hide: 'Ocultar archivos individuales', show: 'Descargar archivos individuales', low: 'Baja', medium: 'Media', high: 'Alta', downloadSingle: 'Descargar PDF comprimido' }
+      : lang.startsWith('fr')
+        ? { originalSize: 'Taille originale', originalSizeMany: 'Taille originale ({{count}} fichiers)', original: 'Original', final: 'Final', reduction: 'Réduction', hide: 'Masquer les fichiers individuels', show: 'Télécharger les fichiers individuels', low: 'Faible', medium: 'Moyenne', high: 'Élevée', downloadSingle: 'Télécharger PDF compressé' }
+        : { originalSize: 'Tamanho original', originalSizeMany: 'Tamanho original ({{count}} arquivos)', original: 'Original', final: 'Final', reduction: 'Redução', hide: 'Ocultar arquivos individuais', show: 'Baixar arquivos individuais', low: 'Baixa', medium: 'Média', high: 'Alta', downloadSingle: 'Baixar PDF comprimido' };
   const { showToast } = useToast();
   const { addEntry } = useSessionHistory();
   const [files, setFiles] = useState([]);
@@ -68,7 +78,7 @@ function CompressPdfPage() {
 
   const handleSubmit = async () => {
     if (!files.length) {
-      setError('Selecione ao menos um PDF antes de compactar.');
+      setError(t('pdfTools.emptyFiles'));
       return;
     }
 
@@ -117,11 +127,11 @@ function CompressPdfPage() {
           wasReduced: p.wasReduced,
         });
 
-        addEntry({ tool: 'Comprimir PDF', summary: `${p.name} com redução de ${formatPercent(p.reductionPercent)}` });
+        addEntry({ tool: t('pdfTools.compress.title'), summary: `${p.name} ${formatPercent(p.reductionPercent)}` });
         showToast({
           type: p.wasReduced ? 'success' : 'info',
-          title: p.wasReduced ? 'Compressão concluída' : 'Compressão limitada',
-          message: p.wasReduced ? 'Download do arquivo pronto.' : 'O PDF já estava otimizado e não houve redução relevante.',
+          title: p.wasReduced ? t('pdfTools.processComplete') : t('pdfTools.compress.actionLabel'),
+          message: p.wasReduced ? t('pdfTools.compress.successMsg', { percent: formatPercent(p.reductionPercent) }) : t('pdfTools.compress.noReductionMsg'),
         });
       } else {
         const zip = await zipDownloadItems(
@@ -139,13 +149,13 @@ function CompressPdfPage() {
           individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
         });
 
-        addEntry({ tool: 'Comprimir PDF', summary: `${parts.length} arquivos com redução média de ${formatPercent(overallReduction)}` });
-        showToast({ type: 'success', title: 'Compressão concluída', message: `${parts.length} arquivos processados.` });
+        addEntry({ tool: t('pdfTools.compress.title'), summary: `${parts.length} ${formatPercent(overallReduction)}` });
+        showToast({ type: 'success', title: t('pdfTools.processComplete'), message: t('pdfTools.compress.multiMsg', { count: parts.length, reduced: reducedCount }) });
       }
     } catch (requestError) {
-      const message = requestError.message || 'Não foi possível compactar o PDF.';
+      const message = requestError.message || t('pdfTools.processError');
       setError(message);
-      showToast({ type: 'error', title: 'Falha na compactação', message });
+      showToast({ type: 'error', title: t('pdfTools.fileError'), message });
     } finally {
       setIsLoading(false);
     }
@@ -157,8 +167,8 @@ function CompressPdfPage() {
     <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
       <section className="space-y-6">
         <UploadArea
-          title="Envie os PDFs"
-          description="Veja o tamanho original, escolha o nível de compressão e baixe os novos arquivos com resumo do ganho obtido."
+          title={t('pdfTools.uploadLabel')}
+          description={t('pdfTools.compress.description')}
           accept="application/pdf"
           multiple
           onFilesSelected={handleFileSelected}
@@ -175,9 +185,9 @@ function CompressPdfPage() {
         ) : null}
 
         <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Comprimir PDF</p>
-          <h1 className="section-title">Reduza o peso dos arquivos com níveis claros de compressão.</h1>
-          <p className="section-copy">Otimize o tamanho dos PDFs para compartilhar, armazenar e enviar arquivos com mais eficiência.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">{t('pdfTools.compress.title')}</p>
+          <h1 className="section-title">{t('home.tools.compressPdfTitle')}</h1>
+          <p className="section-copy">{t('pdfTools.compress.description')}</p>
         </div>
       </section>
 
@@ -188,51 +198,51 @@ function CompressPdfPage() {
               <Shrink className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Ajustes da compactação</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Escolha o equilíbrio entre qualidade e tamanho final.</p>
+              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('pdfTools.compress.actionLabel')}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('pdfTools.compress.description')}</p>
             </div>
           </div>
 
           {files.length > 0 ? (
             <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-600 dark:bg-slate-800/60 dark:text-slate-300">
-              {files.length === 1 ? 'Tamanho original:' : `Tamanho original (${files.length} arquivos):`} <span className="font-semibold text-slate-900 dark:text-slate-100">{formatBytes(totalOriginalSize)}</span>
+              {(files.length === 1 ? ui.originalSize : ui.originalSizeMany.replace('{{count}}', String(files.length)))}: <span className="font-semibold text-slate-900 dark:text-slate-100">{formatBytes(totalOriginalSize)}</span>
             </div>
           ) : null}
 
           <SelectField
-            label="Nível de compressão"
+            label={t('home.tools.compressPdfTitle')}
             value={level}
             onChange={(event) => setLevel(event.target.value)}
             options={[
-              { label: 'Baixa', value: 'low' },
-              { label: 'Média', value: 'medium' },
-              { label: 'Alta', value: 'high' },
+              { label: ui.low, value: 'low' },
+              { label: ui.medium, value: 'medium' },
+              { label: ui.high, value: 'high' },
             ]}
-            helperText="Níveis mais altos geram arquivos menores, com maior perda visual."
+            helperText={t('pdfTools.compress.description')}
           />
 
-          {isLoading ? <LoadingSpinner label="Processando arquivos..." /> : null}
-          {progress > 0 && isLoading ? <ProgressBar value={progress} label="Convertendo páginas para versão otimizada" /> : null}
+          {isLoading ? <LoadingSpinner label={t('pdfTools.processComplete')} /> : null}
+          {progress > 0 && isLoading ? <ProgressBar value={progress} label={t('pdfTools.compress.actionLabel')} /> : null}
 
           <Button className="w-full gap-2" onClick={handleSubmit} disabled={!files.length || isLoading}>
             <Shrink className="h-4 w-4" />
-            Compactar PDF
+            {t('pdfTools.compress.actionLabel')}
           </Button>
         </div>
 
         {result ? (
-          <ResultCard title={result.wasReduced ? 'Compressão concluída' : 'Compressão limitada'} description={result.wasReduced ? 'Resumo comparativo do arquivo antes e depois do processamento.' : 'Estes arquivos já estão próximos do melhor equilíbrio possível para este tipo de conteúdo.'} tone={result.wasReduced ? 'success' : 'info'}>
+          <ResultCard title={result.wasReduced ? t('pdfTools.processComplete') : t('pdfTools.compress.actionLabel')} description={result.wasReduced ? t('pdfTools.compress.successMsg', { percent: formatPercent(result.reductionPercent) }) : t('pdfTools.compress.noReductionMsg')} tone={result.wasReduced ? 'success' : 'info'}>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Original</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{ui.original}</p>
                 <p className="mt-3 text-lg font-bold text-slate-900 dark:text-slate-100">{formatBytes(result.originalSize)}</p>
               </div>
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Final</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{ui.final}</p>
                 <p className="mt-3 text-lg font-bold text-slate-900 dark:text-slate-100">{formatBytes(result.finalSize)}</p>
               </div>
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Redução</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{ui.reduction}</p>
                 <p className="mt-3 text-lg font-bold text-emerald-600 dark:text-emerald-400">{formatPercent(result.reductionPercent)}</p>
               </div>
             </div>
@@ -243,7 +253,7 @@ function CompressPdfPage() {
                   <a href={result.url} download={result.fileName} className="block">
                     <Button className="w-full gap-2">
                       <Download className="h-4 w-4" />
-                      Baixar como ZIP
+                      {t('audioTools.downloadZip')}
                     </Button>
                   </a>
                   <Button
@@ -251,7 +261,7 @@ function CompressPdfPage() {
                     className="w-full"
                     onClick={() => setShowIndividual((v) => !v)}
                   >
-                    {showIndividual ? 'Ocultar arquivos individuais' : 'Baixar arquivos individuais'}
+                    {showIndividual ? ui.hide : ui.show}
                   </Button>
                   {showIndividual ? (
                     <div className="space-y-2">
@@ -270,7 +280,7 @@ function CompressPdfPage() {
                 <a href={result.url} download={result.fileName} className="block">
                   <Button className="w-full gap-2">
                     <Download className="h-4 w-4" />
-                    Baixar PDF comprimido
+                    {ui.downloadSingle}
                   </Button>
                 </a>
               )}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Download, FileArchive, Info, ScanLine } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
@@ -17,6 +18,15 @@ const acceptedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp
 const acceptedExtensions = ['.heic', '.heif'];
 
 function ScanDocumentPage() {
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage || 'pt-BR').toLowerCase();
+  const ui = lang.startsWith('en')
+    ? { original: 'Original', final: 'Final', reduction: 'Reduction', scanSteps: 'Scan in your scanner app and upload the generated file here.', hint: 'Ideal for centralizing scanned pages, consolidating documents and preparing final versions quickly.', infoBody: 'Scan in your device software, save as PDF or image, and upload the file to finalize the document quickly.' }
+    : lang.startsWith('es')
+      ? { original: 'Original', final: 'Final', reduction: 'Reducción', scanSteps: 'Escanee en la app de su escáner y suba el archivo generado aquí.', hint: 'Ideal para centralizar páginas escaneadas, consolidar documentos y preparar versiones finales con agilidad.', infoBody: 'Escanee en el software de su equipo, guarde en PDF o imagen y suba el archivo para finalizar el documento con rapidez.' }
+      : lang.startsWith('fr')
+        ? { original: 'Original', final: 'Final', reduction: 'Réduction', scanSteps: 'Numérisez dans l\'application de votre scanner puis envoyez le fichier généré ici.', hint: 'Idéal pour centraliser des pages numérisées, consolider des documents et préparer des versions finales rapidement.', infoBody: 'Numérisez dans le logiciel de votre équipement, enregistrez en PDF ou image puis envoyez le fichier pour finaliser le document rapidement.' }
+        : { original: 'Original', final: 'Final', reduction: 'Redução', scanSteps: 'Digitalize no app do scanner e envie o arquivo gerado aqui.', hint: 'Ideal para centralizar páginas digitalizadas, consolidar documentos e preparar versões finais com mais agilidade.', infoBody: 'Digitalize no software do equipamento, salve em PDF ou imagem e envie o arquivo para concluir o documento com organização e rapidez.' };
   const { showToast } = useToast();
   const { addEntry } = useSessionHistory();
 
@@ -74,18 +84,18 @@ function ScanDocumentPage() {
     const imageFiles = files.filter((file) => file.type !== 'application/pdf');
 
     if (pdfFiles.length > 1) {
-      setError('Selecione apenas um PDF por vez para arquivo escaneado.');
+      setError(t('pdfTools.emptyFiles'));
       return;
     }
 
     if (pdfFiles[0] && pdfFiles[0].size > MAX_PDF_SIZE) {
-      setError(`O arquivo ${pdfFiles[0].name} ultrapassa o limite permitido.`);
+      setError(t('utilities.errorSizeLimit', { name: pdfFiles[0].name }));
       return;
     }
 
     if (imageFiles.some((file) => file.size > MAX_IMAGE_SIZE)) {
       const oversized = imageFiles.find((file) => file.size > MAX_IMAGE_SIZE);
-      setError(`O arquivo ${oversized?.name} ultrapassa o limite permitido.`);
+      setError(t('utilities.errorSizeLimit', { name: oversized?.name }));
       return;
     }
 
@@ -99,7 +109,7 @@ function ScanDocumentPage() {
         kind: 'pdf',
         preview: null,
       });
-      showToast({ type: 'info', title: 'PDF escaneado carregado', message: 'Você já pode baixar ou compactar este documento.' });
+      showToast({ type: 'info', title: t('pdfTools.processComplete'), message: t('pdfTools.compress.actionLabel') });
     }
 
     if (imageFiles.length) {
@@ -113,7 +123,7 @@ function ScanDocumentPage() {
         ...current,
         ...mappedImages,
       ]);
-      showToast({ type: 'success', title: 'Imagens carregadas', message: `${imageFiles.length} página(s) adicionada(s).` });
+      showToast({ type: 'success', title: t('pdfTools.processComplete'), message: `${imageFiles.length}` });
     }
   };
 
@@ -143,7 +153,7 @@ function ScanDocumentPage() {
 
   const exportPdfFromImages = async () => {
     if (!images.length) {
-      setError('Adicione imagens escaneadas para gerar o PDF.');
+      setError(t('imageTools.uploadHint'));
       return;
     }
 
@@ -174,12 +184,12 @@ function ScanDocumentPage() {
         reductionPercent: 0,
       });
 
-      addEntry({ tool: 'Escanear documento', summary: `${images.length} página(s) convertida(s) em PDF` });
-      showToast({ type: 'success', title: 'PDF gerado', message: 'Conversão concluída e download iniciado.' });
+      addEntry({ tool: t('home.tools.scanDocumentTitle'), summary: `${images.length} PDF` });
+      showToast({ type: 'success', title: t('pdfTools.processComplete'), message: t('utilities.downloadStarted') });
     } catch (processingError) {
-      const message = processingError.message || 'Não foi possível gerar o PDF.';
+      const message = processingError.message || t('pdfTools.processError');
       setError(message);
-      showToast({ type: 'error', title: 'Erro ao processar arquivo', message });
+      showToast({ type: 'error', title: t('pdfTools.fileError'), message });
     } finally {
       setIsExporting(false);
     }
@@ -187,7 +197,7 @@ function ScanDocumentPage() {
 
   const compressCurrentPdf = async () => {
     if (!scannedPdf?.file) {
-      setError('Carregue um PDF escaneado para compactar.');
+      setError(t('pdfTools.emptyFiles'));
       return;
     }
 
@@ -211,12 +221,12 @@ function ScanDocumentPage() {
         reductionPercent: compression.reductionPercent,
       });
 
-      addEntry({ tool: 'Escanear documento', summary: `PDF escaneado compactado (${formatPercent(compression.reductionPercent)})` });
-      showToast({ type: 'success', title: 'Compressão concluída', message: 'Arquivo compactado disponível para download.' });
+      addEntry({ tool: t('home.tools.scanDocumentTitle'), summary: `${formatPercent(compression.reductionPercent)}` });
+      showToast({ type: 'success', title: t('pdfTools.processComplete'), message: t('pdfTools.compress.successMsg', { percent: formatPercent(compression.reductionPercent) }) });
     } catch (processingError) {
-      const message = processingError.message || 'Não foi possível compactar o PDF escaneado.';
+      const message = processingError.message || t('pdfTools.processError');
       setError(message);
-      showToast({ type: 'error', title: 'Erro ao processar arquivo', message });
+      showToast({ type: 'error', title: t('pdfTools.fileError'), message });
     } finally {
       setIsExporting(false);
     }
@@ -226,8 +236,8 @@ function ScanDocumentPage() {
     setShowScannerHelp(true);
     showToast({
       type: 'info',
-      title: 'Escaneamento via app do computador',
-      message: 'Use o software do scanner para gerar PDF/JPG/PNG e depois envie o arquivo aqui.',
+      title: t('home.tools.scanDocumentTitle'),
+      message: t('documentTools.uploadHint'),
     });
   };
 
@@ -240,33 +250,31 @@ function ScanDocumentPage() {
               <ScanLine className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Scanner local</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Fluxo recomendado para importar páginas com praticidade e seguir a finalização aqui.</p>
+              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('home.tools.scanDocumentTitle')}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('documentTools.uploadHint')}</p>
             </div>
           </div>
 
           <Button className="gap-2" onClick={startExternalScanFlow}>
             <ScanLine className="h-4 w-4" />
-            Escanear documento
+            {t('home.tools.scanDocumentTitle')}
           </Button>
 
           {showScannerHelp ? (
             <ResultCard
-              title="Como escanear e enviar"
-              description="Use o aplicativo do scanner (ou do sistema) e depois faça upload aqui."
+              title={t('home.tools.scanDocumentTitle')}
+              description={t('documentTools.uploadHint')}
               tone="info"
             >
               <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <p>1. Abra o software do scanner no computador.</p>
-                <p>2. Digitalize em PDF, JPG ou PNG.</p>
-                <p>3. Clique em "Adicionar arquivo escaneado" e envie o arquivo.</p>
+                <p>{ui.scanSteps}</p>
               </div>
             </ResultCard>
           ) : null}
 
           <UploadArea
-            title="Adicionar arquivo escaneado"
-            description="Aceita PDF, JPG, PNG, WEBP e HEIC/HEIF. Você pode enviar um PDF escaneado pronto ou múltiplas imagens de páginas."
+            title={t('pdfTools.uploadLabel')}
+            description={t('imageTools.uploadHint')}
             accept="application/pdf,image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif"
             multiple
             onFilesSelected={addFiles}
@@ -276,7 +284,7 @@ function ScanDocumentPage() {
 
         {scannedPdf ? (
           <div className="space-y-3">
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">PDF escaneado</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{t('home.tools.scanDocumentTitle')}</p>
             <FilePreview item={scannedPdf} onRemove={() => setScannedPdf(null)} />
           </div>
         ) : null}
@@ -284,8 +292,8 @@ function ScanDocumentPage() {
         {images.length ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Páginas em imagem</p>
-              <Button variant="ghost" onClick={clearAll}>Limpar tudo</Button>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{t('imageTools.uploadLabel')}</p>
+              <Button variant="ghost" onClick={clearAll}>{t('utilities.uploadLabel')}</Button>
             </div>
 
             <div className="space-y-3">
@@ -297,9 +305,9 @@ function ScanDocumentPage() {
         ) : null}
 
         <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Escanear documento</p>
-          <h1 className="section-title">Digitalize no seu equipamento e finalize o documento aqui com praticidade.</h1>
-          <p className="section-copy">Importe páginas já digitalizadas, organize o material e gere um arquivo pronto para compartilhar.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">{t('home.tools.scanDocumentTitle')}</p>
+          <h1 className="section-title">{t('home.tools.scanDocumentTitle')}</h1>
+          <p className="section-copy">{t('documentTools.uploadHint')}</p>
         </div>
       </section>
 
@@ -310,43 +318,43 @@ function ScanDocumentPage() {
               <FileArchive className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Ações do documento</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Converta imagens em PDF ou compacte um PDF já escaneado.</p>
+              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('pdfTools.selectOperation')}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('imageTools.categoryTools.imageToPdf.description')}</p>
             </div>
           </div>
 
-          {isExporting ? <LoadingSpinner label="Processando arquivo..." /> : null}
-          {isExporting ? <ProgressBar value={progress} label="Executando processamento" /> : null}
+          {isExporting ? <LoadingSpinner label={t('pdfTools.processComplete')} /> : null}
+          {isExporting ? <ProgressBar value={progress} label={t('pdfTools.processComplete')} /> : null}
 
           <div className="flex flex-wrap gap-3">
             <Button className="gap-2" onClick={exportPdfFromImages} disabled={isExporting || !images.length}>
               <Download className="h-4 w-4" />
-              Gerar PDF das imagens
+              {t('imageTools.categoryTools.imageToPdf.actionLabel')}
             </Button>
             <Button variant="secondary" className="gap-2" onClick={compressCurrentPdf} disabled={isExporting || !scannedPdf}>
               <FileArchive className="h-4 w-4" />
-              Comprimir PDF escaneado
+              {t('pdfTools.compress.actionLabel')}
             </Button>
           </div>
 
           <p className="text-xs leading-6 text-slate-500 dark:text-slate-400">
-            Ideal para centralizar páginas digitalizadas, consolidar documentos e preparar versões finais com mais agilidade.
+            {ui.hint}
           </p>
         </div>
 
         {result ? (
-          <ResultCard title="Arquivo pronto" description="Processamento concluído com sucesso." tone="success">
+          <ResultCard title={t('pdfTools.processComplete')} description={t('pdfTools.processComplete')} tone="success">
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Original</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{ui.original}</p>
                 <p className="mt-3 text-lg font-bold text-slate-900 dark:text-slate-100">{formatBytes(result.originalSize)}</p>
               </div>
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Final</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{ui.final}</p>
                 <p className="mt-3 text-lg font-bold text-slate-900 dark:text-slate-100">{formatBytes(result.finalSize)}</p>
               </div>
               <div className="rounded-3xl bg-white p-4 dark:bg-slate-900">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">Redução</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">{ui.reduction}</p>
                 <p className="mt-3 text-lg font-bold text-emerald-600 dark:text-emerald-400">{formatPercent(result.reductionPercent)}</p>
               </div>
             </div>
@@ -355,18 +363,18 @@ function ScanDocumentPage() {
               <a href={result.url} download={result.fileName}>
                 <Button className="gap-2">
                   <Download className="h-4 w-4" />
-                  Baixar arquivo
+                  {t('utilities.downloadButton')}
                 </Button>
               </a>
-              <Button variant="ghost" onClick={clearResult}>Limpar resultado</Button>
+              <Button variant="ghost" onClick={clearResult}>{t('utilities.uploadLabel')}</Button>
             </div>
           </ResultCard>
         ) : (
-          <ResultCard title="Como funciona a digitalização" description="A captura começa no aplicativo do seu scanner e a finalização do arquivo acontece aqui em poucos passos." tone="info">
+          <ResultCard title={t('home.tools.scanDocumentTitle')} description={t('documentTools.uploadHint')} tone="info">
             <div className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
               <Info className="mt-0.5 h-4 w-4" />
               <p>
-                Digitalize no software do equipamento, salve em PDF ou imagem e envie o arquivo para concluir o documento com organização e rapidez.
+                {ui.infoBody}
               </p>
             </div>
           </ResultCard>

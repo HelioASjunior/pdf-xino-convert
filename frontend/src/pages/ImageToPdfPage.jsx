@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileDown, Images, MoveVertical } from 'lucide-react';
 import UploadArea from '../components/UploadArea';
 import FilePreview from '../components/FilePreview';
@@ -18,6 +19,135 @@ const imageMimeTypes = ['image/*'];
 const imageExtensions = ['.heic', '.heif'];
 
 function ImageToPdfPage() {
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.resolvedLanguage || 'pt-BR').toLowerCase();
+  const ui = lang.startsWith('en')
+    ? {
+      outputMode: 'Output mode',
+      modeSingle: 'Single PDF with all images',
+      modeSeparate: 'Separate PDF for each image',
+      modeHelp: 'In separate mode, download is provided as a ZIP with one PDF per image.',
+      orientation: 'Orientation',
+      portrait: 'Portrait',
+      landscape: 'Landscape',
+      pageSize: 'Page size',
+      margin: 'Margin',
+      marginSmall: 'Small (16 pt)',
+      marginMedium: 'Medium (24 pt)',
+      marginLarge: 'Large (32 pt)',
+      fit: 'Image fit',
+      fitContain: 'Contain',
+      fitCover: 'Cover',
+      fitStretch: 'Stretch',
+      compression: 'Image compression',
+      on: 'Enabled',
+      off: 'Disabled',
+      compressionHelp: 'Reduces image size before creating the PDF.',
+      clearFiles: 'Clear files',
+      orderHint: 'Review file order in the floating window before generating the final document.',
+      resultSingleButton: 'Download final PDF',
+      resultZipButton: 'Download ZIP with PDFs',
+      failedMsg: '{{count}} image(s) required a different treatment and were not completed in this step.',
+      orderTitle: 'Organize images before generating PDF',
+      orderDesc: 'The first image in the list becomes the first page of the final PDF.',
+      hide: 'Hide individual files',
+      show: 'Download individual files',
+    }
+    : lang.startsWith('es')
+      ? {
+        outputMode: 'Modo de salida',
+        modeSingle: 'PDF único con todas las imágenes',
+        modeSeparate: 'PDF separado para cada imagen',
+        modeHelp: 'En modo separado, la descarga se entrega en ZIP con un PDF por imagen.',
+        orientation: 'Orientación',
+        portrait: 'Retrato',
+        landscape: 'Horizontal',
+        pageSize: 'Tamaño de página',
+        margin: 'Margen',
+        marginSmall: 'Pequeño (16 pt)',
+        marginMedium: 'Medio (24 pt)',
+        marginLarge: 'Grande (32 pt)',
+        fit: 'Ajuste de imagen',
+        fitContain: 'Contener',
+        fitCover: 'Cubrir',
+        fitStretch: 'Estirar',
+        compression: 'Compresión de imagen',
+        on: 'Activada',
+        off: 'Desactivada',
+        compressionHelp: 'Reduce el tamaño de las imágenes antes de generar el PDF.',
+        clearFiles: 'Limpiar archivos',
+        orderHint: 'Revise el orden de los archivos en la ventana flotante antes de generar el documento final.',
+        resultSingleButton: 'Descargar PDF final',
+        resultZipButton: 'Descargar ZIP con PDFs',
+        failedMsg: '{{count}} imagen(es) requirieron un tratamiento diferente y no se completaron en esta etapa.',
+        orderTitle: 'Organizar imágenes antes de generar PDF',
+        orderDesc: 'La primera imagen de la lista se convierte en la primera página del PDF final.',
+        hide: 'Ocultar archivos individuales',
+        show: 'Descargar archivos individuales',
+      }
+      : lang.startsWith('fr')
+        ? {
+          outputMode: 'Mode de sortie',
+          modeSingle: 'PDF unique avec toutes les images',
+          modeSeparate: 'PDF séparé pour chaque image',
+          modeHelp: 'En mode séparé, le téléchargement est fourni en ZIP avec un PDF par image.',
+          orientation: 'Orientation',
+          portrait: 'Portrait',
+          landscape: 'Paysage',
+          pageSize: 'Taille de page',
+          margin: 'Marge',
+          marginSmall: 'Petite (16 pt)',
+          marginMedium: 'Moyenne (24 pt)',
+          marginLarge: 'Grande (32 pt)',
+          fit: 'Ajustement de l\'image',
+          fitContain: 'Contenir',
+          fitCover: 'Couvrir',
+          fitStretch: 'Étirer',
+          compression: 'Compression d\'image',
+          on: 'Activée',
+          off: 'Désactivée',
+          compressionHelp: 'Réduit la taille des images avant de générer le PDF.',
+          clearFiles: 'Effacer les fichiers',
+          orderHint: 'Vérifiez l\'ordre des fichiers dans la fenêtre flottante avant de générer le document final.',
+          resultSingleButton: 'Télécharger le PDF final',
+          resultZipButton: 'Télécharger ZIP avec PDFs',
+          failedMsg: '{{count}} image(s) ont nécessité un traitement différent et n\'ont pas été finalisées à cette étape.',
+          orderTitle: 'Organiser les images avant de générer le PDF',
+          orderDesc: 'La première image de la liste devient la première page du PDF final.',
+          hide: 'Masquer les fichiers individuels',
+          show: 'Télécharger les fichiers individuels',
+        }
+        : {
+          outputMode: 'Modo de saída',
+          modeSingle: 'PDF único com todas as imagens',
+          modeSeparate: 'PDF separado para cada imagem',
+          modeHelp: 'No modo separado, o download sai em ZIP com um PDF por imagem.',
+          orientation: 'Orientação',
+          portrait: 'Retrato',
+          landscape: 'Paisagem',
+          pageSize: 'Tamanho da página',
+          margin: 'Margem',
+          marginSmall: 'Pequena (16 pt)',
+          marginMedium: 'Média (24 pt)',
+          marginLarge: 'Grande (32 pt)',
+          fit: 'Ajuste da imagem',
+          fitContain: 'Conter',
+          fitCover: 'Cobrir',
+          fitStretch: 'Esticar',
+          compression: 'Compactação de imagem',
+          on: 'Ativada',
+          off: 'Desativada',
+          compressionHelp: 'Reduz o peso das imagens antes de gerar o PDF.',
+          clearFiles: 'Limpar arquivos',
+          orderHint: 'Revise a ordem dos arquivos na janela flutuante antes de gerar o documento final.',
+          resultSingleButton: 'Baixar PDF final',
+          resultZipButton: 'Baixar ZIP com PDFs',
+          failedMsg: '{{count}} imagem(ns) exigiram tratamento diferente e não foram concluídas nesta etapa.',
+          orderTitle: 'Organizar imagens antes de gerar PDF',
+          orderDesc: 'A primeira imagem da lista vira a primeira pagina do PDF final.',
+          hide: 'Ocultar arquivos individuais',
+          show: 'Baixar arquivos individuais',
+        };
   const { showToast } = useToast();
   const { addEntry } = useSessionHistory();
   const [items, setItems] = useState([]);
@@ -115,7 +245,7 @@ function ImageToPdfPage() {
 
   const handleSubmit = async () => {
     if (!items.length) {
-      setError('Adicione ao menos uma imagem antes de gerar o PDF.');
+      setError(t('imageTools.uploadHint'));
       return;
     }
 
@@ -150,8 +280,8 @@ function ImageToPdfPage() {
           generatedCount: bundle.files.length,
           failed: bundle.failed,
         });
-        showToast({ type: 'success', title: 'PDFs gerados', message: `${bundle.files.length} PDF(s) prontos para download.` });
-        addEntry({ tool: 'Imagem para PDF', summary: `${bundle.files.length} PDF(s) individuais gerados` });
+        showToast({ type: 'success', title: t('pdfTools.processComplete'), message: `${bundle.files.length} PDF(s)` });
+        addEntry({ tool: t('imageTools.categoryTools.imageToPdf.title'), summary: `${bundle.files.length} PDF(s)` });
       } else {
         const pdfBlob = await imagesToPdf(
           items.map((item) => item.file),
@@ -170,13 +300,13 @@ function ImageToPdfPage() {
           generatedCount: items.length,
           failed: [],
         });
-        showToast({ type: 'success', title: 'PDF gerado', message: 'Conversão concluída. Clique para baixar.' });
-        addEntry({ tool: 'Imagem para PDF', summary: `${items.length} imagens convertidas em ${fileName}` });
+        showToast({ type: 'success', title: t('pdfTools.processComplete'), message: t('imageTools.categoryTools.imageToPdf.description') });
+        addEntry({ tool: t('imageTools.categoryTools.imageToPdf.title'), summary: `${items.length} ${fileName}` });
       }
     } catch (requestError) {
-      const message = requestError.message || 'Não foi possível gerar o PDF.';
+      const message = requestError.message || t('pdfTools.processError');
       setError(message);
-      showToast({ type: 'error', title: 'Falha na conversão', message });
+      showToast({ type: 'error', title: t('pdfTools.fileError'), message });
     } finally {
       setIsLoading(false);
     }
@@ -186,8 +316,8 @@ function ImageToPdfPage() {
     <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
       <section className="space-y-6">
         <UploadArea
-          title="Envie suas imagens"
-          description="Faça upload de múltiplos arquivos, reorganize a sequência e exporte tudo em um único PDF ou em PDFs individuais."
+          title={t('imageTools.uploadLabel')}
+          description={t('imageTools.categoryTools.imageToPdf.description')}
           accept="image/*,.heic,.heif"
           multiple
           onFilesSelected={handleFilesSelected}
@@ -197,13 +327,13 @@ function ImageToPdfPage() {
         {items.length ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Fila de imagens</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{t('imageTools.uploadLabel')}</p>
               <div className="flex gap-2">
                 <Button variant="ghost" onClick={() => setOrderModalOpen(true)}>
                   <MoveVertical className="mr-1 h-4 w-4" />
-                  Organizar ordem
+                  {t('pdfTools.orderModal')}
                 </Button>
-                <Button variant="ghost" onClick={clearAll}>Limpar arquivos</Button>
+                <Button variant="ghost" onClick={clearAll}>{ui.clearFiles}</Button>
               </div>
             </div>
 
@@ -215,16 +345,16 @@ function ImageToPdfPage() {
 
             {items.length > 1 && !orderConfirmed ? (
               <p className="rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:bg-amber-900/20 dark:text-amber-200">
-                Revise a ordem dos arquivos na janela flutuante antes de gerar o documento final.
+                {ui.orderHint}
               </p>
             ) : null}
           </div>
         ) : null}
 
         <div className="space-y-3">
-          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">Imagem para PDF</p>
-          <h1 className="section-title">Organize as imagens, ajuste o layout e gere um PDF final limpo.</h1>
-          <p className="section-copy">Reordene os arquivos, ajuste a apresentação e escolha entre um PDF único ou versões individuais do documento.</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">{t('imageTools.categoryTools.imageToPdf.title')}</p>
+          <h1 className="section-title">{t('home.tools.imageToPdfTitle')}</h1>
+          <p className="section-copy">{t('imageTools.categoryTools.imageToPdf.description')}</p>
         </div>
       </section>
 
@@ -235,33 +365,33 @@ function ImageToPdfPage() {
               <Images className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">Configurações do PDF</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Controle a apresentação final do documento.</p>
+              <p className="font-display text-2xl font-bold text-slate-900 dark:text-slate-100">{t('pdfTools.selectOperation')}</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">{t('imageTools.categoryTools.imageToPdf.description')}</p>
             </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <SelectField
-              label="Modo de saída"
+              label={ui.outputMode}
               value={options.outputMode}
               onChange={(event) => setOptions((current) => ({ ...current, outputMode: event.target.value }))}
               options={[
-                { label: 'PDF único com todas as imagens', value: 'single' },
-                { label: 'PDF separado para cada imagem', value: 'separate' },
+                { label: ui.modeSingle, value: 'single' },
+                { label: ui.modeSeparate, value: 'separate' },
               ]}
-              helperText="No modo separado, o download sai em ZIP com um PDF por imagem."
+              helperText={ui.modeHelp}
             />
             <SelectField
-              label="Orientação"
+              label={ui.orientation}
               value={options.orientation}
               onChange={(event) => setOptions((current) => ({ ...current, orientation: event.target.value }))}
               options={[
-                { label: 'Retrato', value: 'portrait' },
-                { label: 'Paisagem', value: 'landscape' },
+                { label: ui.portrait, value: 'portrait' },
+                { label: ui.landscape, value: 'landscape' },
               ]}
             />
             <SelectField
-              label="Tamanho da página"
+              label={ui.pageSize}
               value={options.pageSize}
               onChange={(event) => setOptions((current) => ({ ...current, pageSize: event.target.value }))}
               options={[
@@ -271,67 +401,67 @@ function ImageToPdfPage() {
               ]}
             />
             <SelectField
-              label="Margem"
+              label={ui.margin}
               value={options.margin}
               onChange={(event) => setOptions((current) => ({ ...current, margin: event.target.value }))}
               options={[
-                { label: 'Pequena (16 pt)', value: '16' },
-                { label: 'Média (24 pt)', value: '24' },
-                { label: 'Grande (32 pt)', value: '32' },
+                { label: ui.marginSmall, value: '16' },
+                { label: ui.marginMedium, value: '24' },
+                { label: ui.marginLarge, value: '32' },
               ]}
             />
             <SelectField
-              label="Ajuste da imagem"
+              label={ui.fit}
               value={options.imageFit}
               onChange={(event) => setOptions((current) => ({ ...current, imageFit: event.target.value }))}
               options={[
-                { label: 'Conter', value: 'contain' },
-                { label: 'Cobrir', value: 'cover' },
-                { label: 'Esticar', value: 'stretch' },
+                { label: ui.fitContain, value: 'contain' },
+                { label: ui.fitCover, value: 'cover' },
+                { label: ui.fitStretch, value: 'stretch' },
               ]}
             />
             <SelectField
-              label="Compactação de imagem"
+              label={ui.compression}
               value={options.compressImages}
               onChange={(event) => setOptions((current) => ({ ...current, compressImages: event.target.value }))}
               options={[
-                { label: 'Ativada', value: 'true' },
-                { label: 'Desativada', value: 'false' },
+                { label: ui.on, value: 'true' },
+                { label: ui.off, value: 'false' },
               ]}
-              helperText="Reduz o peso das imagens antes de gerar o PDF."
+              helperText={ui.compressionHelp}
             />
           </div>
 
-          {isLoading ? <LoadingSpinner label="Processando arquivo..." /> : null}
+          {isLoading ? <LoadingSpinner label={t('pdfTools.processComplete')} /> : null}
           {progress > 0 && isLoading ? (
             <ProgressBar
               value={progress}
-              label={options.outputMode === 'separate' ? 'Gerando PDFs individuais' : 'Convertendo imagens em PDF'}
+              label={options.outputMode === 'separate' ? t('pdfTools.processComplete') : t('imageTools.categoryTools.imageToPdf.actionLabel')}
             />
           ) : null}
 
           <Button className="w-full gap-2" onClick={handleSubmit} disabled={isLoading || !items.length}>
             <FileDown className="h-4 w-4" />
-            {options.outputMode === 'separate' ? 'Gerar ZIP com PDFs' : 'Gerar PDF'}
+            {options.outputMode === 'separate' ? t('audioTools.downloadZip') : t('imageTools.categoryTools.imageToPdf.actionLabel')}
           </Button>
         </div>
 
         {result ? (
           <ResultCard
-            title={result.kind === 'separate' ? 'PDFs individuais prontos' : 'PDF final pronto'}
+            title={result.kind === 'separate' ? t('pdfTools.processComplete') : t('pdfTools.processComplete')}
             description={result.kind === 'separate'
-              ? `Foram gerados ${result.generatedCount} PDF(s) prontos para download.`
-              : 'PDF gerado com sucesso. Clique no botão abaixo para baixar.'}
+              ? `${result.generatedCount} PDF(s)`
+              : t('imageTools.categoryTools.imageToPdf.description')}
             tone="success"
           >
             <div className="flex flex-col gap-3 sm:flex-row">
               <a href={result.url} download={result.fileName}>
-                <Button>{result.kind === 'separate' ? 'Baixar ZIP com PDFs' : 'Baixar PDF final'}</Button>
+                <Button>{result.kind === 'separate' ? ui.resultZipButton : ui.resultSingleButton}</Button>
               </a>
             </div>
             {result.failed?.length ? (
               <div className="mt-4 text-sm text-amber-700 dark:text-amber-300">
-                {result.failed.length} imagem(ns) exigiram tratamento diferente e não foram concluídas nesta etapa.
+                {ui.failedMsg.replace('{{count}}', String(result.failed.length))}
               </div>
             ) : null}
           </ResultCard>
@@ -341,8 +471,8 @@ function ImageToPdfPage() {
       <FileOrderModal
         open={orderModalOpen}
         items={items}
-        title="Organizar imagens antes de gerar PDF"
-        description="A primeira imagem da lista vira a primeira pagina do PDF final."
+        title={ui.orderTitle}
+        description={ui.orderDesc}
         onClose={() => setOrderModalOpen(false)}
         onConfirm={applyOrderedItems}
       />

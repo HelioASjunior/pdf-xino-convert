@@ -7,8 +7,6 @@ const flagAsset = (name) => `${import.meta.env.BASE_URL}assets/flags/${name}`;
 const LANGUAGES = [
   { code: 'pt-BR', label: 'Português', flagSrc: flagAsset('pt-br.svg') },
   { code: 'en', label: 'English', flagSrc: flagAsset('en.svg') },
-  { code: 'es', label: 'Español', flagSrc: flagAsset('es.svg') },
-  { code: 'fr', label: 'Français', flagSrc: flagAsset('fr.svg') },
 ];
 
 export default function LanguageSwitcher({ dropdownDir = 'up' }) {
