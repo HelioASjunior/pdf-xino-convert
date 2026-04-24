@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Github, Instagram } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
 
 function Footer() {
   const { t } = useTranslation();
@@ -75,6 +76,10 @@ function Footer() {
               </a>
             </div>
           </div>
+        </div>
+
+        <div className="mt-8 flex justify-center lg:justify-start">
+          <LanguageSwitcher dropdownDir="up" />
         </div>
 
         <p className="mt-8 border-t border-slate-200 pt-6 text-center text-xs leading-6 text-slate-400 dark:border-slate-700 dark:text-slate-500 lg:text-left">

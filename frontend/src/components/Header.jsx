@@ -3,7 +3,6 @@ import { Link, NavLink } from 'react-router-dom';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Button from './Button';
-import LanguageSwitcher from './LanguageSwitcher';
 import ThemeToggle from './ThemeToggle';
 
 function Header({ navigation }) {
@@ -48,7 +47,6 @@ function Header({ navigation }) {
           <div className="flex shrink-0 items-center justify-end gap-2">
             <div className="hidden items-center gap-2 lg:flex">
                 <ThemeToggle />
-                <LanguageSwitcher dropdownDir="down" />
                 <Link to="/tour-pelo-site">
                   <Button className="gap-2 rounded-full border border-emerald-200 bg-emerald-500/90 px-5 py-2 text-sm text-white shadow-sm hover:bg-emerald-600 dark:border-emerald-900 dark:bg-emerald-600 dark:hover:bg-emerald-500">
                     {t('header.siteTour', { defaultValue: 'Tour pelo site' })}
@@ -97,7 +95,6 @@ function Header({ navigation }) {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <LanguageSwitcher dropdownDir="up" />
           </div>
         </div>
       ) : null}
