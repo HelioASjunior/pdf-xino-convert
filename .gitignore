@@ -8,3 +8,4 @@ Thumbs.db
 frontend/.env.local
 prompt_projeto.txt
 qa-assets/
+.claude/

@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\athed\\\\OneDrive\\\\Documentos\\\\PDF XinoConvert\\\\pdf-xino-convert\\\\frontend\\\\src\\\\i18n\\\\index.js' | Select-Object -Last 20\")"
-    ]
-  }
-}
