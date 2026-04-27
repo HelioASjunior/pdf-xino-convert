@@ -28,7 +28,7 @@ function HomePage() {
     {
       title: t('home.cat.mergePdfTitle', { defaultValue: 'Unir PDF' }),
       description: t('home.grid.mergePdf', { defaultValue: 'Combine múltiplos PDFs em um único arquivo.' }),
-      href: '/unir-pdf',
+      href: '/pdf-tools',
       Icon: MergePdfIcon,
       category: 'pdf',
     },
@@ -42,7 +42,7 @@ function HomePage() {
     {
       title: t('home.cat.compressPdfTitle'),
       description: t('home.cat.compressPdfDesc'),
-      href: '/comprimir-pdf',
+      href: '/pdf-tools',
       Icon: CompressPdfIcon,
       category: 'pdf',
     },
@@ -98,7 +98,7 @@ function HomePage() {
     {
       title: t('home.cat.wordToPdfTitle', { defaultValue: 'Word para PDF' }),
       description: t('home.grid.wordToPdf', { defaultValue: 'Converta DOCX para PDF em poucos cliques.' }),
-      href: '/word-para-pdf',
+      href: '/document-tools',
       Icon: WordToPdfIcon,
       category: 'document',
     },
@@ -112,7 +112,7 @@ function HomePage() {
     {
       title: t('home.cat.scanDocumentTitle'),
       description: t('home.cat.scanDocumentDesc'),
-      href: '/escanear-documento',
+      href: '/pdf-tools',
       Icon: ScanDocumentIcon,
       category: 'document',
     },
