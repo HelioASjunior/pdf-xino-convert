@@ -45,6 +45,104 @@ async function toPdfBlobFromText(content, title) {
   return pdf.output('blob');
 }
 
+async function toPdfBlobFromSpreadsheetData(sheetsData, title) {
+  const { jsPDF } = await import('jspdf');
+
+  const rowHeight = 18;
+  const cellPadding = 4;
+  const margin = 36;
+
+  const maxCols = Math.max(...sheetsData.flatMap((s) => s.rows.map((r) => r.length)), 1);
+  const orientation = maxCols > 8 ? 'landscape' : 'portrait';
+
+  const pdf = new jsPDF({ unit: 'pt', format: 'a4', orientation });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  if (!sheetsData.length) {
+    pdf.setFont('helvetica', 'normal');
+    pdf.setFontSize(11);
+    pdf.setTextColor(0, 0, 0);
+    pdf.text('Nenhum dado encontrado na planilha.', margin, margin + 20);
+    return pdf.output('blob');
+  }
+
+  let isFirstSheet = true;
+
+  for (const { name, rows } of sheetsData) {
+    if (!isFirstSheet) pdf.addPage();
+    isFirstSheet = false;
+
+    let y = margin;
+
+    pdf.setFont('helvetica', 'bold');
+    pdf.setFontSize(11);
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`${title} — ${name}`, margin, y);
+    y += 20;
+
+    if (!rows.length) {
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(9);
+      pdf.text('(Sem dados detectados)', margin, y);
+      continue;
+    }
+
+    const numCols = Math.max(...rows.map((r) => r.length), 1);
+    const tableWidth = pageWidth - margin * 2;
+    const colWidth = tableWidth / numCols;
+    const fontSize = colWidth < 55 ? 7 : 9;
+
+    pdf.setFontSize(fontSize);
+
+    for (let rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+      const row = rows[rowIdx];
+
+      if (y + rowHeight > pageHeight - margin) {
+        pdf.addPage();
+        y = margin;
+      }
+
+      const isHeader = rowIdx === 0;
+
+      if (isHeader) {
+        pdf.setFillColor(52, 101, 164);
+        pdf.setTextColor(255, 255, 255);
+      } else if (rowIdx % 2 === 0) {
+        pdf.setFillColor(240, 244, 248);
+        pdf.setTextColor(0, 0, 0);
+      } else {
+        pdf.setFillColor(255, 255, 255);
+        pdf.setTextColor(0, 0, 0);
+      }
+
+      pdf.rect(margin, y, tableWidth, rowHeight, 'F');
+      pdf.setDrawColor(180, 180, 180);
+      pdf.rect(margin, y, tableWidth, rowHeight, 'S');
+
+      pdf.setFont('helvetica', isHeader ? 'bold' : 'normal');
+
+      for (let colIdx = 0; colIdx < numCols; colIdx++) {
+        const cellText = String(row[colIdx] ?? '');
+        const x = margin + colIdx * colWidth;
+
+        if (colIdx > 0) {
+          pdf.setDrawColor(180, 180, 180);
+          pdf.line(x, y, x, y + rowHeight);
+        }
+
+        const truncated = pdf.splitTextToSize(cellText, colWidth - cellPadding * 2)[0] ?? '';
+        pdf.text(truncated, x + cellPadding, y + rowHeight - cellPadding - 1);
+      }
+
+      y += rowHeight;
+    }
+  }
+
+  pdf.setTextColor(0, 0, 0);
+  return pdf.output('blob');
+}
+
 function parseDelimitedLine(line, delimiter) {
   const cells = [];
   let current = '';
@@ -95,7 +193,7 @@ async function textFromCsv(file) {
     .join('\n');
 }
 
-async function textFromSpreadsheet(file) {
+async function dataFromSpreadsheet(file) {
   const buffer = await file.arrayBuffer();
 
   return new Promise((resolve, reject) => {
@@ -113,7 +211,7 @@ async function textFromSpreadsheet(file) {
       worker.terminate();
 
       if (event.data?.ok) {
-        resolve(event.data.text ?? '');
+        resolve(event.data.sheets ?? []);
         return;
       }
 
@@ -170,6 +268,37 @@ export async function convertDocumentFileToPdf(file) {
     };
   }
 
+  if (ext === 'doc') {
+    const buffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    const chunks = [];
+    let i = 0;
+    while (i < bytes.length - 1) {
+      const lo = bytes[i];
+      const hi = bytes[i + 1];
+      const cp = lo | (hi << 8);
+      if (cp >= 0x20 && cp < 0xd800 && cp !== 0x00) {
+        chunks.push(String.fromCharCode(cp));
+        i += 2;
+      } else if (lo >= 0x20 && lo < 0x80) {
+        chunks.push(String.fromCharCode(lo));
+        i += 1;
+      } else if (lo === 0x0d || lo === 0x0a) {
+        chunks.push('\n');
+        i += 1;
+      } else {
+        i += 1;
+      }
+    }
+    const raw = chunks.join('').replace(/[^\x20-\x7E\xA0-\xFF\n]/g, '').replace(/\n{3,}/g, '\n\n').trim();
+    return {
+      supported: true,
+      blob: await toPdfBlobFromText(raw || '(Sem conteúdo legível extraído)', `DOC para PDF - ${file.name}`),
+      fileName: `${file.name.replace(/\.[^/.]+$/, '')}.pdf`,
+      warning: 'Conversão simplificada do formato DOC legado: formatação, imagens e tabelas não são preservadas.',
+    };
+  }
+
   if (ext === 'csv') {
     const text = await textFromCsv(file);
     return {
@@ -181,16 +310,16 @@ export async function convertDocumentFileToPdf(file) {
   }
 
   if (['xls', 'xlsx'].includes(ext)) {
-    const text = await textFromSpreadsheet(file);
+    const sheets = await dataFromSpreadsheet(file);
     return {
       supported: true,
-      blob: await toPdfBlobFromText(text, `Planilha para PDF - ${file.name}`),
+      blob: await toPdfBlobFromSpreadsheetData(sheets, file.name.replace(/\.[^/.]+$/, '')),
       fileName: `${file.name.replace(/\.[^/.]+$/, '')}.pdf`,
       warning: 'Conversão simplificada: fórmulas, estilos avançados e elementos complexos podem não ser preservados integralmente. Para maior estabilidade, o processamento é isolado em sandbox no navegador.',
     };
   }
 
-  if (['ppt', 'pptx', 'doc', 'odt'].includes(ext)) {
+  if (['ppt', 'pptx', 'odt'].includes(ext)) {
     return {
       supported: false,
       reason: unsupportedMessage,

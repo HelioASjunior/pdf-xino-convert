@@ -1,30 +1,23 @@
 import * as XLSX from 'xlsx';
 
-function normalizeSpreadsheetText(workbook) {
+function extractSpreadsheetData(workbook) {
   if (!workbook?.SheetNames?.length) {
-    return '';
+    return [];
   }
 
-  const sheetTexts = workbook.SheetNames.map((sheetName) => {
+  return workbook.SheetNames.map((sheetName) => {
     const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
       header: 1,
       blankrows: false,
-      raw: true,
+      raw: false,
     });
 
-    const normalizedRows = rows
+    const cleanRows = rows
       .map((row) => row.map((cell) => String(cell ?? '').trim()))
-      .filter((row) => row.some((cell) => cell.length > 0))
-      .map((row) => row.join(' | '));
+      .filter((row) => row.some((cell) => cell.length > 0));
 
-    if (!normalizedRows.length) {
-      return `Planilha: ${sheetName}\n(Sem dados detectados)`;
-    }
-
-    return [`Planilha: ${sheetName}`, ...normalizedRows].join('\n');
+    return { name: sheetName, rows: cleanRows };
   });
-
-  return sheetTexts.join('\n\n');
 }
 
 self.onmessage = (event) => {
@@ -38,7 +31,7 @@ self.onmessage = (event) => {
     const workbook = XLSX.read(arrayBuffer, {
       type: 'array',
       dense: true,
-      raw: true,
+      raw: false,
       cellFormula: false,
       cellHTML: false,
       cellStyles: false,
@@ -46,8 +39,8 @@ self.onmessage = (event) => {
       WTF: false,
     });
 
-    const text = normalizeSpreadsheetText(workbook);
-    self.postMessage({ ok: true, text });
+    const sheets = extractSpreadsheetData(workbook);
+    self.postMessage({ ok: true, sheets });
   } catch (error) {
     self.postMessage({
       ok: false,

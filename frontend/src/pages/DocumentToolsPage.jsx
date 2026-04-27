@@ -160,6 +160,7 @@ function DocumentToolsPage() {
       if (!conversion.supported) {
         setResult({ unsupported: true, reason: conversion.reason, suggestions: conversion.suggestions });
         showToast({ type: 'info', title: t('documentTools.unsupported.toastTitle'), message: t('documentTools.unsupported.toastMsg') });
+        setProgress(0);
         return;
       }
 
