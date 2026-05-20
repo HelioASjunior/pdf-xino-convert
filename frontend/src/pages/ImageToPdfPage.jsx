@@ -353,7 +353,7 @@ function ImageToPdfPage() {
 
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">{t('imageTools.categoryTools.imageToPdf.title')}</p>
-          <h1 className="section-title">{t('home.tools.imageToPdfTitle')}</h1>
+          <h1 className="section-title">{t('Ferramenta de Conversão de Imagens para PDF')}</h1>
           <p className="section-copy">{t('imageTools.categoryTools.imageToPdf.description')}</p>
         </div>
       </section>
