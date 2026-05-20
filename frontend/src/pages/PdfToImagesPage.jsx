@@ -137,7 +137,7 @@ function PdfToImagesPage() {
 
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">{t('pdfTools.pdfToImages.title')}</p>
-          <h1 className="section-title">{t('home.tools.pdfToImagesTitle')}</h1>
+          <h1 className="section-title">{t('Ferramenta de Conversão de PDF para Imagens')}</h1>
           <p className="section-copy">{t('pdfTools.pdfToImages.description')}</p>
         </div>
       </section>

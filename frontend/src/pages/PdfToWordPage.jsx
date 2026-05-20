@@ -111,7 +111,7 @@ function PdfToWordPage() {
 
         <div className="space-y-3">
           <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-700 dark:text-brand-400">{t('pdfTools.pdfToWord.title')}</p>
-          <h1 className="section-title">{t('home.tools.pdfToWordTitle')}</h1>
+          <h1 className="section-title">{t('Ferramenta de Conversão de PDF para Word')}</h1>
           <p className="section-copy">
             {t('pdfTools.pdfToWord.description')}
           </p>
