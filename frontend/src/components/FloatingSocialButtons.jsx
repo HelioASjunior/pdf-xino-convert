@@ -1,4 +1,4 @@
-import { Github, Linkedin } from 'lucide-react';
+import { Github, Instagram } from 'lucide-react';
 
 const socialLinks = [
   {
@@ -7,9 +7,9 @@ const socialLinks = [
     icon: Github,
   },
   {
-    label: 'LinkedIn de Hélio Jr.',
-    href: 'https://www.linkedin.com/in/heliojunior1218/',
-    icon: Linkedin,
+    label: 'Instagram do PDFXino',
+    href: 'https://www.instagram.com/pdfxinoconvert',
+    icon: Instagram,
   },
 ];
 
