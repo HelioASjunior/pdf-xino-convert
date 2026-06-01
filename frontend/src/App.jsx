@@ -23,6 +23,7 @@ const PdfToWordPage = lazy(() => import('./pages/PdfToWordPage'));
 const WordToPdfPage = lazy(() => import('./pages/WordToPdfPage'));
 const MergePdfPage = lazy(() => import('./pages/MergePdfPage'));
 const AudioConverterPage = lazy(() => import('./pages/AudioConverterPage'));
+const VideoToolsPage = lazy(() => import('./pages/VideoToolsPage'));
 const SiteTourPage = lazy(() => import('./pages/SiteTourPage'));
 const InstallOnIphonePage = lazy(() => import('./pages/InstallOnIphonePage'));
 const FaqPage = lazy(() => import('./pages/FaqPage'));
@@ -35,9 +36,8 @@ function App() {
     { label: t('nav.pdfTools'), href: '/pdf-tools' },
     { label: t('nav.imageTools'), href: '/image-tools' },
     { label: t('nav.documentTools'), href: '/document-tools' },
+    { label: t('nav.videoTools'), href: '/video-tools' },
     { label: t('nav.audioTools'), href: '/conversor-audio' },
-    { label: t('nav.utilities'), href: '/utilities' },
-    { label: t('nav.faq'), href: '/faq' },
   ];
 
   return (
@@ -65,6 +65,7 @@ function App() {
                     <Route path="/pdf-para-word" element={<PdfToWordPage />} />
                     <Route path="/word-para-pdf" element={<WordToPdfPage />} />
                     <Route path="/unir-pdf" element={<MergePdfPage />} />
+                    <Route path="/video-tools" element={<VideoToolsPage />} />
                     <Route path="/conversor-audio" element={<AudioConverterPage />} />
                     <Route path="/tour-pelo-site" element={<SiteTourPage />} />
                     <Route path="/instalar-no-iphone" element={<InstallOnIphonePage />} />

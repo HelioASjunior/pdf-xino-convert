@@ -8,7 +8,7 @@ import {
   PdfToImagesIcon, RotatePdfIcon, RemovePagesIcon,
   ImageToPdfIcon, ConvertImageIcon,
   DocsToPdfIcon, WordToPdfIcon, PowerPointToPdfIcon, ScanDocumentIcon,
-  AudioConverterIcon, UtilitiesIcon,
+  AudioConverterIcon, VideoConverterIcon, UtilitiesIcon,
 } from '../components/ToolIcons';
 
 function HomePage() {
@@ -20,6 +20,7 @@ function HomePage() {
     { key: 'pdf',      label: t('home.tab_pdf') },
     { key: 'image',    label: t('home.tab_image') },
     { key: 'audio',    label: t('home.tab_audio',    { defaultValue: 'Áudio' }) },
+    { key: 'video',    label: t('home.tab_video',    { defaultValue: 'Vídeo' }) },
     { key: 'document', label: t('home.tab_document') },
     { key: 'utility',  label: t('home.tab_utility') },
   ]), [t]);
@@ -96,13 +97,6 @@ function HomePage() {
       category: 'document',
     },
     {
-      title: t('home.cat.wordToPdfTitle', { defaultValue: 'Word para PDF' }),
-      description: t('home.grid.wordToPdf', { defaultValue: 'Converta DOCX para PDF em poucos cliques.' }),
-      href: '/document-tools',
-      Icon: WordToPdfIcon,
-      category: 'document',
-    },
-    {
       title: t('home.grid.powerPointToPdfTitle', { defaultValue: 'PowerPoint para PDF' }),
       description: t('home.grid.powerPointToPdf', { defaultValue: 'Converta apresentações PPT e PPTX para PDF com acesso rápido na central de documentos.' }),
       href: '/document-tools',
@@ -122,6 +116,13 @@ function HomePage() {
       href: '/conversor-audio',
       Icon: AudioConverterIcon,
       category: 'audio',
+    },
+    {
+      title: t('home.cat.videoToolsTitle', { defaultValue: 'Ferramentas de Vídeo' }),
+      description: t('home.cat.videoToolsDesc', { defaultValue: 'Converta MP4, WebM, MOV, AVI e gere GIFs animados.' }),
+      href: '/video-tools',
+      Icon: VideoConverterIcon,
+      category: 'video',
     },
     {
       title: t('home.cat.utilitiesTitle'),

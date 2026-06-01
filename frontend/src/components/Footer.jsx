@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Github, Instagram } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -10,7 +11,7 @@ function Footer() {
   return (
     <footer className="w-full border-t border-slate-200/80 bg-slate-50/90 backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-900/95">
       <div className="mx-auto w-full max-w-[1600px] px-4 py-10 text-sm text-slate-500 dark:text-slate-400 sm:px-6 lg:px-8 lg:py-12">
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.9fr_0.8fr]">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.9fr_0.6fr_0.8fr]">
           <div className="space-y-3 text-center lg:text-left">
             <div className="inline-flex items-center gap-3">
               <img
@@ -35,6 +36,15 @@ function Footer() {
             <p className="leading-7">{t('footer.highlight1')}</p>
             <p className="leading-7">{t('footer.highlight2')}</p>
             <p className="leading-7">{t('footer.highlight3')}</p>
+          </div>
+
+          <div className="space-y-3 text-center lg:text-left">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500">{t('footer.navLabel')}</p>
+            <nav className="flex flex-col items-center gap-2 lg:items-start">
+              <Link to="/utilities" className="leading-7 transition-colors hover:text-slate-700 dark:hover:text-slate-200">{t('nav.utilities')}</Link>
+              <Link to="/faq" className="leading-7 transition-colors hover:text-slate-700 dark:hover:text-slate-200">{t('nav.faq')}</Link>
+              <Link to="/tour-pelo-site" className="leading-7 transition-colors hover:text-slate-700 dark:hover:text-slate-200">{t('header.siteTour')}</Link>
+            </nav>
           </div>
 
           <div className="space-y-3 text-center lg:text-left">

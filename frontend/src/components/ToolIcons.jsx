@@ -242,6 +242,21 @@ export function AudioConverterIcon() {
   );
 }
 
+// ─── Video tools (sky palette) ──────────────────────────────
+
+export function VideoConverterIcon() {
+  return (
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+      <rect width="44" height="44" rx="11" className="fill-sky-100 dark:fill-sky-900/40" />
+      <rect x="5" y="13" width="22" height="16" rx="2.5" className="fill-white dark:fill-slate-200" fillOpacity=".9" />
+      <path d="M27 18l8-4v12l-8-4V18z" fill="#0EA5E9" />
+      <path d="M16 17.5l5 4.5-5 4.5V17.5z" fill="#0EA5E9" />
+      <path d="M35 34 A5 5 0 0 1 28.5 29.5" stroke="#0284C7" strokeWidth="1.75" strokeLinecap="round" fill="none" />
+      <path d="M33.5 36.5l1.5-2.5-2.5-.5" stroke="#0284C7" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
+
 // ─── Utility tools (slate palette) ──────────────────────────
 
 export function UtilitiesIcon() {
