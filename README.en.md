@@ -58,6 +58,7 @@ Primary goals:
 
 - Image to PDF (multi-upload, file ordering, single or separate output)
 - PDF to Images (JPG/PNG plus ZIP packaging)
+- PDF to EPUB, a format commonly used on Kindle e-readers
 - In-browser PDF compression
 - Merge PDF
 - Split PDF

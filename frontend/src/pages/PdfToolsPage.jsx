@@ -20,6 +20,7 @@ import { createPdfPreviewUrl } from '../utils/pdfPreview';
 import { compressPdfInBrowser } from '../services/clientPdfTools';
 import {
   cropPdfPages,
+  convertPdfToEpub,
   extractPdfPages,
   mergePdfFiles,
   removePdfPages,
@@ -108,6 +109,16 @@ function PdfToolsPage() {
       className: 'hover:-translate-y-0',
     },
     {
+      title: t('pdfTools.epub.title'),
+      description: t('pdfTools.epub.description'),
+      icon: FileText,
+      badge: t('pdfTools.epub.badge'),
+      actionLabel: t('pdfTools.epub.actionLabel'),
+      accent: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/40 dark:text-cyan-300',
+      onClick: () => {},
+      className: 'hover:-translate-y-0',
+    },
+    {
       title: t('pdfTools.pdfToWord.title'),
       description: t('pdfTools.pdfToWord.description'),
       icon: FileText,
@@ -156,7 +167,8 @@ function PdfToolsPage() {
       || (item.title === t('pdfTools.rotate.title') && operation === 'rotate')
       || (item.title === t('pdfTools.removeExtract.title') && (operation === 'remove' || operation === 'extract'))
       || (item.title === t('pdfTools.crop.title') && operation === 'crop')
-      || (item.title === t('pdfTools.compress.title') && operation === 'compress'),
+      || (item.title === t('pdfTools.compress.title') && operation === 'compress')
+      || (item.title === t('pdfTools.epub.title') && operation === 'epub'),
     onClick: () => {
       const mergeTitle = t('pdfTools.merge.title');
       const splitTitle = t('pdfTools.split.title');
@@ -164,6 +176,7 @@ function PdfToolsPage() {
       const removeTitle = t('pdfTools.removeExtract.title');
       const cropTitle = t('pdfTools.crop.title');
       const compressTitle = t('pdfTools.compress.title');
+      const epubTitle = t('pdfTools.epub.title');
 
       if (item.title === mergeTitle) setOperation('merge');
       if (item.title === splitTitle) setOperation('split');
@@ -171,6 +184,7 @@ function PdfToolsPage() {
       if (item.title === removeTitle) setOperation('remove');
       if (item.title === cropTitle) setOperation('crop');
       if (item.title === compressTitle) setOperation('compress');
+      if (item.title === epubTitle) setOperation('epub');
       workbenchRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     },
   }));
@@ -420,6 +434,32 @@ function PdfToolsPage() {
         }
       }
 
+      if (operation === 'epub') {
+        const parts = [];
+        for (let i = 0; i < files.length; i++) {
+          const blob = await convertPdfToEpub(files[i].file, fileProgress(i));
+          parts.push({ name: `${files[i].file.name.replace(/\.[^/.]+$/, '')}.epub`, blob });
+        }
+
+        if (parts.length === 1) {
+          output = {
+            mode: 'single',
+            blob: parts[0].blob,
+            fileName: parts[0].name,
+            description: t('pdfTools.epub.successMsg'),
+          };
+        } else {
+          const zip = await zipDownloadItems(parts, `${t('pdfTools.epub.successFile')}-${Date.now()}.zip`);
+          output = {
+            mode: 'multiple',
+            blob: zip.zipBlob,
+            fileName: zip.zipName,
+            description: t('pdfTools.epub.multiMsg', { count: parts.length }),
+            individualFiles: parts.map((p) => ({ name: p.name, url: URL.createObjectURL(p.blob) })),
+          };
+        }
+      }
+
       const url = URL.createObjectURL(output.blob);
       setResult({ url, ...output });
 
@@ -537,6 +577,7 @@ function PdfToolsPage() {
                 { value: 'crop', label: 'Recortar PDF' },
                 { value: 'extract', label: 'Extrair páginas' },
                 { value: 'compress', label: 'Comprimir PDF' },
+                { value: 'epub', label: 'PDF para EPUB' },
               ]}
               helperText="Alterne a operação sem sair da página."
             />
@@ -568,7 +609,7 @@ function PdfToolsPage() {
               />
             ) : null}
 
-            {(operation !== 'merge' && operation !== 'crop') ? (
+            {(operation !== 'merge' && operation !== 'crop' && operation !== 'epub') ? (
               <label className="flex flex-col gap-2">
                 <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Páginas (ex: 1,3-5)</span>
                 <input
@@ -583,6 +624,12 @@ function PdfToolsPage() {
             {operation === 'crop' ? (
               <p className="rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                 O recorte visual abre uma nova janela para selecionar a área, escolher entre todas as páginas ou página atual e redefinir tudo quando necessário.
+              </p>
+            ) : null}
+
+            {operation === 'epub' ? (
+              <p className="rounded-2xl bg-cyan-50 px-4 py-3 text-sm leading-6 text-cyan-700 dark:bg-cyan-900/20 dark:text-cyan-200">
+                O EPUB gerado usa a primeira página do PDF como capa visual, inclui metadados e mantém texto ou imagem por página conforme o conteúdo de origem.
               </p>
             ) : null}
 
@@ -605,6 +652,7 @@ function PdfToolsPage() {
               {operation === 'rotate' ? <RotateCw className="h-4 w-4" /> : null}
               {operation === 'crop' ? <Crop className="h-4 w-4" /> : null}
               {operation === 'compress' ? <Shrink className="h-4 w-4" /> : null}
+              {operation === 'epub' ? <FileText className="h-4 w-4" /> : null}
               {(operation === 'merge' || operation === 'extract') ? <Files className="h-4 w-4" /> : null}
               {(operation === 'merge' && files.length > 1 && !orderConfirmed) ? 'Organize a ordem para continuar' : 'Executar ferramenta'}
             </Button>
@@ -660,12 +708,12 @@ function PdfToolsPage() {
           <div className="section-intro">
             <p className="section-kicker">Ferramentas de PDF</p>
             <h1 className="section-title">Centralize tarefas de PDF em um fluxo mais claro, rápido e confiável.</h1>
-            <p className="section-copy">Junte arquivos, separe páginas, corrija orientação e prepare versões mais enxutas do documento sem sair da mesma área de trabalho.</p>
+            <p className="section-copy">Junte arquivos, separe páginas, converta para EPUB, corrija orientação e prepare versões mais enxutas do documento sem sair da mesma área de trabalho.</p>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Operações reunidas</p>
-              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">7 fluxos</p>
+              <p className="mt-2 font-display text-2xl font-bold text-slate-900 dark:text-slate-100">8 fluxos</p>
             </div>
             <div className="glass-panel p-4">
               <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">Intervalos flexíveis</p>
@@ -680,12 +728,12 @@ function PdfToolsPage() {
 
         <ResultCard
           title="Como esta área funciona"
-          description="Escolha a operação, envie seus PDFs e concentre a configuração no painel lateral. O processo foi organizado para reduzir cliques e retrabalho."
+          description="Escolha a operação, envie seus PDFs e concentre a configuração no painel lateral. O processo foi organizado para reduzir cliques e retrabalho, inclusive na saída EPUB."
           tone="info"
         >
           <div className="space-y-3 text-sm leading-7 text-slate-600 dark:text-slate-300">
             <p>Juntar PDF trabalha com vários arquivos no mesmo fluxo.</p>
-            <p>Dividir, rotacionar, remover e extrair funcionam sobre um único PDF por vez com controle de páginas.</p>
+            <p>Dividir, rotacionar, remover, extrair e EPUB funcionam sobre um ou mais PDFs, com controle de páginas quando aplicável.</p>
           </div>
         </ResultCard>
       </section>

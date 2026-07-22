@@ -58,6 +58,7 @@ Objetivos principais:
 
 - Imagem para PDF com upload múltiplo, organização de ordem e exportação única ou separada
 - PDF para imagens (JPG/PNG) com pacote ZIP
+- PDF para EPUB, formato comum em leitores Kindle
 - Compressão de PDF no navegador
 - Juntar PDF
 - Dividir PDF

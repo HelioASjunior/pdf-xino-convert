@@ -58,7 +58,7 @@ const resources = {
         suggestionCategory: 'Categoria',
         cat: {
           pdfKitTitle: 'Kit de PDF',
-          pdfKitDesc: 'Juntar PDF, dividir PDF, rotacionar páginas, remover e extrair.',
+          pdfKitDesc: 'Juntar PDF, dividir PDF, rotacionar páginas, remover, extrair e converter para EPUB.',
           pdfToImagesTitle: 'PDF para Imagens',
           pdfToImagesDesc: 'Converter PDF para JPG/PNG com preview e download individual.',
           mergePdfTitle: 'Unir PDF',
@@ -241,6 +241,15 @@ const resources = {
           description: 'Extraia cada página do PDF como imagem PNG ou JPEG para uso em apresentações ou revisão visual.',
           actionLabel: 'Exportar imagens',
           badge: 'PNG · JPEG',
+        },
+        epub: {
+          title: 'PDF para EPUB',
+          description: 'Converta PDFs para EPUB, um formato comum em leitores Kindle e outros e-readers.',
+          actionLabel: 'Gerar EPUB',
+          badge: 'Kindle',
+          successFile: 'epubs-gerados',
+          successMsg: 'EPUB gerado com sucesso.',
+          multiMsg: '{count} arquivo(s) convertido(s) para EPUB.',
         },
         trust: {
           directFlow: {
@@ -595,7 +604,7 @@ const resources = {
         suggestionCategory: 'Category',
         cat: {
           pdfKitTitle: 'PDF Kit',
-          pdfKitDesc: 'Merge PDF, split PDF, rotate pages, remove and extract.',
+          pdfKitDesc: 'Merge PDF, split PDF, rotate pages, remove, extract and convert to EPUB.',
           pdfToImagesTitle: 'PDF to Images',
           pdfToImagesDesc: 'Convert PDF to JPG/PNG with preview and individual download.',
           mergePdfTitle: 'Merge PDF',
@@ -778,6 +787,15 @@ const resources = {
           description: 'Extract each PDF page as a PNG or JPEG image for use in presentations or visual review.',
           actionLabel: 'Export images',
           badge: 'PNG · JPEG',
+        },
+        epub: {
+          title: 'PDF to EPUB',
+          description: 'Convert PDFs to EPUB, a common format on Kindle e-readers and other readers.',
+          actionLabel: 'Generate EPUB',
+          badge: 'Kindle',
+          successFile: 'generated-epubs',
+          successMsg: 'EPUB generated successfully.',
+          multiMsg: '{count} file(s) converted to EPUB.',
         },
         trust: {
           directFlow: {
