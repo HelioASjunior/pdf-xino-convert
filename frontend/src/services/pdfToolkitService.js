@@ -13,8 +13,13 @@ function toInt(value) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function escapeHtml(value) {
+function stripInvalidXmlCharacters(value) {
   return String(value)
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, '');
+}
+
+function escapeHtml(value) {
+  return stripInvalidXmlCharacters(value)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -23,7 +28,7 @@ function escapeHtml(value) {
 }
 
 function normalizePageText(value) {
-  return String(value)
+  return stripInvalidXmlCharacters(value)
     .replace(/\u00a0/g, ' ')
     .replace(/\r\n?/g, '\n');
 }
@@ -42,7 +47,7 @@ function textToParagraphs(value) {
 }
 
 function decodePdfString(value) {
-  return String(value || '').replace(/^\uFEFF/, '').trim();
+  return stripInvalidXmlCharacters(value || '').replace(/^\uFEFF/, '').trim();
 }
 
 function formatPdfDate(value) {
